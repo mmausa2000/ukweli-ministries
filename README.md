@@ -36,9 +36,10 @@ python3 -m http.server 8000
 ## Leadership
 
 - **Meshak Mausa** — President & Media
-- **Selemani Bulako** — Secretary & Minister
-- **Barnaba Kabwe** — Treasurer
+- **Selemani Bulako** — Overseer, USA & Europe
+- **Barnaba Kabwe** — Youth Representative
 - **Amosi Kaswahili** — Tanzania Overseer
+- **Ishmael V. Ndayishimiye** — Director
 
 ## Notes
 
