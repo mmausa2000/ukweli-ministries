@@ -49,8 +49,8 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 <form id="up-form">
 <label for="token">Admin token</label>
 <input type="password" id="token" autocomplete="off" placeholder="paste the admin token">
-<label for="photo">Photo (JPEG, PNG, or WebP · max 20 MB)</label>
-<input type="file" id="photo" accept="image/jpeg,image/png,image/webp">
+<label for="photo">Photo or video (JPEG/PNG/WebP up to 20 MB · MP4/MOV/WebM up to 500 MB)</label>
+<input type="file" id="photo" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime">
 <label for="cat">Category</label>
 <select id="cat">
 <option>Worship</option>
@@ -62,7 +62,7 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 <input type="text" id="label" maxlength="80" placeholder="e.g. Street preaching">
 <label for="cap">Caption</label>
 <input type="text" id="cap" maxlength="140" placeholder="e.g. Open-air outreach in Tanzania">
-<div style="margin-top:24px"><button type="submit" class="btn" id="up-btn">Upload photo</button></div>
+<div style="margin-top:24px"><button type="submit" class="btn" id="up-btn">Upload</button></div>
 </form>
 <div id="msg" class="msg" hidden></div>
 </div>
@@ -93,12 +93,20 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (photos) {
         list.textContent = '';
-        listNote.textContent = photos.length ? photos.length + ' photo(s) uploaded from the site.' : 'Nothing uploaded yet.';
+        listNote.textContent = photos.length ? photos.length + ' item(s) uploaded from the site.' : 'Nothing uploaded yet.';
         photos.forEach(function (p) {
           var tile = document.createElement('div');
           tile.className = 'tile';
-          var img = document.createElement('img');
-          img.src = p.img; img.alt = p.label; img.loading = 'lazy';
+          var img;
+          if (p.kind === 'video') {
+            img = document.createElement('video');
+            img.src = p.img + '#t=0.1';
+            img.muted = true; img.playsInline = true; img.preload = 'metadata'; img.controls = true;
+            img.style.cssText = 'width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#211A12';
+          } else {
+            img = document.createElement('img');
+            img.src = p.img; img.alt = p.label; img.loading = 'lazy';
+          }
           var meta = document.createElement('div');
           meta.className = 'meta';
           var t = document.createElement('div'); t.className = 't'; t.textContent = p.label;

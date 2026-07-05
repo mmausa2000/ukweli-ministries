@@ -18,6 +18,10 @@ const CATEGORIES: [&str; 4] = ["Worship", "Community", "Missions", "Media"];
 const MAX_LABEL: usize = 80;
 const MAX_CAP: usize = 140;
 
+fn default_kind() -> String {
+    "photo".into()
+}
+
 #[derive(Clone, Serialize, Deserialize)]
 struct Photo {
     id: String,
@@ -25,6 +29,8 @@ struct Photo {
     label: String,
     cap: String,
     img: String,
+    #[serde(default = "default_kind")]
+    kind: String,
     uploaded_at: u64,
 }
 
@@ -61,13 +67,26 @@ fn write_manifest(state: &AppState, photos: &[Photo]) -> std::io::Result<()> {
     fs::rename(tmp, manifest_path(state))
 }
 
-fn sniff_image_ext(bytes: &[u8]) -> Option<&'static str> {
+const MAX_PHOTO_BYTES: usize = 20 * 1024 * 1024;
+const MAX_VIDEO_BYTES: usize = 500 * 1024 * 1024;
+
+/// Returns (extension, kind) based on the file's magic bytes.
+fn sniff_media(bytes: &[u8]) -> Option<(&'static str, &'static str)> {
     if bytes.starts_with(&[0xFF, 0xD8, 0xFF]) {
-        Some("jpg")
+        Some(("jpg", "photo"))
     } else if bytes.starts_with(&[0x89, 0x50, 0x4E, 0x47]) {
-        Some("png")
+        Some(("png", "photo"))
     } else if bytes.len() > 12 && &bytes[0..4] == b"RIFF" && &bytes[8..12] == b"WEBP" {
-        Some("webp")
+        Some(("webp", "photo"))
+    } else if bytes.len() > 12 && &bytes[4..8] == b"ftyp" {
+        // ISO base media: MP4 family, or QuickTime (.mov) when the brand is "qt  "
+        if &bytes[8..12] == b"qt  " {
+            Some(("mov", "video"))
+        } else {
+            Some(("mp4", "video"))
+        }
+    } else if bytes.starts_with(&[0x1A, 0x45, 0xDF, 0xA3]) {
+        Some(("webm", "video"))
     } else {
         None
     }
@@ -89,9 +108,20 @@ async fn upload(
     let mut cat = String::new();
     let mut label = String::new();
     let mut cap = String::new();
-    let mut photo_bytes: Vec<u8> = Vec::new();
 
-    while let Some(field) = multipart
+    // Media is streamed to a temp file so large videos never sit in memory.
+    let uploads_dir = state.data_dir.join("uploads");
+    fs::create_dir_all(&uploads_dir).map_err(internal)?;
+    let id = uuid::Uuid::new_v4().to_string();
+    let tmp_path = uploads_dir.join(format!("{id}.tmp"));
+    let mut head: Vec<u8> = Vec::new();
+    let mut total: usize = 0;
+
+    let cleanup = |p: &PathBuf| {
+        let _ = fs::remove_file(p);
+    };
+
+    while let Some(mut field) = multipart
         .next_field()
         .await
         .map_err(|e| bad(&format!("malformed form: {e}")))?
@@ -101,41 +131,65 @@ async fn upload(
             "cat" => cat = field.text().await.map_err(|_| bad("bad cat field"))?,
             "label" => label = field.text().await.map_err(|_| bad("bad label field"))?,
             "cap" => cap = field.text().await.map_err(|_| bad("bad cap field"))?,
-            "photo" => {
-                photo_bytes = field
-                    .bytes()
-                    .await
-                    .map_err(|_| bad("photo too large or unreadable"))?
-                    .to_vec()
+            "photo" | "file" | "media" => {
+                use tokio::io::AsyncWriteExt;
+                let mut f = tokio::fs::File::create(&tmp_path).await.map_err(internal)?;
+                while let Some(chunk) = field.chunk().await.map_err(|_| {
+                    cleanup(&tmp_path);
+                    bad("upload interrupted or too large")
+                })? {
+                    if head.len() < 16 {
+                        head.extend_from_slice(&chunk[..chunk.len().min(16 - head.len())]);
+                    }
+                    total += chunk.len();
+                    if total > MAX_VIDEO_BYTES {
+                        cleanup(&tmp_path);
+                        return Err(bad("file too large (max 500 MB)"));
+                    }
+                    f.write_all(&chunk).await.map_err(internal)?;
+                }
+                f.flush().await.map_err(internal)?;
             }
             _ => {}
         }
     }
 
     if token != state.token {
+        cleanup(&tmp_path);
         return Err((StatusCode::UNAUTHORIZED, "invalid token".into()));
     }
     if !CATEGORIES.contains(&cat.as_str()) {
+        cleanup(&tmp_path);
         return Err(bad("category must be Worship, Community, Missions, or Media"));
     }
     let label = label.trim().to_string();
     let cap = cap.trim().to_string();
     if label.is_empty() || label.chars().count() > MAX_LABEL {
+        cleanup(&tmp_path);
         return Err(bad("label is required (max 80 chars)"));
     }
     if cap.chars().count() > MAX_CAP {
+        cleanup(&tmp_path);
         return Err(bad("caption too long (max 140 chars)"));
     }
-    if photo_bytes.is_empty() {
-        return Err(bad("photo file is required"));
+    if total == 0 {
+        cleanup(&tmp_path);
+        return Err(bad("a photo or video file is required"));
     }
-    let ext = sniff_image_ext(&photo_bytes).ok_or_else(|| bad("photo must be JPEG, PNG, or WebP"))?;
+    let (ext, kind) = match sniff_media(&head) {
+        Some(x) => x,
+        None => {
+            cleanup(&tmp_path);
+            return Err(bad("file must be JPEG, PNG, WebP, MP4, MOV, or WebM"));
+        }
+    };
+    if kind == "photo" && total > MAX_PHOTO_BYTES {
+        cleanup(&tmp_path);
+        return Err(bad("photo too large (max 20 MB)"));
+    }
 
-    let id = uuid::Uuid::new_v4().to_string();
     let filename = format!("{id}.{ext}");
-    let uploads_dir = state.data_dir.join("uploads");
-    fs::create_dir_all(&uploads_dir).map_err(internal)?;
-    fs::write(uploads_dir.join(&filename), &photo_bytes).map_err(internal)?;
+    fs::rename(&tmp_path, uploads_dir.join(&filename)).map_err(internal)?;
 
     let photo = Photo {
         id,
@@ -143,6 +197,7 @@ async fn upload(
         label,
         cap,
         img: format!("/data/uploads/{filename}"),
+        kind: kind.to_string(),
         uploaded_at: now_secs(),
     };
 
@@ -241,7 +296,7 @@ async fn main() {
 
     let app = Router::new()
         .route("/api/gallery", get(get_gallery))
-        .route("/api/upload", post(upload).layer(DefaultBodyLimit::max(20 * 1024 * 1024)))
+        .route("/api/upload", post(upload).layer(DefaultBodyLimit::max(520 * 1024 * 1024)))
         .route("/api/delete", post(delete_photo))
         .route("/api/subscribe", post(subscribe))
         .nest_service("/data/uploads", ServeDir::new(data_dir.join("uploads")))

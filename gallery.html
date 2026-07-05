@@ -155,7 +155,7 @@ a{color:inherit}
 <!-- LIGHTBOX -->
 <div id="lightbox" hidden style="position:fixed;inset:0;z-index:100;background:rgba(20,15,9,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:28px;animation:fadeIn .2s ease">
 <div id="lightbox-card" style="max-width:760px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease">
-<div id="lb-photo" style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span id="lb-mark" style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span><img id="lb-img" alt="" hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1"></div>
+<div id="lb-photo" style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span id="lb-mark" style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span><img id="lb-img" alt="" hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1"><video id="lb-video" controls playsinline hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1;background:#211A12"></video></div>
 <div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px">
 <div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
 <button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
@@ -236,7 +236,14 @@ a{color:inherit}
       frame.style.cssText = 'position:relative;border-radius:var(--r,14px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 1px 2px rgba(33,26,18,.05)';
 
       var ph;
-      if (item.img) {
+      if (item.img && item.kind === 'video') {
+        ph = document.createElement('video');
+        ph.src = item.img + '#t=0.1';
+        ph.muted = true;
+        ph.playsInline = true;
+        ph.preload = 'metadata';
+        ph.style.cssText = 'aspect-ratio:4/5;width:100%;height:auto;object-fit:cover;display:block;background:#211A12;transform:scale(var(--z,1));transition:transform .45s ease';
+      } else if (item.img) {
         ph = document.createElement('img');
         ph.src = item.img;
         ph.alt = item.label + ' — ' + item.cap;
@@ -252,6 +259,15 @@ a{color:inherit}
       badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
 
       frame.appendChild(ph); frame.appendChild(badge);
+      if (item.kind === 'video') {
+        var play = document.createElement('span');
+        play.style.cssText = 'position:absolute;inset:0;display:grid;place-items:center;pointer-events:none';
+        var circle = document.createElement('span');
+        circle.style.cssText = 'width:52px;height:52px;border-radius:50%;background:rgba(33,26,18,.55);border:1px solid rgba(247,242,234,.6);display:grid;place-items:center;backdrop-filter:blur(2px)';
+        var tri = document.createElement('span');
+        tri.style.cssText = 'width:0;height:0;border-style:solid;border-width:9px 0 9px 15px;border-color:transparent transparent transparent #F7F2EA;margin-left:4px';
+        circle.appendChild(tri); play.appendChild(circle); frame.appendChild(play);
+      }
       if (!item.img) {
         var mark = document.createElement('span');
         mark.textContent = '[ photo ]';
@@ -287,25 +303,38 @@ a{color:inherit}
   var lbPhoto = document.getElementById('lb-photo');
   var lbImg = document.getElementById('lb-img');
   var lbMark = document.getElementById('lb-mark');
+  var lbVideo = document.getElementById('lb-video');
 
   function openLightbox(item) {
     lbCat.textContent = item.cat;
     lbLabel.textContent = item.label;
     lbCap.textContent = item.cap;
-    if (item.img) {
+    lbImg.hidden = true;
+    lbVideo.hidden = true;
+    lbMark.hidden = false;
+    if (item.img && item.kind === 'video') {
+      lbVideo.src = item.img;
+      lbVideo.hidden = false;
+      lbMark.hidden = true;
+      lbPhoto.style.background = '#211A12';
+      lbVideo.play().catch(function () {});
+    } else if (item.img) {
       lbImg.src = item.img;
       lbImg.alt = item.label + ' — ' + item.cap;
       lbImg.hidden = false;
       lbMark.hidden = true;
       lbPhoto.style.background = '#211A12';
     } else {
-      lbImg.hidden = true;
-      lbMark.hidden = false;
       lbPhoto.style.background = 'repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px)';
     }
     lightbox.hidden = false;
   }
-  function closeLightbox() { lightbox.hidden = true; }
+  function closeLightbox() {
+    lightbox.hidden = true;
+    lbVideo.pause();
+    lbVideo.removeAttribute('src');
+    lbVideo.load();
+  }
 
   lightbox.addEventListener('click', closeLightbox);
   lightboxCard.addEventListener('click', function (e) { e.stopPropagation(); });
@@ -321,7 +350,7 @@ a{color:inherit}
     .then(function (uploaded) {
       if (!Array.isArray(uploaded) || !uploaded.length) return;
       ITEMS = uploaded.map(function (p) {
-        return { cat: p.cat, label: p.label, cap: p.cap, img: p.img };
+        return { cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind };
       }).concat(ITEMS);
       renderGrid(currentFilter);
     })

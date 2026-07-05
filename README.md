@@ -8,9 +8,9 @@ Implemented from the Claude Design mock “Ukweli Ministries webpage mock” (`U
 
 - `index.html` — home page (self-contained HTML/CSS/JS, no build step)
 - `gallery.html` — photo gallery with category filters and a lightbox
-- `admin.html` — upload/manage gallery photos (requires the Rust server)
+- `admin.html` — upload/manage gallery photos and videos (requires the Rust server)
 - `assets/` — logo, ministry photos, video thumbnails, app screenshots
-- `server/` — Rust (Axum) backend: static hosting, photo uploads, newsletter signups
+- `server/` — Rust (Axum) backend: static hosting, photo & video uploads, newsletter signups
 - `design/` — original Claude Design sources for reference
 
 ## Run
@@ -25,7 +25,7 @@ UKWELI_ADMIN_TOKEN=your-secret PORT=8080 cargo run --release --manifest-path ser
 If `UKWELI_ADMIN_TOKEN` is unset, the server generates a token and prints it at startup.
 Uploads land in `data/uploads/` (+ `data/gallery.json`); newsletter emails in `data/subscribers.jsonl`. The `data/` directory is gitignored.
 
-API: `GET /api/gallery` · `POST /api/upload` (multipart: token, photo, cat, label, cap) · `POST /api/delete` (JSON: token, id) · `POST /api/subscribe` (JSON: email).
+API: `GET /api/gallery` · `POST /api/upload` (multipart: token, photo/video file, cat, label, cap; photos ≤20 MB, videos ≤500 MB) · `POST /api/delete` (JSON: token, id) · `POST /api/subscribe` (JSON: email).
 
 **Static only** (no uploads — gallery shows the built-in photos, newsletter stores locally in the browser):
 
@@ -36,8 +36,8 @@ python3 -m http.server 8000
 ## Leadership
 
 - **Meshak Mausa** — President & Media
-- **Selemani Bulako** — Overseer, USA & Europe
-- **Barnaba Kabwe** — Youth Representative
+- **Selemani Bulako** — Secretary · Overseer, USA & Europe
+- **Barnaba Kabwe** — Treasurer · Youth Representative
 - **Amosi Kaswahili** — Tanzania Overseer
 - **Ishmael V. Ndayishimiye** — Director
 
