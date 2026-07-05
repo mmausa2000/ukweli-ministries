@@ -8,17 +8,37 @@ Implemented from the Claude Design mock “Ukweli Ministries webpage mock” (`U
 
 - `index.html` — home page (self-contained HTML/CSS/JS, no build step)
 - `gallery.html` — photo gallery with category filters and a lightbox
-- `assets/um-logo.png` — ministry logo (used as favicon / social image)
+- `admin.html` — upload/manage gallery photos (requires the Rust server)
+- `assets/` — logo, ministry photos, video thumbnails, app screenshots
+- `server/` — Rust (Axum) backend: static hosting, photo uploads, newsletter signups
 - `design/` — original Claude Design sources for reference
 
-## Run locally
+## Run
 
-Any static server works:
+**With the Rust backend** (enables uploads from `/admin.html` and newsletter capture):
+
+```sh
+UKWELI_ADMIN_TOKEN=your-secret PORT=8080 cargo run --release --manifest-path server/Cargo.toml
+# open http://localhost:8080 — run from the repo root
+```
+
+If `UKWELI_ADMIN_TOKEN` is unset, the server generates a token and prints it at startup.
+Uploads land in `data/uploads/` (+ `data/gallery.json`); newsletter emails in `data/subscribers.jsonl`. The `data/` directory is gitignored.
+
+API: `GET /api/gallery` · `POST /api/upload` (multipart: token, photo, cat, label, cap) · `POST /api/delete` (JSON: token, id) · `POST /api/subscribe` (JSON: email).
+
+**Static only** (no uploads — gallery shows the built-in photos, newsletter stores locally in the browser):
 
 ```sh
 python3 -m http.server 8000
-# open http://localhost:8000
 ```
+
+## Leadership
+
+- **Meshak Mausa** — President & Media
+- **Selemani Bulako** — Secretary & Minister
+- **Barnaba Kabwe** — Treasurer
+- **Amosi Kaswahili** — Tanzania Overseer
 
 ## Notes
 

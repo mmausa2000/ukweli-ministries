@@ -319,6 +319,10 @@ a{color:inherit}
 <div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF;background:repeating-linear-gradient(135deg,#EDE4D3 0 13px,#F3ECDE 13px 26px);display:grid;place-items:center"><span style="font:500 11px/1.5 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em;text-align:center">[ portrait ]<br>4:5</span></div>
 <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Barnaba Kabwe</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Treasurer</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">Stewardship and accountability of every gift entrusted to the ministry.</p></div>
 </div>
+<div style="display:flex;flex-direction:column;gap:16px">
+<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF;background:repeating-linear-gradient(135deg,#EDE4D3 0 13px,#F3ECDE 13px 26px);display:grid;place-items:center"><span style="font:500 11px/1.5 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em;text-align:center">[ portrait ]<br>4:5</span></div>
+<div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Amosi Kaswahili</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Tanzania Overseer</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">Overseeing the churches and street outreach we serve alongside across Tanzania.</p></div>
+</div>
 </div>
 </div>
 </section>
@@ -451,6 +455,13 @@ a{color:inherit}
       errBox.hidden = false;
       return;
     }
+    // Record on the backend when it's running; localStorage keeps the
+    // subscribed state either way (and is the only record on static hosting).
+    fetch('/api/subscribe', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email: v })
+    }).catch(function () {});
     try { localStorage.setItem('ukweli_sub', v); } catch (e2) {}
     showSubscribed();
   });

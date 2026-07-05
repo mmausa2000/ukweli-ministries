@@ -274,11 +274,13 @@ a{color:inherit}
     });
   }
 
+  var currentFilter = 'All';
   filterWrap.addEventListener('click', function (e) {
     var b = e.target.closest('[data-filter]');
     if (!b) return;
     filterWrap.querySelectorAll('.filter-btn').forEach(function (x) { x.classList.toggle('active', x === b); });
-    renderGrid(b.dataset.filter);
+    currentFilter = b.dataset.filter;
+    renderGrid(currentFilter);
   });
 
   var lbPhoto = document.getElementById('lb-photo');
@@ -309,7 +311,20 @@ a{color:inherit}
   document.getElementById('lb-close').addEventListener('click', closeLightbox);
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
 
-  renderGrid('All');
+  renderGrid(currentFilter);
+
+  // When the Rust backend is running, merge photos uploaded from the site
+  // (newest first). On static hosting this fetch just fails silently.
+  fetch('/api/gallery')
+    .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
+    .then(function (uploaded) {
+      if (!Array.isArray(uploaded) || !uploaded.length) return;
+      ITEMS = uploaded.map(function (p) {
+        return { cat: p.cat, label: p.label, cap: p.cap, img: p.img };
+      }).concat(ITEMS);
+      renderGrid(currentFilter);
+    })
+    .catch(function () {});
 })();
 </script>
 </body>
