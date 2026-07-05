@@ -39,7 +39,7 @@ python3 -m http.server 8000
 - **Selemani Bulako** — Secretary · Overseer, USA & Europe
 - **Barnaba Kabwe** — Treasurer · Youth Representative
 - **Amosi Kaswahili** — Tanzania Overseer
-- **Ishmael V. Ndayishimiye** — Director · Main Pastor, Ukweli Church USA (ordained 2026)
+- **Ishmael V. Ndayishimiye** — Director · Main Pastor, Ukweli Church of Christ Iowa City (ordained 2026)
 
 ## Notes
 
