@@ -78,7 +78,7 @@ a{color:inherit}
 <div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-bottom:22px"><a href="index.html" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Gallery</span></div>
 <div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Gallery</div>
 <h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,5.4vw,72px);line-height:1.02;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Moments from the family</h1>
-<p style="max-width:560px;font-size:17.5px;line-height:1.68;color:#5B5044;margin:0">Worship, fellowship, and the work — glimpses of Ukweli, in Iowa City and across the water. Every image here is a placeholder, ready for your own photos.</p>
+<p style="max-width:560px;font-size:17.5px;line-height:1.68;color:#5B5044;margin:0">Worship, fellowship, and the work — glimpses of Ukweli, in Iowa City and across the water.</p>
 <div id="filters" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:30px">
 <button data-filter="All" class="filter-btn active">All</button>
 <button data-filter="Worship" class="filter-btn">Worship</button>
@@ -155,7 +155,7 @@ a{color:inherit}
 <!-- LIGHTBOX -->
 <div id="lightbox" hidden style="position:fixed;inset:0;z-index:100;background:rgba(20,15,9,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:28px;animation:fadeIn .2s ease">
 <div id="lightbox-card" style="max-width:760px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease">
-<div style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span></div>
+<div id="lb-photo" style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span id="lb-mark" style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span><img id="lb-img" alt="" hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1"></div>
 <div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px">
 <div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
 <button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
@@ -190,7 +190,23 @@ a{color:inherit}
     { cat: 'Media', label: 'Live broadcast', cap: 'IBADA, streamed to the world' },
     { cat: 'Worship', label: 'The Word', cap: 'Teaching from Scripture' },
     { cat: 'Community', label: 'The children', cap: 'The next generation' },
-    { cat: 'Missions', label: 'Tanzania', cap: 'One family across the water' },
+    { cat: 'Missions', label: 'Tanzania', cap: 'One family across the water', img: 'assets/tz-outreach-1.jpg' },
+    { cat: 'Missions', label: 'Street preaching', cap: 'Open-air outreach in Tanzania', img: 'assets/tz-outreach-2.jpg' },
+    { cat: 'Missions', label: 'Taking the Word out', cap: 'Street ministry in Tanzania', img: 'assets/tz-outreach-3.jpg' },
+    { cat: 'Missions', label: 'Into the streets', cap: 'Evening outreach in Tanzania', img: 'assets/tz-outreach-4.jpg' },
+    { cat: 'Missions', label: 'At the market', cap: 'Preaching where people gather', img: 'assets/tz-outreach-5.jpg' },
+    { cat: 'Missions', label: 'The open road', cap: 'Street preaching in Tanzania', img: 'assets/tz-outreach-6.jpg' },
+    { cat: 'Missions', label: 'Marketplace ministry', cap: 'The Word among the kiosks', img: 'assets/tz-outreach-7.jpg' },
+    { cat: 'Missions', label: 'Boldness', cap: 'Open-air preaching in Tanzania', img: 'assets/tz-outreach-8.jpg' },
+    { cat: 'Missions', label: 'House gathering', cap: 'The Word shared at home', img: 'assets/tz-outreach-9.jpg' },
+    { cat: 'Missions', label: 'With joy', cap: 'Open-air outreach in Tanzania', img: 'assets/tz-outreach-10.jpg' },
+    { cat: 'Missions', label: 'Lifting the Word', cap: 'Scripture raised in the streets', img: 'assets/tz-outreach-11.jpg' },
+    { cat: 'Missions', label: 'Every corner', cap: 'Street ministry in Tanzania', img: 'assets/tz-outreach-12.jpg' },
+    { cat: 'Missions', label: 'Village fellowship', cap: 'Gathered around the Word', img: 'assets/tz-outreach-13.jpg' },
+    { cat: 'Missions', label: 'City outreach', cap: 'Carrying the sound into the city', img: 'assets/tz-outreach-14.jpg' },
+    { cat: 'Missions', label: 'In the villages', cap: 'Preaching in the highlands', img: 'assets/tz-outreach-15.jpg' },
+    { cat: 'Missions', label: 'Roadside witness', cap: 'Street preaching in Tanzania', img: 'assets/tz-outreach-16.jpg' },
+    { cat: 'Missions', label: 'To the hills', cap: 'The Word in the countryside', img: 'assets/tz-outreach-17.jpg' },
     { cat: 'Missions', label: 'DR Congo', cap: 'With the church in the DRC' },
     { cat: 'Media', label: 'In the studio', cap: 'Music & production' },
     { cat: 'Community', label: 'Baptism', cap: 'A new life in Christ' },
@@ -218,18 +234,29 @@ a{color:inherit}
       var frame = document.createElement('div');
       frame.style.cssText = 'position:relative;border-radius:var(--r,14px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 1px 2px rgba(33,26,18,.05)';
 
-      var ph = document.createElement('div');
-      ph.style.cssText = 'aspect-ratio:4/5;background:repeating-linear-gradient(135deg,#EDE4D3 0 13px,#F3ECDE 13px 26px);transform:scale(var(--z,1));transition:transform .45s ease';
+      var ph;
+      if (item.img) {
+        ph = document.createElement('img');
+        ph.src = item.img;
+        ph.alt = item.label + ' — ' + item.cap;
+        ph.loading = 'lazy';
+        ph.style.cssText = 'aspect-ratio:4/5;width:100%;height:auto;object-fit:cover;display:block;transform:scale(var(--z,1));transition:transform .45s ease';
+      } else {
+        ph = document.createElement('div');
+        ph.style.cssText = 'aspect-ratio:4/5;background:repeating-linear-gradient(135deg,#EDE4D3 0 13px,#F3ECDE 13px 26px);transform:scale(var(--z,1));transition:transform .45s ease';
+      }
 
       var badge = document.createElement('span');
       badge.textContent = item.cat;
       badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
 
-      var mark = document.createElement('span');
-      mark.textContent = '[ photo ]';
-      mark.style.cssText = 'position:absolute;inset:0;display:grid;place-items:center;font:500 11px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em;pointer-events:none';
-
-      frame.appendChild(ph); frame.appendChild(badge); frame.appendChild(mark);
+      frame.appendChild(ph); frame.appendChild(badge);
+      if (!item.img) {
+        var mark = document.createElement('span');
+        mark.textContent = '[ photo ]';
+        mark.style.cssText = 'position:absolute;inset:0;display:grid;place-items:center;font:500 11px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em;pointer-events:none';
+        frame.appendChild(mark);
+      }
 
       var meta = document.createElement('div');
       meta.style.cssText = 'padding:11px 3px 0';
@@ -254,10 +281,25 @@ a{color:inherit}
     renderGrid(b.dataset.filter);
   });
 
+  var lbPhoto = document.getElementById('lb-photo');
+  var lbImg = document.getElementById('lb-img');
+  var lbMark = document.getElementById('lb-mark');
+
   function openLightbox(item) {
     lbCat.textContent = item.cat;
     lbLabel.textContent = item.label;
     lbCap.textContent = item.cap;
+    if (item.img) {
+      lbImg.src = item.img;
+      lbImg.alt = item.label + ' — ' + item.cap;
+      lbImg.hidden = false;
+      lbMark.hidden = true;
+      lbPhoto.style.background = '#211A12';
+    } else {
+      lbImg.hidden = true;
+      lbMark.hidden = false;
+      lbPhoto.style.background = 'repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px)';
+    }
     lightbox.hidden = false;
   }
   function closeLightbox() { lightbox.hidden = true; }
