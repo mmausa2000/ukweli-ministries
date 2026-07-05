@@ -22,6 +22,6 @@ python3 -m http.server 8000
 
 ## Notes
 
-- The map (Google Maps embed) and the Watch-section video cards (real broadcasts + downloaded YouTube thumbnails in `assets/`) are filled in. Still placeholders awaiting real photos: hero image, leadership portraits, app screenshots, and the gallery tiles.
+- Filled in: map (Google Maps embed), Watch-section video cards (real broadcasts + thumbnails), and app cards (live-site screenshots). Still placeholders awaiting real photos: hero image, leadership portraits, and the gallery tiles.
 - The newsletter form validates and remembers signup in `localStorage`; connect it to a real mailing-list backend when available.
 - “Give Once” / “Partner Monthly” buttons currently anchor to the Give section — point them at a giving provider when one is chosen.
