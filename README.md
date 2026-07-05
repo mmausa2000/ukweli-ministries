@@ -6,9 +6,10 @@ Implemented from the Claude Design mock “Ukweli Ministries webpage mock” (`U
 
 ## Structure
 
-- `index.html` — the full site (single page, self-contained HTML/CSS/JS, no build step)
+- `index.html` — home page (self-contained HTML/CSS/JS, no build step)
+- `gallery.html` — photo gallery with category filters and a lightbox
 - `assets/um-logo.png` — ministry logo (used as favicon / social image)
-- `design/ukweli-ministries.dc.html` — original Claude Design source for reference
+- `design/` — original Claude Design sources for reference
 
 ## Run locally
 

@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gallery — Ukweli Ministries</title>
+<meta name="description" content="Worship, fellowship, and the work — glimpses of Ukweli Ministries, in Iowa City and across the water.">
+<link rel="icon" type="image/png" href="assets/um-logo.png">
+<meta property="og:title" content="Gallery — Ukweli Ministries">
+<meta property="og:description" content="Moments from the family: worship, fellowship, and the work of Ukweli Ministries.">
+<meta property="og:image" content="assets/um-logo.png">
+<meta property="og:type" content="website">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;scroll-padding-top:96px}
+body{margin:0;background:#F7F2EA;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+img{display:block;max-width:100%}
+a{color:inherit}
+@keyframes livePulse{0%{box-shadow:0 0 0 0 rgba(176,84,47,.5)}70%{box-shadow:0 0 0 7px rgba(176,84,47,0)}100%{box-shadow:0 0 0 0 rgba(176,84,47,0)}}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes popIn{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
+::selection{background:#211A12;color:#F7F2EA}
+
+/* Hover & focus states (converted from the design's style-hover attributes) */
+.nav-link:hover{color:var(--clay,#B0542F)}
+.f-link:hover{color:var(--wheat,#C0913C)}
+.crumb:hover{color:var(--clay,#B0542F)}
+.btn-clay:hover{filter:brightness(.93);transform:translateY(-1px)}
+.btn-ink:hover{background:#211A12;color:#F7F2EA;border-color:#211A12}
+.btn-ink.lift:hover{transform:translateY(-1px)}
+.pill-dark:hover{border-color:var(--wheat,#C0913C);color:var(--wheat,#C0913C)}
+.gitem:hover{transform:translateY(-3px);--z:1.06}
+[hidden]{display:none!important}
+
+/* Filter pills */
+.filter-btn{padding:10px 18px;border:1px solid rgba(33,26,18,.16);background:transparent;color:#3F382E;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border-radius:999px;cursor:pointer;transition:all .18s}
+.filter-btn.active{background:var(--clay,#B0542F);color:#FBF8F2;border-color:var(--clay,#B0542F)}
+</style>
+</head>
+<body>
+
+<div id="root" style="--clay:#B0542F;--wheat:#C0913C;--r:14px;--rlg:22px;background:#F7F2EA;color:#5B5044;font-family:'Hanken Grotesk',sans-serif;overflow-x:hidden">
+
+<!-- ANNOUNCEMENT BAR -->
+<div style="background:#221A12;color:#EDE3D2;font:500 13px/1.4 'Hanken Grotesk',sans-serif">
+<div style="max-width:1180px;margin:0 auto;padding:9px 32px;display:flex;gap:10px 20px;align-items:center;justify-content:center;flex-wrap:wrap;text-align:center">
+<span style="display:inline-flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:50%;background:var(--clay,#B0542F);animation:livePulse 2.4s infinite"></span>Join us this Sunday — IBADA at 10:00 AM · 2551 Aster Ave, Iowa City</span>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" style="color:var(--wheat,#C0913C);text-decoration:none;font-weight:600;white-space:nowrap">Watch live ↗</a>
+</div>
+</div>
+
+<header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease">
+<nav style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<a href="index.html" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
+<span style="font:600 25px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
+<span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:4px">Ministries</span>
+</a>
+<div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:flex-end">
+<a href="index.html#mission" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">About</a>
+<a href="index.html#worship" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Worship</a>
+<a href="index.html#watch" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Watch</a>
+<a href="index.html#apps" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Apps</a>
+<a href="gallery.html" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:var(--clay,#B0542F);text-decoration:none">Gallery</a>
+<a href="index.html#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
+</div>
+</nav>
+</header>
+
+<main>
+
+<!-- GALLERY HEADER -->
+<section style="padding:66px 32px 34px">
+<div style="max-width:1180px;margin:0 auto">
+<div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-bottom:22px"><a href="index.html" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Gallery</span></div>
+<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Gallery</div>
+<h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,5.4vw,72px);line-height:1.02;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Moments from the family</h1>
+<p style="max-width:560px;font-size:17.5px;line-height:1.68;color:#5B5044;margin:0">Worship, fellowship, and the work — glimpses of Ukweli, in Iowa City and across the water. Every image here is a placeholder, ready for your own photos.</p>
+<div id="filters" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:30px">
+<button data-filter="All" class="filter-btn active">All</button>
+<button data-filter="Worship" class="filter-btn">Worship</button>
+<button data-filter="Community" class="filter-btn">Community</button>
+<button data-filter="Missions" class="filter-btn">Missions</button>
+<button data-filter="Media" class="filter-btn">Media</button>
+</div>
+</div>
+</section>
+
+<!-- GALLERY GRID -->
+<section style="padding:20px 32px 96px">
+<div id="grid" style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:18px"></div>
+</section>
+
+<!-- CTA -->
+<section style="padding:88px 32px;text-align:center;background:#FBF8F2;border-top:1px solid #EFE7D8">
+<div style="max-width:620px;margin:0 auto">
+<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Keep watching</div>
+<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,4vw,48px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 16px">There's always more to see</h2>
+<p style="font-size:17px;line-height:1.7;color:#5B5044;margin:0 auto 30px;max-width:480px">New photos and full worship services are shared every week across our channels.</p>
+<div style="display:flex;flex-wrap:wrap;gap:13px;justify-content:center">
+<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 26px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Facebook Photos ↗</a>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 24px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">YouTube ↗</a>
+</div>
+</div>
+</section>
+
+<!-- FOOTER -->
+<footer style="background:#1C160F;color:#C9BCA6;padding:70px 32px 40px">
+<div style="max-width:1180px;margin:0 auto">
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px;padding-bottom:44px;border-bottom:1px solid rgba(201,188,166,.16)">
+<div>
+<div style="display:flex;flex-direction:column;line-height:.86;margin-bottom:16px"><span style="font:600 26px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#F6EEDE">Ukweli</span><span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--wheat,#C0913C);margin-top:4px">Ministries</span></div>
+<p style="font-size:14.5px;line-height:1.6;color:#A99C84;margin:0 0 18px;max-width:240px">Ukweli means truth. A Swahili Church of Christ in Iowa City, reaching the world.</p>
+<div style="display:flex;gap:9px">
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">YouTube</a>
+<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">Facebook</a>
+</div>
+</div>
+<div>
+<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Visit</div>
+<div style="font-size:14.5px;line-height:1.7;color:#A99C84">Ukweli Church of Christ<br>2551 Aster Ave<br>Iowa City, IA 52245</div>
+<div style="font-size:14.5px;line-height:1.7;color:#A99C84;margin-top:12px">Sundays · IBADA 10:00 AM</div>
+<a href="https://www.google.com/maps/search/?api=1&amp;query=2551+Aster+Ave+Iowa+City+IA" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;color:var(--wheat,#C0913C);text-decoration:none">Get directions ↗</a>
+</div>
+<div>
+<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Explore</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<a href="index.html#mission" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">About</a>
+<a href="index.html#worship" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">Worship</a>
+<a href="index.html#watch" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">Watch</a>
+<a href="gallery.html" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">Gallery</a>
+<a href="index.html#give" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">Give</a>
+</div>
+</div>
+<div>
+<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Our apps</div>
+<div style="display:flex;flex-direction:column;gap:10px">
+<a href="https://biblearcade.app" target="_blank" rel="noopener" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">BibleArcade ↗</a>
+<a href="https://youlive.me" target="_blank" rel="noopener" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">YouLive ↗</a>
+</div>
+</div>
+</div>
+<div style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding-top:26px;font:500 12.5px/1.6 'Hanken Grotesk',sans-serif;color:#7E7460">
+<span>© 2026 Ukweli Ministries · Iowa nonprofit · 501(c)(3) status pending · EIN 42-3528698</span>
+<span>Iowa City, Iowa</span>
+</div>
+</div>
+</footer>
+
+</main>
+
+<!-- LIGHTBOX -->
+<div id="lightbox" hidden style="position:fixed;inset:0;z-index:100;background:rgba(20,15,9,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:28px;animation:fadeIn .2s ease">
+<div id="lightbox-card" style="max-width:760px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease">
+<div style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span></div>
+<div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px">
+<div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
+<button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
+</div>
+</div>
+</div>
+
+</div>
+
+<script>
+(function () {
+  // Sticky nav: deepen shadow and background once the page scrolls
+  var nav = document.getElementById('top');
+  var raf = null;
+  function styleNav() {
+    var s = (window.scrollY || 0) > 20;
+    nav.style.boxShadow = s ? '0 6px 24px -14px rgba(33,26,18,0.4)' : 'none';
+    nav.style.background = s ? 'rgba(247,242,234,0.92)' : 'rgba(247,242,234,0.82)';
+  }
+  window.addEventListener('scroll', function () {
+    if (raf) return;
+    raf = requestAnimationFrame(function () { raf = null; styleNav(); });
+  }, { passive: true });
+  styleNav();
+
+  // Gallery data — placeholder slots, ready for real photos
+  var ITEMS = [
+    { cat: 'Worship', label: 'IBADA Sunday', cap: 'Gathered for worship' },
+    { cat: 'Worship', label: 'Praise & song', cap: 'Voices lifted in Swahili' },
+    { cat: 'Community', label: 'Fellowship meal', cap: 'A shared table after service' },
+    { cat: 'Missions', label: 'Kenya', cap: 'With our partners in Nairobi' },
+    { cat: 'Media', label: 'Live broadcast', cap: 'IBADA, streamed to the world' },
+    { cat: 'Worship', label: 'The Word', cap: 'Teaching from Scripture' },
+    { cat: 'Community', label: 'The children', cap: 'The next generation' },
+    { cat: 'Missions', label: 'Tanzania', cap: 'One family across the water' },
+    { cat: 'Media', label: 'In the studio', cap: 'Music & production' },
+    { cat: 'Community', label: 'Baptism', cap: 'A new life in Christ' },
+    { cat: 'Worship', label: 'Communion', cap: 'The Lord’s table' },
+    { cat: 'Missions', label: 'Relief', cap: 'Caring for the vulnerable' },
+    { cat: 'Media', label: 'Behind the camera', cap: 'Telling the story' },
+    { cat: 'Community', label: 'Welcome', cap: 'Every language, every guest' }
+  ];
+
+  var grid = document.getElementById('grid');
+  var filterWrap = document.getElementById('filters');
+  var lightbox = document.getElementById('lightbox');
+  var lightboxCard = document.getElementById('lightbox-card');
+  var lbCat = document.getElementById('lb-cat');
+  var lbLabel = document.getElementById('lb-label');
+  var lbCap = document.getElementById('lb-cap');
+
+  function renderGrid(filter) {
+    grid.textContent = '';
+    ITEMS.filter(function (i) { return filter === 'All' || i.cat === filter; }).forEach(function (item) {
+      var btn = document.createElement('button');
+      btn.className = 'gitem';
+      btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;transition:transform .25s ease,box-shadow .25s ease;font-family:inherit';
+
+      var frame = document.createElement('div');
+      frame.style.cssText = 'position:relative;border-radius:var(--r,14px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 1px 2px rgba(33,26,18,.05)';
+
+      var ph = document.createElement('div');
+      ph.style.cssText = 'aspect-ratio:4/5;background:repeating-linear-gradient(135deg,#EDE4D3 0 13px,#F3ECDE 13px 26px);transform:scale(var(--z,1));transition:transform .45s ease';
+
+      var badge = document.createElement('span');
+      badge.textContent = item.cat;
+      badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
+
+      var mark = document.createElement('span');
+      mark.textContent = '[ photo ]';
+      mark.style.cssText = 'position:absolute;inset:0;display:grid;place-items:center;font:500 11px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em;pointer-events:none';
+
+      frame.appendChild(ph); frame.appendChild(badge); frame.appendChild(mark);
+
+      var meta = document.createElement('div');
+      meta.style.cssText = 'padding:11px 3px 0';
+      var title = document.createElement('div');
+      title.textContent = item.label;
+      title.style.cssText = "font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;line-height:1.15;color:#211A12";
+      var cap = document.createElement('div');
+      cap.textContent = item.cap;
+      cap.style.cssText = "font:500 13px/1.4 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:2px";
+      meta.appendChild(title); meta.appendChild(cap);
+
+      btn.appendChild(frame); btn.appendChild(meta);
+      btn.addEventListener('click', function () { openLightbox(item); });
+      grid.appendChild(btn);
+    });
+  }
+
+  filterWrap.addEventListener('click', function (e) {
+    var b = e.target.closest('[data-filter]');
+    if (!b) return;
+    filterWrap.querySelectorAll('.filter-btn').forEach(function (x) { x.classList.toggle('active', x === b); });
+    renderGrid(b.dataset.filter);
+  });
+
+  function openLightbox(item) {
+    lbCat.textContent = item.cat;
+    lbLabel.textContent = item.label;
+    lbCap.textContent = item.cap;
+    lightbox.hidden = false;
+  }
+  function closeLightbox() { lightbox.hidden = true; }
+
+  lightbox.addEventListener('click', closeLightbox);
+  lightboxCard.addEventListener('click', function (e) { e.stopPropagation(); });
+  document.getElementById('lb-close').addEventListener('click', closeLightbox);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
+
+  renderGrid('All');
+})();
+</script>
+</body>
+</html>
