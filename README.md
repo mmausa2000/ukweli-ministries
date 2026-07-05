@@ -22,6 +22,6 @@ python3 -m http.server 8000
 
 ## Notes
 
-- Photo/map/thumbnail slots are intentional placeholders from the design — swap in real photos when ready.
+- The map (Google Maps embed) and the Watch-section video cards (real broadcasts + downloaded YouTube thumbnails in `assets/`) are filled in. Still placeholders awaiting real photos: hero image, leadership portraits, app screenshots, and the gallery tiles.
 - The newsletter form validates and remembers signup in `localStorage`; connect it to a real mailing-list backend when available.
 - “Give Once” / “Partner Monthly” buttons currently anchor to the Give section — point them at a giving provider when one is chosen.
