@@ -14,7 +14,7 @@ use std::{
 use tokio::sync::Mutex;
 use tower_http::services::ServeDir;
 
-const CATEGORIES: [&str; 6] = ["Worship", "Community", "Missions", "Media", "Tech", "Peace"];
+const CATEGORIES: [&str; 8] = ["Worship", "Community", "Missions", "Media", "Tech", "Peace", "Modesty", "Health"];
 const MAX_LABEL: usize = 80;
 const MAX_CAP: usize = 140;
 
