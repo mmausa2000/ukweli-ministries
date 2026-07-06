@@ -14,7 +14,7 @@ use std::{
 use tokio::sync::Mutex;
 use tower_http::services::ServeDir;
 
-const CATEGORIES: [&str; 4] = ["Worship", "Community", "Missions", "Media"];
+const CATEGORIES: [&str; 6] = ["Worship", "Community", "Missions", "Media", "Tech", "Peace"];
 const MAX_LABEL: usize = 80;
 const MAX_CAP: usize = 140;
 
@@ -160,7 +160,7 @@ async fn upload(
     }
     if !CATEGORIES.contains(&cat.as_str()) {
         cleanup(&tmp_path);
-        return Err(bad("category must be Worship, Community, Missions, or Media"));
+        return Err(bad("invalid category"));
     }
     let label = label.trim().to_string();
     let cap = cap.trim().to_string();
