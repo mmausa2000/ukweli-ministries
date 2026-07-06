@@ -40,6 +40,61 @@ a{color:inherit}
 .pill-dark:hover{border-color:var(--wheat,#C0913C);color:var(--wheat,#C0913C)}
 .email-input:focus{border-color:var(--clay,#B0542F)}
 [hidden]{display:none!important}
+
+/* Touch devices: no hover-lift transforms (they cause jumpy taps) */
+@media (hover:none){
+.btn-clay:hover,.btn-clay-flat:hover,.btn-ink.lift:hover,.card:hover,.card-app:hover,.thumb:hover{transform:none!important}
+.card:hover,.card-app:hover{box-shadow:none!important}
+}
+
+/* ---------- Responsive (tablet & mobile) ---------- */
+.nav-burger{display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:44px;height:42px;padding:0;background:transparent;border:1px solid rgba(33,26,18,.18);border-radius:12px;cursor:pointer}
+.nav-burger span{width:18px;height:2px;background:#211A12;border-radius:2px;transition:transform .22s,opacity .18s}
+.nav-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Tablet: tighten the nav so it keeps to one row */
+@media (max-width:1120px){
+.header-nav{gap:16px!important}
+.nav-links{gap:16px!important}
+}
+
+/* Below 920px: collapse nav into the hamburger menu */
+@media (max-width:920px){
+html{scroll-padding-top:78px}
+.header-nav{padding:12px 20px!important}
+.nav-burger{display:inline-flex}
+.nav-links{display:none!important;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch!important;gap:0!important;padding:6px 20px 14px;background:#F7F2EA;border-bottom:1px solid rgba(33,26,18,.12);box-shadow:0 24px 40px -26px rgba(33,26,18,.45)}
+.nav-links.open{display:flex!important}
+.nav-links a{font-size:16px!important;padding:14px 4px;border-bottom:1px solid rgba(33,26,18,.07)}
+.nav-links a:last-child{border-bottom:none}
+main section,footer{padding-left:20px!important;padding-right:20px!important}
+section[style*="padding:104px"],section[style*="padding:100px"],section[style*="padding:96px"],section[style*="padding:88px"]{padding-top:72px!important;padding-bottom:72px!important}
+section[style*="padding:74px"]{padding-top:44px!important}
+section[style*="padding:66px"]{padding-top:40px!important}
+footer{padding-top:54px!important}
+div[style*="padding:9px 32px"]{padding-left:16px!important;padding-right:16px!important}
+}
+
+/* Phones */
+@media (max-width:600px){
+div[style*="padding:9px 32px"]>span>span{display:none}
+main section,footer{padding-left:18px!important;padding-right:18px!important}
+section[style*="padding:104px"],section[style*="padding:100px"],section[style*="padding:96px"],section[style*="padding:88px"]{padding-top:58px!important;padding-bottom:58px!important}
+section[style*="padding:76px"]{padding-top:52px!important;padding-bottom:52px!important}
+section[style*="padding:64px"]{padding-top:48px!important;padding-bottom:48px!important}
+div[style*="minmax(320px"]{grid-template-columns:1fr!important}
+#grid{grid-template-columns:repeat(2,1fr)!important;gap:12px!important}
+.stats-grid{grid-template-columns:repeat(2,1fr)!important;gap:30px 14px!important}
+.reach-grid{grid-template-columns:repeat(2,1fr)!important}
+.hero-float{left:10px!important;bottom:12px!important}
+}
+
+/* Small phones: full-width CTAs */
+@media (max-width:480px){
+main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:center;text-align:center}
+}
 </style>
 </head>
 <body>
@@ -55,12 +110,12 @@ a{color:inherit}
 </div>
 
 <header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease,transform .28s ease">
-<nav style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<nav class="header-nav" style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
 <a href="#top" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
 <span style="font:600 25px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
 <span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:4px">Ministries</span>
 </a>
-<div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:flex-end">
+<div class="nav-links" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:flex-end;flex:1 1 auto">
 <a href="#mission" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">About</a>
 <a href="#worship" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Worship</a>
 <a href="#watch" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Watch</a>
@@ -68,7 +123,10 @@ a{color:inherit}
 <a href="missions.html" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Missions</a>
 <a href="gallery.html" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Gallery</a>
 <a href="#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
+</div>
+<div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
 <a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
+<button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
 </nav>
 </header>
@@ -94,10 +152,15 @@ a{color:inherit}
 <span style="position:absolute;width:9px;height:15px;border-radius:50%;background:var(--wheat,#C0913C);opacity:.55;transform:rotate(26deg);top:-16px;right:56px"></span>
 <span style="position:absolute;width:7px;height:12px;border-radius:50%;background:var(--clay,#B0542F);opacity:.4;transform:rotate(-18deg);top:8px;right:22px"></span>
 <span style="position:absolute;width:8px;height:13px;border-radius:50%;background:var(--wheat,#C0913C);opacity:.45;transform:rotate(40deg);top:-4px;right:98px"></span>
-<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 34px 66px -34px rgba(33,26,18,.42)">
-<img src="assets/hero-gathering.jpg" alt="The Ukweli church family gathered after worship" style="width:100%;height:100%;object-fit:cover">
+<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 34px 66px -34px rgba(33,26,18,.42);background:#EDE4D3;position:relative">
+<div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:56% 1fr 1fr;gap:5px">
+<img src="assets/hero-gathering.jpg" alt="The Ukweli church family gathered after worship" style="grid-column:1/4;grid-row:1;width:100%;height:100%;object-fit:cover;min-height:0">
+<img src="assets/montage-baptism.jpg" alt="Baptism at the lake — new life in Christ" style="grid-column:1;grid-row:2/4;width:100%;height:100%;object-fit:cover;min-height:0">
+<img src="assets/montage-pulpit.jpg" alt="Preaching the Word at the pulpit" style="grid-column:2/4;grid-row:2;width:100%;height:100%;object-fit:cover;object-position:50% 38%;min-height:0">
+<img src="assets/montage-praise.jpg" alt="Hands raised in praise at an open-air gathering" style="grid-column:2/4;grid-row:3;width:100%;height:100%;object-fit:cover;object-position:50% 30%;min-height:0">
 </div>
-<div style="position:absolute;left:-16px;bottom:30px;background:#FBF8F2;border:1px solid #EEE5D5;border-radius:var(--r,14px);padding:13px 17px;box-shadow:0 20px 44px -18px rgba(33,26,18,.4);display:flex;align-items:center;gap:13px">
+</div>
+<div class="hero-float" style="position:absolute;left:-16px;bottom:30px;background:#FBF8F2;border:1px solid #EEE5D5;border-radius:var(--r,14px);padding:13px 17px;box-shadow:0 20px 44px -18px rgba(33,26,18,.4);display:flex;align-items:center;gap:13px">
 <div style="width:42px;height:42px;border-radius:11px;background:var(--clay,#B0542F);display:grid;place-items:center;flex-shrink:0"><div style="width:0;height:0;border-style:solid;border-width:7px 0 7px 12px;border-color:transparent transparent transparent #FBF8F2;margin-left:3px"></div></div>
 <div><div style="font:600 15px/1.1 'Hanken Grotesk',sans-serif;color:#211A12">Live on YouTube</div><div style="font:500 12.5px/1.2 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:2px">40,000+ subscribers</div></div>
 </div>
@@ -275,7 +338,7 @@ a{color:inherit}
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(34px,4.4vw,54px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 auto 42px;max-width:640px">One church for the world. Home in Iowa City.</h2>
 <div style="max-width:820px;margin:0 auto">
 <div style="font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#8A7C68;margin-bottom:16px">Where we gather &amp; serve</div>
-<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:36px">
+<div class="reach-grid" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:36px">
 <div style="padding:22px 20px;background:#F7F2EA;border:1px solid #EAE1D1;border-radius:var(--r,14px)"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:#211A12">Iowa City</div><div style="font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:6px">Home</div></div>
 <div style="padding:22px 20px;background:#F7F2EA;border:1px solid #EAE1D1;border-radius:var(--r,14px)"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:#211A12">Kenya</div><div style="font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#8A7C68;margin-top:6px">Missions</div></div>
 <div style="padding:22px 20px;background:#F7F2EA;border:1px solid #EAE1D1;border-radius:var(--r,14px)"><div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:#211A12">Tanzania</div><div style="font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#8A7C68;margin-top:6px">Missions</div></div>
@@ -293,7 +356,7 @@ a{color:inherit}
 
 <!-- STATS -->
 <section style="padding:76px 32px;background:#221A12;color:#EDE3D2">
-<div style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:32px 24px;text-align:center">
+<div class="stats-grid" style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:32px 24px;text-align:center">
 <div><div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,5.5vw,62px);line-height:1;color:var(--wheat,#C0913C)">40K+</div><div style="font:600 12.5px/1.4 'Hanken Grotesk',sans-serif;letter-spacing:.06em;color:#C4B79F;margin-top:10px">YouTube subscribers</div></div>
 <div><div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,5.5vw,62px);line-height:1;color:var(--wheat,#C0913C)">2020</div><div style="font:600 12.5px/1.4 'Hanken Grotesk',sans-serif;letter-spacing:.06em;color:#C4B79F;margin-top:10px">Weekly services since</div></div>
 <div><div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,5.5vw,62px);line-height:1;color:var(--wheat,#C0913C)">2</div><div style="font:600 12.5px/1.4 'Hanken Grotesk',sans-serif;letter-spacing:.06em;color:#C4B79F;margin-top:10px">Apps for the church</div></div>
@@ -319,12 +382,14 @@ a{color:inherit}
 </div>
 <div style="display:flex;flex-direction:column;gap:16px">
 <div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/barnaba-kabwe.jpg" alt="Barnaba Kabwe" style="width:100%;height:100%;object-fit:cover"></div>
-<div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Barnaba Kabwe</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Treasurer · Youth Representative</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">Leads our youth ministry, mentoring young men to overcome alcohol, drugs, and the other desires of youth.</p></div>
+<div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Barnaba Kabwe</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Youth Representative</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">Leads our youth ministry, mentoring young men to overcome alcohol, drugs, and the other desires of youth. He also runs our open-air outreach in the streets and downtown.</p></div>
 </div>
+<!-- Amosi Kaswahili: hidden until we have his professional portrait (re-enable by removing this comment wrapper)
 <div style="display:flex;flex-direction:column;gap:16px">
 <div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF;background:repeating-linear-gradient(135deg,#EDE4D3 0 13px,#F3ECDE 13px 26px);display:grid;place-items:center"><span style="font:500 11px/1.5 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em;text-align:center">[ portrait ]<br>4:5</span></div>
 <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Amosi Kaswahili</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Tanzania Overseer</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">Oversees the churches and street outreach we serve alongside across Tanzania. A professional suit and garment maker, he also leads our modesty ministry, dressing the church in the modesty we preach.</p></div>
 </div>
+-->
 <div style="display:flex;flex-direction:column;gap:16px">
 <div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/ishmael-ndayishimiye.jpg" alt="Ishmael Ndayishimiye" style="width:100%;height:100%;object-fit:cover"></div>
 <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Ishmael Ndayishimiye</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Director · Main Pastor, Iowa City</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">An elder since 2022, ordained as the main pastor of the Ukweli Church of Christ in Iowa City in 2026. A preacher of the Word with a big heart for the homeless. Much of his week is spent getting food, clothing, and dignity to people on the street.</p></div>
@@ -343,7 +408,7 @@ a{color:inherit}
 <a href="#give" class="btn-clay glow-give" style="display:inline-flex;align-items:center;gap:9px;padding:16px 30px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s,box-shadow .18s">Give Once</a>
 <a href="#give" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:16px 28px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.24);transition:all .18s">Partner Monthly</a>
 </div>
-<p style="font-size:13px;line-height:1.6;color:#8A7C68;margin:26px auto 0;max-width:520px">Ukweli Ministries is an Iowa nonprofit. 501(c)(3) status is pending; gifts will be tax-deductible upon approval. EIN 42-3528698.</p>
+<p style="font-size:13px;line-height:1.6;color:#8A7C68;margin:26px auto 0;max-width:520px">Ukweli Ministries is an Iowa nonprofit and a 501(c)(3) church. Gifts are tax-deductible. EIN 42-3528698.</p>
 </div>
 </section>
 
@@ -414,7 +479,7 @@ a{color:inherit}
 </div>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding-top:26px;font:500 12.5px/1.6 'Hanken Grotesk',sans-serif;color:#7E7460">
-<span>© 2026 Ukweli Ministries · Iowa nonprofit · 501(c)(3) status pending · EIN 42-3528698</span>
+<span>© 2026 Ukweli Ministries · Iowa nonprofit · a 501(c)(3) church · EIN 42-3528698</span>
 <span>Iowa City, Iowa</span>
 </div>
 </div>
@@ -429,15 +494,34 @@ a{color:inherit}
   var nav = document.getElementById('top');
   var raf = null;
   var lastY = window.scrollY || 0;
+
+  // Mobile hamburger menu
+  var burger = document.querySelector('.nav-burger');
+  var navLinks = document.querySelector('.nav-links');
+  if (burger && navLinks) {
+    burger.addEventListener('click', function () {
+      var open = navLinks.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navLinks.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        navLinks.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   function styleNav() {
-    var y = window.scrollY || 0;
+    var y = Math.max(0, window.scrollY || 0);
     var s = y > 20;
     nav.style.boxShadow = s ? '0 6px 24px -14px rgba(33,26,18,0.4)' : 'none';
     nav.style.background = s ? 'rgba(247,242,234,0.92)' : 'rgba(247,242,234,0.82)';
-    // hide while scrolling down, reappear on any scroll up
-    if (y > 140 && y > lastY) {
+    // ignore small jitters (touch scrolling, rubber-banding) so the header doesn't twitch
+    if (Math.abs(y - lastY) < 16) return;
+    // hide only when clearly scrolling down, deep in the page; show on real scroll-up or near top
+    if (y > 260 && y > lastY && !(navLinks && navLinks.classList.contains('open'))) {
       nav.style.transform = 'translateY(-100%)';
-    } else {
+    } else if (y < lastY || y < 120) {
       nav.style.transform = 'translateY(0)';
     }
     lastY = y;

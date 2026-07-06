@@ -35,9 +35,61 @@ a{color:inherit}
 .gitem:hover{transform:translateY(-3px);--z:1.06}
 [hidden]{display:none!important}
 
+/* Touch devices: no hover-lift transforms (they cause jumpy taps) */
+@media (hover:none){
+.btn-clay:hover,.btn-ink.lift:hover,.gitem:hover{transform:none!important}
+.gitem:hover{--z:1}
+}
+
 /* Filter pills */
 .filter-btn{padding:10px 18px;border:1px solid rgba(33,26,18,.16);background:transparent;color:#3F382E;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border-radius:999px;cursor:pointer;transition:all .18s}
 .filter-btn.active{background:var(--clay,#B0542F);color:#FBF8F2;border-color:var(--clay,#B0542F)}
+
+/* ---------- Responsive (tablet & mobile) ---------- */
+.nav-burger{display:none;flex-direction:column;align-items:center;justify-content:center;gap:5px;width:44px;height:42px;padding:0;background:transparent;border:1px solid rgba(33,26,18,.18);border-radius:12px;cursor:pointer}
+.nav-burger span{width:18px;height:2px;background:#211A12;border-radius:2px;transition:transform .22s,opacity .18s}
+.nav-burger[aria-expanded="true"] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.nav-burger[aria-expanded="true"] span:nth-child(2){opacity:0}
+.nav-burger[aria-expanded="true"] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+
+/* Tablet: tighten the nav so it keeps to one row */
+@media (max-width:1120px){
+.header-nav{gap:16px!important}
+.nav-links{gap:16px!important}
+}
+
+/* Below 920px: collapse nav into the hamburger menu */
+@media (max-width:920px){
+html{scroll-padding-top:78px}
+.header-nav{padding:12px 20px!important}
+.nav-burger{display:inline-flex}
+.nav-links{display:none!important;position:absolute;top:100%;left:0;right:0;flex-direction:column;align-items:stretch!important;gap:0!important;padding:6px 20px 14px;background:#F7F2EA;border-bottom:1px solid rgba(33,26,18,.12);box-shadow:0 24px 40px -26px rgba(33,26,18,.45)}
+.nav-links.open{display:flex!important}
+.nav-links a{font-size:16px!important;padding:14px 4px;border-bottom:1px solid rgba(33,26,18,.07)}
+.nav-links a:last-child{border-bottom:none}
+main section,footer{padding-left:20px!important;padding-right:20px!important}
+section[style*="padding:104px"],section[style*="padding:100px"],section[style*="padding:96px"],section[style*="padding:88px"]{padding-top:72px!important;padding-bottom:72px!important}
+section[style*="padding:74px"]{padding-top:44px!important}
+section[style*="padding:66px"]{padding-top:40px!important}
+footer{padding-top:54px!important}
+div[style*="padding:9px 32px"]{padding-left:16px!important;padding-right:16px!important}
+}
+
+/* Phones */
+@media (max-width:600px){
+div[style*="padding:9px 32px"]>span>span{display:none}
+main section,footer{padding-left:18px!important;padding-right:18px!important}
+section[style*="padding:104px"],section[style*="padding:100px"],section[style*="padding:96px"],section[style*="padding:88px"]{padding-top:58px!important;padding-bottom:58px!important}
+section[style*="padding:76px"]{padding-top:52px!important;padding-bottom:52px!important}
+section[style*="padding:64px"]{padding-top:48px!important;padding-bottom:48px!important}
+div[style*="minmax(320px"]{grid-template-columns:1fr!important}
+#grid{grid-template-columns:repeat(2,1fr)!important;gap:12px!important}
+}
+
+/* Small phones: full-width CTAs */
+@media (max-width:480px){
+main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:center}
+}
 </style>
 </head>
 <body>
@@ -53,12 +105,12 @@ a{color:inherit}
 </div>
 
 <header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease,transform .28s ease">
-<nav style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
+<nav class="header-nav" style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
 <a href="index.html" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
 <span style="font:600 25px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
 <span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:4px">Ministries</span>
 </a>
-<div style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:flex-end">
+<div class="nav-links" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:flex-end;flex:1 1 auto">
 <a href="index.html#mission" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">About</a>
 <a href="index.html#worship" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Worship</a>
 <a href="index.html#watch" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Watch</a>
@@ -66,7 +118,10 @@ a{color:inherit}
 <a href="missions.html" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Missions</a>
 <a href="gallery.html" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:var(--clay,#B0542F);text-decoration:none">Gallery</a>
 <a href="index.html#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
+</div>
+<div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
 <a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
+<button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
 </nav>
 </header>
@@ -146,7 +201,7 @@ a{color:inherit}
 </div>
 </div>
 <div style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding-top:26px;font:500 12.5px/1.6 'Hanken Grotesk',sans-serif;color:#7E7460">
-<span>© 2026 Ukweli Ministries · Iowa nonprofit · 501(c)(3) status pending · EIN 42-3528698</span>
+<span>© 2026 Ukweli Ministries · Iowa nonprofit · a 501(c)(3) church · EIN 42-3528698</span>
 <span>Iowa City, Iowa</span>
 </div>
 </div>
@@ -173,13 +228,32 @@ a{color:inherit}
   var nav = document.getElementById('top');
   var raf = null;
   var lastY = window.scrollY || 0;
+
+  // Mobile hamburger menu
+  var burger = document.querySelector('.nav-burger');
+  var navLinks = document.querySelector('.nav-links');
+  if (burger && navLinks) {
+    burger.addEventListener('click', function () {
+      var open = navLinks.classList.toggle('open');
+      burger.setAttribute('aria-expanded', open ? 'true' : 'false');
+    });
+    navLinks.addEventListener('click', function (e) {
+      if (e.target.closest('a')) {
+        navLinks.classList.remove('open');
+        burger.setAttribute('aria-expanded', 'false');
+      }
+    });
+  }
+
   function styleNav() {
-    var y = window.scrollY || 0;
+    var y = Math.max(0, window.scrollY || 0);
     var s = y > 20;
     nav.style.boxShadow = s ? '0 6px 24px -14px rgba(33,26,18,0.4)' : 'none';
     nav.style.background = s ? 'rgba(247,242,234,0.92)' : 'rgba(247,242,234,0.82)';
-    // hide while scrolling down, reappear on any scroll up
-    if (y > 140 && y > lastY) {
+    // ignore sub-8px jitters (touch scrolling, rubber-banding) so the header doesn't twitch
+    if (Math.abs(y - lastY) < 8) return;
+    // hide while scrolling down, reappear on scroll up (never while the menu is open)
+    if (y > 140 && y > lastY && !(navLinks && navLinks.classList.contains('open'))) {
       nav.style.transform = 'translateY(-100%)';
     } else {
       nav.style.transform = 'translateY(0)';
@@ -195,13 +269,6 @@ a{color:inherit}
   // Gallery data — placeholder slots, ready for real photos
   var ITEMS = [
     { cat: 'Worship', label: 'In prayer', cap: 'A moment of prayer', img: 'assets/mali-prayer.jpg' },
-    { cat: 'Worship', label: 'IBADA Sunday', cap: 'Gathered for worship' },
-    { cat: 'Worship', label: 'Praise & song', cap: 'Voices lifted in Swahili' },
-    { cat: 'Community', label: 'Fellowship meal', cap: 'A shared table after service' },
-    { cat: 'Missions', label: 'Kenya', cap: 'With our partners in Nairobi' },
-    { cat: 'Media', label: 'Live broadcast', cap: 'IBADA, streamed to the world' },
-    { cat: 'Worship', label: 'The Word', cap: 'Teaching from Scripture' },
-    { cat: 'Community', label: 'The children', cap: 'The next generation' },
     { cat: 'Missions', label: 'Tanzania', cap: 'One family across the water', img: 'assets/tz-outreach-1.jpg' },
     { cat: 'Missions', label: 'Street preaching', cap: 'Open-air outreach in Tanzania', img: 'assets/tz-outreach-2.jpg' },
     { cat: 'Missions', label: 'Taking the Word out', cap: 'Street ministry in Tanzania', img: 'assets/tz-outreach-3.jpg' },
@@ -218,14 +285,7 @@ a{color:inherit}
     { cat: 'Missions', label: 'City outreach', cap: 'Carrying the sound into the city', img: 'assets/tz-outreach-14.jpg' },
     { cat: 'Missions', label: 'In the villages', cap: 'Preaching in the highlands', img: 'assets/tz-outreach-15.jpg' },
     { cat: 'Missions', label: 'Roadside witness', cap: 'Street preaching in Tanzania', img: 'assets/tz-outreach-16.jpg' },
-    { cat: 'Missions', label: 'To the hills', cap: 'The Word in the countryside', img: 'assets/tz-outreach-17.jpg' },
-    { cat: 'Missions', label: 'DR Congo', cap: 'With the church in the DRC' },
-    { cat: 'Media', label: 'In the studio', cap: 'Music & production' },
-    { cat: 'Community', label: 'Baptism', cap: 'A new life in Christ' },
-    { cat: 'Worship', label: 'Communion', cap: 'The Lord’s table' },
-    { cat: 'Missions', label: 'Relief', cap: 'Caring for the vulnerable' },
-    { cat: 'Media', label: 'Behind the camera', cap: 'Telling the story' },
-    { cat: 'Community', label: 'Welcome', cap: 'Every language, every guest' }
+    { cat: 'Missions', label: 'To the hills', cap: 'The Word in the countryside', img: 'assets/tz-outreach-17.jpg' }
   ];
 
   var grid = document.getElementById('grid');

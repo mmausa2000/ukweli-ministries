@@ -37,13 +37,18 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 .tile button{margin:0 12px 12px;padding:8px 13px;background:transparent;border:1px solid rgba(138,58,46,.4);color:#8A3A2E;border-radius:10px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer}
 .tile button:hover{background:#8A3A2E;color:#FBF8F2}
 .note{font:500 13.5px/1.6 'Hanken Grotesk',sans-serif;color:#8A7C68}
+@media (max-width:600px){
+.wrap{padding:36px 18px 72px}
+.card{padding:20px 16px}
+.btn{width:100%;justify-content:center}
+}
 </style>
 </head>
 <body>
 <div class="wrap">
 <div class="kicker">Ukweli Ministries · Admin</div>
 <h1>Manage the gallery</h1>
-<p class="note">Uploads go live on the <a href="gallery.html">Gallery</a> page immediately. This page needs the Rust server running and the admin token (printed by the server at startup, or set via <code>UKWELI_ADMIN_TOKEN</code>).</p>
+<p class="note">Uploads go live on the <a href="gallery.html">Gallery</a> page immediately. You need the admin token to upload or delete.</p>
 
 <div class="card" style="margin-top:28px">
 <form id="up-form">
@@ -134,7 +139,7 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
           list.appendChild(tile);
         });
       })
-      .catch(function () { listNote.textContent = 'Could not reach the server — is the Rust backend running?'; });
+      .catch(function () { listNote.textContent = 'Could not load the gallery list.'; });
   }
 
   document.getElementById('up-form').addEventListener('submit', function (e) {
@@ -148,18 +153,40 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
     if (!label) return show('err', 'Give the photo a title.');
     try { sessionStorage.setItem('ukweli_admin_token', token); } catch (e2) {}
 
-    var fd = new FormData();
-    fd.append('token', token);
-    fd.append('cat', document.getElementById('cat').value);
-    fd.append('label', label);
-    fd.append('cap', document.getElementById('cap').value.trim());
-    fd.append('photo', file);
+    var cat = document.getElementById('cat').value;
+    var cap = document.getElementById('cap').value.trim();
 
     btn.disabled = true;
-    fetch('/api/upload', { method: 'POST', body: fd })
+    // 1) get a signed upload URL, 2) send the file straight to storage, 3) save the record
+    fetch('/api/upload-url', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ token: token, filename: file.name })
+    })
       .then(function (r) {
         if (r.status === 401) throw new Error('Invalid admin token.');
-        if (!r.ok) return r.text().then(function (t) { throw new Error(t || ('Upload failed (' + r.status + ')')); });
+        if (!r.ok) throw new Error('Could not start upload (' + r.status + ')');
+        return r.json();
+      })
+      .then(function (u) {
+        return fetch(u.uploadUrl, {
+          method: 'PUT',
+          headers: { 'Content-Type': file.type || 'application/octet-stream' },
+          body: file
+        }).then(function (r) {
+          if (!r.ok) throw new Error('File upload failed (' + r.status + ')');
+          return u.path;
+        });
+      })
+      .then(function (path) {
+        return fetch('/api/save', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token: token, cat: cat, label: label, cap: cap, path: path })
+        });
+      })
+      .then(function (r) {
+        if (!r.ok) return r.text().then(function (t) { throw new Error(t || ('Save failed (' + r.status + ')')); });
         return r.json();
       })
       .then(function (p) {
