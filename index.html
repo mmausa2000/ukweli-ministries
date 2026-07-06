@@ -54,7 +54,7 @@ a{color:inherit}
 </div>
 </div>
 
-<header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease">
+<header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease,transform .28s ease">
 <nav style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
 <a href="#top" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
 <span style="font:600 25px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
@@ -425,10 +425,19 @@ a{color:inherit}
   // Sticky nav: deepen shadow and background once the page scrolls
   var nav = document.getElementById('top');
   var raf = null;
+  var lastY = window.scrollY || 0;
   function styleNav() {
-    var s = (window.scrollY || 0) > 20;
+    var y = window.scrollY || 0;
+    var s = y > 20;
     nav.style.boxShadow = s ? '0 6px 24px -14px rgba(33,26,18,0.4)' : 'none';
     nav.style.background = s ? 'rgba(247,242,234,0.92)' : 'rgba(247,242,234,0.82)';
+    // hide while scrolling down, reappear on any scroll up
+    if (y > 140 && y > lastY) {
+      nav.style.transform = 'translateY(-100%)';
+    } else {
+      nav.style.transform = 'translateY(0)';
+    }
+    lastY = y;
   }
   window.addEventListener('scroll', function () {
     if (raf) return;
