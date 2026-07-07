@@ -145,6 +145,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <button data-filter="Missions" class="filter-btn">Missions</button>
 <button data-filter="Media" class="filter-btn">Media</button>
 </div>
+<div style="margin-top:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
+<button type="button" id="share-open" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14.5px/1 'Hanken Grotesk',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Share a photo</button>
+<span style="font:500 13.5px/1.5 'Hanken Grotesk',sans-serif;color:#8A7C68">Have a moment from the family? Add it, our team reviews every photo before it appears.</span>
+</div>
 </div>
 </section>
 
@@ -419,6 +423,105 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       renderGrid(currentFilter);
     })
     .catch(function () {});
+})();
+</script>
+<!-- SHARE A PHOTO MODAL -->
+<div id="upModal" hidden style="position:fixed;inset:0;z-index:120;background:rgba(20,15,9,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease">
+<form id="upForm" style="max-width:470px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);padding:26px 24px;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease" novalidate>
+<div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:#211A12;margin-bottom:4px">Share a photo</div>
+<p style="font:500 14px/1.55 'Hanken Grotesk',sans-serif;color:#8A7C68;margin:0 0 18px">Add a moment from the family. Our team reviews every photo before it appears on the gallery.</p>
+<label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Photo or video</label>
+<input id="upFile" type="file" accept="image/*,video/*" style="width:100%;font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044;margin-bottom:14px">
+<label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Title</label>
+<input id="upTitle" type="text" maxlength="80" placeholder="e.g. After Sunday worship" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;margin-bottom:14px">
+<label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Caption <span style="text-transform:none;font-weight:500">(optional)</span></label>
+<input id="upCap" type="text" maxlength="160" placeholder="A few words about the moment" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;margin-bottom:14px">
+<div style="display:flex;gap:12px;flex-wrap:wrap">
+<div style="flex:1;min-width:140px"><label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Section</label>
+<select id="upCat" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none"><option>Community</option><option>Worship</option><option>Missions</option><option>Media</option></select></div>
+<div style="flex:1;min-width:140px"><label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Your name <span style="text-transform:none;font-weight:500">(optional)</span></label>
+<input id="upName" type="text" maxlength="60" placeholder="Shown as credit" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none"></div>
+</div>
+<input id="upHp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+<div id="upMsg" hidden style="margin-top:15px;padding:12px 14px;border-radius:11px;font:500 14px/1.5 'Hanken Grotesk',sans-serif"></div>
+<div style="display:flex;gap:11px;margin-top:20px">
+<button type="submit" id="upSubmit" class="btn-clay" style="flex:1;padding:14px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;transition:filter .18s,transform .18s">Submit for review</button>
+<button type="button" id="upCancel" class="btn-ink" style="padding:14px 20px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk',sans-serif;border:1px solid rgba(33,26,18,.22);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Cancel</button>
+</div>
+</form>
+</div>
+
+<script>
+(function () {
+  var openBtn = document.getElementById('share-open');
+  var modal = document.getElementById('upModal');
+  var form = document.getElementById('upForm');
+  var fileEl = document.getElementById('upFile');
+  var titleEl = document.getElementById('upTitle');
+  var capEl = document.getElementById('upCap');
+  var catEl = document.getElementById('upCat');
+  var nameEl = document.getElementById('upName');
+  var hp = document.getElementById('upHp');
+  var msg = document.getElementById('upMsg');
+  var submit = document.getElementById('upSubmit');
+  var MAX = 60 * 1024 * 1024; // 60 MB
+
+  function show(kind, text) {
+    msg.hidden = false;
+    msg.style.background = kind === 'err' ? '#F5E4DE' : '#EAF0E2';
+    msg.style.border = '1px solid ' + (kind === 'err' ? '#E4C2B5' : '#C9D6B8');
+    msg.style.color = kind === 'err' ? '#8A3A2E' : '#3F5230';
+    msg.textContent = text;
+  }
+  function close() { modal.hidden = true; msg.hidden = true; }
+
+  openBtn.addEventListener('click', function () { modal.hidden = false; });
+  document.getElementById('upCancel').addEventListener('click', close);
+  modal.addEventListener('click', function (e) { if (e.target === modal) close(); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !modal.hidden) close(); });
+
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = fileEl.files[0];
+    if (!f) return show('err', 'Choose a photo or video to share.');
+    if (!/^(image|video)\//.test(f.type)) return show('err', 'Please choose an image or video file.');
+    if (f.size > MAX) return show('err', 'That file is too large. Please keep it under 60 MB.');
+    if (!titleEl.value.trim()) return show('err', 'Please add a short title.');
+
+    submit.disabled = true; show('ok', 'Uploading, one moment…');
+    fetch('/api/submit-url', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ filename: f.name })
+    })
+      .then(function (r) { return r.json(); })
+      .then(function (u) {
+        if (!u.uploadUrl) throw new Error(u.error || 'Could not start the upload.');
+        return fetch(u.uploadUrl, {
+          method: 'PUT', headers: { 'Content-Type': f.type || 'application/octet-stream' }, body: f
+        }).then(function (r) {
+          if (!r.ok) throw new Error('The file upload did not finish. Please try again.');
+          return u.path;
+        });
+      })
+      .then(function (path) {
+        return fetch('/api/submit', {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            cat: catEl.value, label: titleEl.value.trim(), cap: capEl.value.trim(),
+            submitter: nameEl.value.trim(), path: path, website: hp.value
+          })
+        });
+      })
+      .then(function (r) { return r.json(); })
+      .then(function (s) {
+        if (!s.ok) throw new Error(s.error || 'Could not submit. Please try again.');
+        show('ok', 'Thank you! Your photo was sent for review and will appear once our team approves it.');
+        form.reset();
+        setTimeout(close, 2800);
+      })
+      .catch(function (err) { show('err', err.message); })
+      .finally(function () { submit.disabled = false; });
+  });
 })();
 </script>
 </body>

@@ -40,6 +40,17 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 .note{font:500 13.5px/1.6 'Hanken Grotesk',sans-serif;color:#8A7C68}
 .gbtn{display:inline-flex;align-items:center;gap:12px;padding:14px 26px;background:#fff;border:1px solid #DDD3C1;border-radius:14px;font:600 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.08);transition:box-shadow .18s,transform .18s}
 .gbtn:hover{box-shadow:0 4px 14px -6px rgba(33,26,18,.25);transform:translateY(-1px)}
+/* Grouped-by-section UX */
+.sec{margin-top:30px;scroll-margin-top:18px}
+.sec-h{display:flex;align-items:center;gap:11px;padding:0 0 11px;margin:0 0 16px;border-bottom:2px solid var(--sc,#B0542F)}
+.sec-h .dot{width:11px;height:11px;border-radius:50%;background:var(--sc,#B0542F);flex:none}
+.sec-h h3{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:22px;line-height:1;color:#211A12;margin:0}
+.sec-h .n{margin-left:auto;font:700 13px/1 'Hanken Grotesk',sans-serif;color:var(--sc,#B0542F);background:color-mix(in srgb,var(--sc,#B0542F) 13%,#FBF8F2);padding:4px 11px;border-radius:999px;font-variant-numeric:tabular-nums}
+.secbar{display:flex;flex-wrap:wrap;gap:8px;margin:20px 0 6px}
+.secbar a{display:inline-flex;align-items:center;gap:7px;text-decoration:none;font:600 12.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:999px;padding:7px 13px;transition:border-color .15s,color .15s}
+.secbar a:hover{border-color:var(--sc,#B0542F);color:var(--sc,#B0542F)}
+.secbar a .dot{width:9px;height:9px;border-radius:50%;background:var(--sc,#B0542F);flex:none}
+.secbar a .n{color:#8A7C68;font-variant-numeric:tabular-nums}
 @media (max-width:600px){
 .wrap{padding:36px 18px 72px}
 .card{padding:20px 16px}
@@ -48,6 +59,19 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 </style>
 </head>
 <body>
+<header style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.9);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.09)">
+<nav style="max-width:900px;margin:0 auto;padding:13px 32px;display:flex;align-items:center;justify-content:space-between;gap:18px">
+<a href="index.html" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
+<span style="font:600 22px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
+<span style="font:600 9px/1 'Hanken Grotesk',sans-serif;letter-spacing:.34em;text-transform:uppercase;color:#B0542F;margin-top:4px">Ministries · Admin</span>
+</a>
+<div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:flex-end">
+<a href="index.html" style="padding:9px 15px;background:transparent;border:1px solid rgba(33,26,18,.2);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;text-decoration:none">← Home</a>
+<a href="gallery.html" style="padding:9px 15px;background:transparent;border:1px solid rgba(33,26,18,.2);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;text-decoration:none">Gallery</a>
+<a href="missions.html" style="padding:9px 15px;background:transparent;border:1px solid rgba(33,26,18,.2);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;text-decoration:none">Missions</a>
+</div>
+</nav>
+</header>
 <div class="wrap">
 <div class="kicker">Ukweli Ministries · Admin</div>
 <h1>Manage the gallery</h1>
@@ -100,11 +124,16 @@ Continue with Google</button>
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px">Site photos</h2>
 <p class="note">These are the photos on the <a href="index.html">home page</a> — the rotating hero montage, leadership portraits, and app screenshots. Replace any of them here. Reset returns the original photo.</p>
 <div id="slots-msg" class="msg" hidden></div>
-<div class="grid" id="slots"></div>
+<div id="slots"></div>
+
+<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px">Pending submissions</h2>
+<p class="note" id="pending-note">Loading…</p>
+<div id="pending-msg" class="msg" hidden></div>
+<div class="grid" id="pending"></div>
 
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px">Uploaded photos</h2>
 <p class="note" id="list-note">Loading…</p>
-<div class="grid" id="list"></div>
+<div id="list"></div>
 </div>
 
 <script>
@@ -155,8 +184,8 @@ Continue with Google</button>
       })
       .catch(function () {});
   }
-  sb.auth.getSession().then(function (d) { session = d.data.session; renderAuth(); checkAdmin(); });
-  sb.auth.onAuthStateChange(function (_e, s) { session = s; renderAuth(); checkAdmin(); });
+  sb.auth.getSession().then(function (d) { session = d.data.session; renderAuth(); checkAdmin(); refreshPending(); });
+  sb.auth.onAuthStateChange(function (_e, s) { session = s; renderAuth(); checkAdmin(); refreshPending(); });
 
   document.getElementById('google-btn').addEventListener('click', function () {
     sb.auth.signInWithOAuth({
@@ -185,46 +214,88 @@ Continue with Google</button>
     msg.hidden = false;
   }
 
+  // Section order + colors for the grouped view (warm palette, matches the site)
+  var SECTIONS = [
+    { key: 'Missions', color: '#B0542F' }, { key: 'Community', color: '#4C823F' },
+    { key: 'Worship', color: '#A9791F' }, { key: 'Media', color: '#566072' },
+    { key: 'Tech', color: '#2E6E8E' }, { key: 'Health', color: '#3E8E7E' },
+    { key: 'Peace', color: '#6A7BA0' }, { key: 'Modesty', color: '#9C6B4A' }
+  ];
+  var SEC_COLOR = {}; SECTIONS.forEach(function (s) { SEC_COLOR[s.key] = s.color; });
+
+  function buildPhotoTile(p) {
+    var tile = document.createElement('div');
+    tile.className = 'tile';
+    var img;
+    if (p.kind === 'video') {
+      img = document.createElement('video');
+      img.src = p.img + '#t=0.1';
+      img.muted = true; img.playsInline = true; img.preload = 'metadata'; img.controls = true;
+      img.style.cssText = 'width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#211A12';
+    } else {
+      img = document.createElement('img');
+      img.src = p.img; img.alt = p.label; img.loading = 'lazy';
+    }
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    var t = document.createElement('div'); t.className = 't'; t.textContent = p.label;
+    var c = document.createElement('div'); c.className = 'c'; c.textContent = p.cap || '—';
+    meta.appendChild(t); meta.appendChild(c);
+    var del = document.createElement('button');
+    del.textContent = 'Delete';
+    del.addEventListener('click', function () {
+      if (!confirm('Delete "' + p.label + '" from the gallery?')) return;
+      fetch('/api/delete', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ token: tokenEl.value.trim(), id: p.id })
+      }).then(function (r) {
+        if (r.status === 401) throw new Error(AUTH_ERR);
+        if (!r.ok) throw new Error('Delete failed (' + r.status + ').');
+        refresh();
+      }).catch(function (e2) { show('err', e2.message); });
+    });
+    tile.appendChild(img); tile.appendChild(meta); tile.appendChild(del);
+    return tile;
+  }
+
   function refresh() {
     fetch('/api/gallery')
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (photos) {
         list.textContent = '';
-        listNote.textContent = photos.length ? photos.length + ' item(s) uploaded from the site.' : 'Nothing uploaded yet.';
-        photos.forEach(function (p) {
-          var tile = document.createElement('div');
-          tile.className = 'tile';
-          var img;
-          if (p.kind === 'video') {
-            img = document.createElement('video');
-            img.src = p.img + '#t=0.1';
-            img.muted = true; img.playsInline = true; img.preload = 'metadata'; img.controls = true;
-            img.style.cssText = 'width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#211A12';
-          } else {
-            img = document.createElement('img');
-            img.src = p.img; img.alt = p.label; img.loading = 'lazy';
-          }
-          var meta = document.createElement('div');
-          meta.className = 'meta';
-          var t = document.createElement('div'); t.className = 't'; t.textContent = p.label;
-          var c = document.createElement('div'); c.className = 'c'; c.textContent = p.cat + ' · ' + p.cap;
-          meta.appendChild(t); meta.appendChild(c);
-          var del = document.createElement('button');
-          del.textContent = 'Delete';
-          del.addEventListener('click', function () {
-            if (!confirm('Delete "' + p.label + '" from the gallery?')) return;
-            fetch('/api/delete', {
-              method: 'POST',
-              headers: authHeaders(),
-              body: JSON.stringify({ token: tokenEl.value.trim(), id: p.id })
-            }).then(function (r) {
-              if (r.status === 401) throw new Error(AUTH_ERR);
-              if (!r.ok) throw new Error('Delete failed (' + r.status + ').');
-              refresh();
-            }).catch(function (e2) { show('err', e2.message); });
-          });
-          tile.appendChild(img); tile.appendChild(meta); tile.appendChild(del);
-          list.appendChild(tile);
+        if (!photos.length) { listNote.textContent = 'Nothing uploaded yet.'; return; }
+        listNote.textContent = photos.length + ' item(s) uploaded from the site, grouped by section.';
+
+        // group by category, newest-first within each group (API is already newest-first)
+        var groups = {};
+        photos.forEach(function (p) { (groups[p.cat] = groups[p.cat] || []).push(p); });
+        var order = SECTIONS.map(function (s) { return s.key; }).filter(function (k) { return groups[k]; });
+        Object.keys(groups).forEach(function (k) { if (order.indexOf(k) < 0) order.push(k); });
+
+        // jump bar
+        var bar = document.createElement('div');
+        bar.className = 'secbar';
+        order.forEach(function (k) {
+          var a = document.createElement('a');
+          a.href = '#sec-' + k;
+          a.style.setProperty('--sc', SEC_COLOR[k] || '#8A7C68');
+          a.innerHTML = '<span class="dot"></span>' + k + '<span class="n">' + groups[k].length + '</span>';
+          bar.appendChild(a);
+        });
+        list.appendChild(bar);
+
+        // one section per category
+        order.forEach(function (k) {
+          var col = SEC_COLOR[k] || '#8A7C68';
+          var sec = document.createElement('div');
+          sec.className = 'sec'; sec.id = 'sec-' + k; sec.style.setProperty('--sc', col);
+          var h = document.createElement('div'); h.className = 'sec-h';
+          h.innerHTML = '<span class="dot"></span><h3>' + k + '</h3><span class="n">' + groups[k].length + '</span>';
+          var grid = document.createElement('div'); grid.className = 'grid';
+          groups[k].forEach(function (p) { grid.appendChild(buildPhotoTile(p)); });
+          sec.appendChild(h); sec.appendChild(grid);
+          list.appendChild(sec);
         });
       })
       .catch(function () { listNote.textContent = 'Could not load the gallery list.'; });
@@ -334,86 +405,175 @@ Continue with Google</button>
     });
   }
 
+  // Home-page slots grouped into their three sections
+  var SLOT_GROUPS = [
+    { name: 'Hero montage', color: '#B0542F', match: function (k) { return k.indexOf('hero-') === 0; } },
+    { name: 'Leadership portraits', color: '#9C6B4A', match: function (k) { return k.indexOf('leader-') === 0; } },
+    { name: 'App screens', color: '#566072', match: function (k) { return k.indexOf('app-') === 0; } }
+  ];
+
+  function buildSlotTile(s, map) {
+    var url = map[s.key];
+    var tile = document.createElement('div');
+    tile.className = 'tile';
+    var img = document.createElement('img');
+    img.src = url || s.def;
+    img.alt = s.name; img.loading = 'lazy';
+    var meta = document.createElement('div');
+    meta.className = 'meta';
+    var t = document.createElement('div'); t.className = 't'; t.textContent = s.name;
+    var c = document.createElement('div'); c.className = 'c'; c.textContent = url ? 'Custom photo' : 'Original photo';
+    meta.appendChild(t); meta.appendChild(c);
+
+    var file = document.createElement('input');
+    file.type = 'file'; file.accept = 'image/jpeg,image/png,image/webp'; file.hidden = true;
+    var rep = document.createElement('button');
+    rep.textContent = 'Replace';
+    rep.addEventListener('click', function () { if (needToken()) file.click(); });
+    file.addEventListener('change', function () {
+      var f = file.files[0];
+      if (!f || !needToken()) return;
+      rep.disabled = true; rep.textContent = 'Uploading…';
+      slotsMsg.hidden = true;
+      fetch('/api/upload-url', {
+        method: 'POST',
+        headers: authHeaders(),
+        body: JSON.stringify({ token: tokenEl.value.trim(), filename: f.name })
+      })
+        .then(function (r) {
+          if (r.status === 401) throw new Error(AUTH_ERR);
+          if (!r.ok) throw new Error('Could not start upload (' + r.status + ')');
+          return r.json();
+        })
+        .then(function (u) {
+          return fetch(u.uploadUrl, {
+            method: 'PUT',
+            headers: { 'Content-Type': f.type || 'application/octet-stream' },
+            body: f
+          }).then(function (r) {
+            if (!r.ok) throw new Error('File upload failed (' + r.status + ')');
+            return u.path;
+          });
+        })
+        .then(function (path) { return setSlot(s.key, path); })
+        .then(function () {
+          showSlots('ok', '"' + s.name + '" updated — it is live on the home page.');
+          refreshSlots();
+        })
+        .catch(function (e2) { showSlots('err', e2.message); })
+        .finally(function () { rep.disabled = false; rep.textContent = 'Replace'; });
+    });
+
+    tile.appendChild(img); tile.appendChild(meta); tile.appendChild(rep);
+    if (url) {
+      var rst = document.createElement('button');
+      rst.textContent = 'Reset';
+      rst.addEventListener('click', function () {
+        if (!needToken()) return;
+        if (!confirm('Put back the original photo for "' + s.name + '"?')) return;
+        setSlot(s.key, null)
+          .then(function () { showSlots('ok', '"' + s.name + '" reset to the original photo.'); refreshSlots(); })
+          .catch(function (e2) { showSlots('err', e2.message); });
+      });
+      tile.appendChild(rst);
+    }
+    tile.appendChild(file);
+    return tile;
+  }
+
   function refreshSlots() {
     // cache-buster: the API response is CDN-cached for the public pages
     fetch('/api/site-images?t=' + Date.now())
       .then(function (r) { return r.ok ? r.json() : {}; })
       .then(function (map) {
         slotsEl.textContent = '';
-        SLOTS.forEach(function (s) {
-          var url = map[s.key];
-          var tile = document.createElement('div');
-          tile.className = 'tile';
-          var img = document.createElement('img');
-          img.src = url || s.def;
-          img.alt = s.name; img.loading = 'lazy';
-          var meta = document.createElement('div');
-          meta.className = 'meta';
-          var t = document.createElement('div'); t.className = 't'; t.textContent = s.name;
-          var c = document.createElement('div'); c.className = 'c'; c.textContent = url ? 'Custom photo' : 'Original photo';
-          meta.appendChild(t); meta.appendChild(c);
-
-          var file = document.createElement('input');
-          file.type = 'file'; file.accept = 'image/jpeg,image/png,image/webp'; file.hidden = true;
-          var rep = document.createElement('button');
-          rep.textContent = 'Replace';
-          rep.addEventListener('click', function () { if (needToken()) file.click(); });
-          file.addEventListener('change', function () {
-            var f = file.files[0];
-            if (!f || !needToken()) return;
-            rep.disabled = true; rep.textContent = 'Uploading…';
-            slotsMsg.hidden = true;
-            fetch('/api/upload-url', {
-              method: 'POST',
-              headers: authHeaders(),
-              body: JSON.stringify({ token: tokenEl.value.trim(), filename: f.name })
-            })
-              .then(function (r) {
-                if (r.status === 401) throw new Error(AUTH_ERR);
-                if (!r.ok) throw new Error('Could not start upload (' + r.status + ')');
-                return r.json();
-              })
-              .then(function (u) {
-                return fetch(u.uploadUrl, {
-                  method: 'PUT',
-                  headers: { 'Content-Type': f.type || 'application/octet-stream' },
-                  body: f
-                }).then(function (r) {
-                  if (!r.ok) throw new Error('File upload failed (' + r.status + ')');
-                  return u.path;
-                });
-              })
-              .then(function (path) { return setSlot(s.key, path); })
-              .then(function () {
-                showSlots('ok', '"' + s.name + '" updated — it is live on the home page.');
-                refreshSlots();
-              })
-              .catch(function (e2) { showSlots('err', e2.message); })
-              .finally(function () { rep.disabled = false; rep.textContent = 'Replace'; });
-          });
-
-          tile.appendChild(img); tile.appendChild(meta); tile.appendChild(rep);
-          if (url) {
-            var rst = document.createElement('button');
-            rst.textContent = 'Reset';
-            rst.addEventListener('click', function () {
-              if (!needToken()) return;
-              if (!confirm('Put back the original photo for "' + s.name + '"?')) return;
-              setSlot(s.key, null)
-                .then(function () { showSlots('ok', '"' + s.name + '" reset to the original photo.'); refreshSlots(); })
-                .catch(function (e2) { showSlots('err', e2.message); });
-            });
-            tile.appendChild(rst);
-          }
-          tile.appendChild(file);
-          slotsEl.appendChild(tile);
+        SLOT_GROUPS.forEach(function (g) {
+          var members = SLOTS.filter(function (s) { return g.match(s.key); });
+          if (!members.length) return;
+          var sec = document.createElement('div');
+          sec.className = 'sec'; sec.style.setProperty('--sc', g.color);
+          var h = document.createElement('div'); h.className = 'sec-h';
+          h.innerHTML = '<span class="dot"></span><h3>' + g.name + '</h3><span class="n">' + members.length + '</span>';
+          var grid = document.createElement('div'); grid.className = 'grid';
+          members.forEach(function (s) { grid.appendChild(buildSlotTile(s, map)); });
+          sec.appendChild(h); sec.appendChild(grid);
+          slotsEl.appendChild(sec);
         });
       })
       .catch(function () { showSlots('err', 'Could not load the site photos.'); });
   }
 
+  // ---- Pending visitor submissions (moderation) ----
+  var pendingNote = document.getElementById('pending-note');
+  var pendingWrap = document.getElementById('pending');
+  var pendingMsg = document.getElementById('pending-msg');
+  function pShow(kind, text) { pendingMsg.className = 'msg ' + kind; pendingMsg.textContent = text; pendingMsg.hidden = false; }
+
+  function refreshPending() {
+    var token = tokenEl.value.trim();
+    var headers = {};
+    if (session) headers.Authorization = 'Bearer ' + session.access_token;
+    var qs = token ? ('?token=' + encodeURIComponent(token)) : '';
+    fetch('/api/pending' + qs, { headers: headers })
+      .then(function (r) {
+        if (r.status === 401) { pendingNote.textContent = 'Sign in (or add the admin token) to review submissions.'; return null; }
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      .then(function (items) {
+        if (!items) return;
+        pendingWrap.textContent = '';
+        pendingNote.textContent = items.length ? (items.length + ' photo(s) waiting for review.') : 'No photos waiting for review.';
+        items.forEach(function (p) {
+          var tile = document.createElement('div'); tile.className = 'tile';
+          var media;
+          if (p.kind === 'video') {
+            media = document.createElement('video'); media.src = p.img + '#t=0.1';
+            media.muted = true; media.playsInline = true; media.controls = true;
+            media.style.cssText = 'width:100%;aspect-ratio:4/5;object-fit:cover;display:block;background:#211A12';
+          } else {
+            media = document.createElement('img'); media.src = p.img; media.alt = p.label; media.loading = 'lazy';
+          }
+          var meta = document.createElement('div'); meta.className = 'meta';
+          var t = document.createElement('div'); t.className = 't'; t.textContent = p.label;
+          var c = document.createElement('div'); c.className = 'c'; c.textContent = p.cat + ' · ' + (p.cap || '');
+          meta.appendChild(t); meta.appendChild(c);
+          var row = document.createElement('div'); row.style.cssText = 'display:flex;gap:8px;margin:0 12px 12px';
+          var ok = document.createElement('button'); ok.textContent = 'Approve';
+          ok.style.cssText = "flex:1;padding:9px 10px;background:#3F5230;border:none;color:#FBF8F2;border-radius:10px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer";
+          var no = document.createElement('button'); no.textContent = 'Reject';
+          no.style.cssText = "flex:1;padding:9px 10px;background:transparent;border:1px solid rgba(138,58,46,.4);color:#8A3A2E;border-radius:10px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer";
+          ok.addEventListener('click', function () { moderate(p, 'approve', ok, no); });
+          no.addEventListener('click', function () { if (confirm('Reject and delete "' + p.label + '"?')) moderate(p, 'reject', ok, no); });
+          row.appendChild(ok); row.appendChild(no);
+          tile.appendChild(media); tile.appendChild(meta); tile.appendChild(row);
+          pendingWrap.appendChild(tile);
+        });
+      })
+      .catch(function () { pendingNote.textContent = 'Could not load submissions.'; });
+  }
+
+  function moderate(p, action, ok, no) {
+    if (ok) ok.disabled = true;
+    if (no) no.disabled = true;
+    pendingMsg.hidden = true;
+    fetch('/api/moderate', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ token: tokenEl.value.trim(), id: p.id, action: action })
+    })
+      .then(function (r) {
+        if (r.status === 401) throw new Error(AUTH_ERR);
+        if (!r.ok) throw new Error('Action failed (' + r.status + ').');
+        pShow('ok', action === 'approve' ? ('"' + p.label + '" approved and now live in the gallery.') : ('"' + p.label + '" rejected.'));
+        refreshPending();
+        if (action === 'approve') refresh();
+      })
+      .catch(function (e) { pShow('err', e.message); if (ok) ok.disabled = false; if (no) no.disabled = false; });
+  }
+
   refresh();
   refreshSlots();
+  refreshPending();
 })();
 </script>
 </body>
