@@ -2,7 +2,7 @@
 export default async function handler(req, res) {
   try {
     const r = await fetch(
-      `${process.env.SUPABASE_URL}/rest/v1/gallery_items?select=*&order=created_at.desc`,
+      `${process.env.SUPABASE_URL}/rest/v1/gallery_items?select=*&cat=neq._site&order=created_at.desc`,
       {
         headers: {
           apikey: process.env.SUPABASE_ANON_KEY,

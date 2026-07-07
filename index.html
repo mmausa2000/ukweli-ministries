@@ -109,7 +109,7 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
 </div>
 </div>
 
-<header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease,transform .28s ease">
+<header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease">
 <nav class="header-nav" style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
 <a href="#top" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
 <span style="font:600 25px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
@@ -153,11 +153,20 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
 <span style="position:absolute;width:7px;height:12px;border-radius:50%;background:var(--clay,#B0542F);opacity:.4;transform:rotate(-18deg);top:8px;right:22px"></span>
 <span style="position:absolute;width:8px;height:13px;border-radius:50%;background:var(--wheat,#C0913C);opacity:.45;transform:rotate(40deg);top:-4px;right:98px"></span>
 <div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 34px 66px -34px rgba(33,26,18,.42);background:#EDE4D3;position:relative">
-<div style="position:absolute;inset:0;display:grid;grid-template-columns:1fr 1fr 1fr;grid-template-rows:56% 1fr 1fr;gap:5px">
-<img src="assets/hero-gathering.jpg" alt="The Ukweli church family gathered after worship" style="grid-column:1/4;grid-row:1;width:100%;height:100%;object-fit:cover;min-height:0">
-<img src="assets/montage-baptism.jpg" alt="Baptism at the lake — new life in Christ" style="grid-column:1;grid-row:2/4;width:100%;height:100%;object-fit:cover;min-height:0">
-<img src="assets/montage-pulpit.jpg" alt="Preaching the Word at the pulpit" style="grid-column:2/4;grid-row:2;width:100%;height:100%;object-fit:cover;object-position:50% 38%;min-height:0">
-<img src="assets/montage-praise.jpg" alt="Hands raised in praise at an open-air gathering" style="grid-column:2/4;grid-row:3;width:100%;height:100%;object-fit:cover;object-position:50% 30%;min-height:0">
+<style>
+.hero-rotator img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;animation:heroFade 20s infinite}
+.hero-rotator img:nth-child(1){animation-delay:0s}
+.hero-rotator img:nth-child(2){animation-delay:5s}
+.hero-rotator img:nth-child(3){animation-delay:10s}
+.hero-rotator img:nth-child(4){animation-delay:15s}
+@keyframes heroFade{0%{opacity:0}5%{opacity:1}25%{opacity:1}30%{opacity:0}100%{opacity:0}}
+@media (prefers-reduced-motion:reduce){.hero-rotator img{animation:none!important}.hero-rotator img:nth-child(1){opacity:1}}
+</style>
+<div class="hero-rotator" style="position:absolute;inset:0">
+<img src="assets/hero-gathering.jpg" data-slot="hero-1" alt="Widows and neighbors receive flour at our church in DR Congo">
+<img src="assets/montage-baptism.jpg" data-slot="hero-2" alt="Ministers celebrate a baptism beneath the waterfall in Nairobi, Kenya">
+<img src="assets/montage-pulpit.jpg" data-slot="hero-3" alt="Ministers and members gathered together in Tanzania" style="object-position:50% 38%">
+<img src="assets/montage-praise.jpg" data-slot="hero-4" alt="Hands raised in praise at an open-air gathering" style="object-position:50% 30%">
 </div>
 </div>
 <div class="hero-float" style="position:absolute;left:-16px;bottom:30px;background:#FBF8F2;border:1px solid #EEE5D5;border-radius:var(--r,14px);padding:13px 17px;box-shadow:0 20px 44px -18px rgba(33,26,18,.4);display:flex;align-items:center;gap:13px">
@@ -312,7 +321,7 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:24px">
 <a href="https://biblearcade.app" target="_blank" rel="noopener" class="card-app" style="text-decoration:none;background:#FBF8F2;border:1px solid #EAE1D1;border-radius:var(--rlg,22px);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s,border-color .2s">
-<div style="aspect-ratio:16/10;border-bottom:1px solid #EAE1D1;overflow:hidden"><img src="assets/biblearcade.png" alt="BibleArcade — read, memorize, quiz, and arcade dashboard" style="width:100%;height:100%;object-fit:cover;object-position:top"></div>
+<div style="aspect-ratio:16/10;border-bottom:1px solid #EAE1D1;overflow:hidden"><img src="assets/biblearcade.png" data-slot="app-biblearcade" alt="BibleArcade — read, memorize, quiz, and arcade dashboard" style="width:100%;height:100%;object-fit:cover;object-position:top"></div>
 <div style="padding:26px 26px 28px">
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:#211A12">BibleArcade</span><span style="font:600 10.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--clay,#B0542F);background:rgba(176,84,47,.1);padding:5px 9px;border-radius:6px">For readers</span></div>
 <p style="font-size:15.5px;line-height:1.62;color:#5B5044;margin:0 0 16px">Scripture, turned into a game you want to come back to. Read through the books, memorize chapter by chapter, quiz until it sticks, then race your friends in the arcade. Daily Bible reading becomes the best part of the day.</p>
@@ -320,7 +329,7 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
 </div>
 </a>
 <a href="https://youlive.me" target="_blank" rel="noopener" class="card-app" style="text-decoration:none;background:#FBF8F2;border:1px solid #EAE1D1;border-radius:var(--rlg,22px);overflow:hidden;display:flex;flex-direction:column;transition:transform .2s,box-shadow .2s,border-color .2s">
-<div style="aspect-ratio:16/10;border-bottom:1px solid #EAE1D1;overflow:hidden"><img src="assets/youlive.png" alt="YouLive — live broadcast studio for your ministry" style="width:100%;height:100%;object-fit:cover;object-position:top"></div>
+<div style="aspect-ratio:16/10;border-bottom:1px solid #EAE1D1;overflow:hidden"><img src="assets/youlive.png" data-slot="app-youlive" alt="YouLive — live broadcast studio for your ministry" style="width:100%;height:100%;object-fit:cover;object-position:top"></div>
 <div style="padding:26px 26px 28px">
 <div style="display:flex;align-items:center;gap:12px;margin-bottom:12px"><span style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:#211A12">YouLive</span><span style="font:600 10.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:var(--clay,#B0542F);background:rgba(176,84,47,.1);padding:5px 9px;border-radius:6px">For churches</span></div>
 <p style="font-size:15.5px;line-height:1.62;color:#5B5044;margin:0 0 16px">A live streaming studio built for churches, by a church that goes live every single week. Go live straight from a browser, no studio and no crew, and your members worship with you from anywhere on earth. It is the engine behind our own broadcast.</p>
@@ -373,15 +382,15 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
 </div>
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:24px">
 <div style="display:flex;flex-direction:column;gap:16px">
-<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/meshak-mausa.jpg" alt="Meshak Maliyabwana M." style="width:100%;height:100%;object-fit:cover"></div>
+<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/meshak-mausa.jpg" data-slot="leader-meshak" alt="Meshak Maliyabwana M." style="width:100%;height:100%;object-fit:cover"></div>
 <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Meshak Maliyabwana M.</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">President &amp; Media</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">Widely known as Apostle Maliyabwana. The gospel set him free from drugs and alcohol in 2020, and he founded this ministry the same year. With the new life came talents he never trained for: video editing, music writing and production, and graphic design. He credits them to the Holy Spirit and pours them into the broadcast every week.</p></div>
 </div>
 <div style="display:flex;flex-direction:column;gap:16px">
-<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/selemani-bulako.jpg" alt="Selemani Bulako" style="width:100%;height:100%;object-fit:cover"></div>
+<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/selemani-bulako.jpg" data-slot="leader-selemani" alt="Selemani Bulako" style="width:100%;height:100%;object-fit:cover"></div>
 <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Selemani Bulako</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Secretary · Overseer, USA &amp; Europe</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">The first pastor of Ukweli Church of Christ in Iowa City, trained personally by Apostle Maliyabwana. He oversees our churches in the USA and our members across Europe, preaching, teaching, and doing outreach. He also helps non-English speakers in the community find jobs and get on their feet.</p></div>
 </div>
 <div style="display:flex;flex-direction:column;gap:16px">
-<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/barnaba-kabwe.jpg" alt="Barnaba Kabwe" style="width:100%;height:100%;object-fit:cover"></div>
+<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/barnaba-kabwe.jpg" data-slot="leader-barnaba" alt="Barnaba Kabwe" style="width:100%;height:100%;object-fit:cover"></div>
 <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Barnaba Kabwe</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Youth Representative</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">Leads our youth ministry, mentoring young men to overcome alcohol, drugs, and the other desires of youth. He also runs our open-air outreach in the streets and downtown.</p></div>
 </div>
 <!-- Amosi Kaswahili: hidden until we have his professional portrait (re-enable by removing this comment wrapper)
@@ -391,7 +400,7 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
 </div>
 -->
 <div style="display:flex;flex-direction:column;gap:16px">
-<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/ishmael-ndayishimiye.jpg" alt="Ishmael Ndayishimiye" style="width:100%;height:100%;object-fit:cover"></div>
+<div style="aspect-ratio:4/5;border-radius:var(--rlg,22px);overflow:hidden;border:1px solid #E7DECF"><img src="assets/ishmael-ndayishimiye.jpg" data-slot="leader-ishmael" alt="Ishmael Ndayishimiye" style="width:100%;height:100%;object-fit:cover"></div>
 <div><h3 style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;color:#211A12;margin:0">Ishmael Ndayishimiye</h3><div style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin:8px 0 10px">Director · Main Pastor, Iowa City</div><p style="font-size:14.5px;line-height:1.6;color:#5B5044;margin:0">An elder since 2022, ordained as the main pastor of the Ukweli Church of Christ in Iowa City in 2026. A preacher of the Word with a big heart for the homeless. Much of his week is spent getting food, clothing, and dignity to people on the street.</p></div>
 </div>
 </div>
@@ -490,10 +499,21 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
 
 <script>
 (function () {
+  // Admin-managed photo overrides: swap any [data-slot] image whose slot has
+  // an uploaded replacement; missing slots keep the baked-in asset.
+  fetch('/api/site-images')
+    .then(function (r) { return r.ok ? r.json() : {}; })
+    .then(function (map) {
+      document.querySelectorAll('img[data-slot]').forEach(function (el) {
+        var url = map[el.getAttribute('data-slot')];
+        if (url) el.src = url;
+      });
+    })
+    .catch(function () {});
+
   // Sticky nav: deepen shadow and background once the page scrolls
   var nav = document.getElementById('top');
   var raf = null;
-  var lastY = window.scrollY || 0;
 
   // Mobile hamburger menu
   var burger = document.querySelector('.nav-burger');
@@ -516,15 +536,6 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
     var s = y > 20;
     nav.style.boxShadow = s ? '0 6px 24px -14px rgba(33,26,18,0.4)' : 'none';
     nav.style.background = s ? 'rgba(247,242,234,0.92)' : 'rgba(247,242,234,0.82)';
-    // ignore small jitters (touch scrolling, rubber-banding) so the header doesn't twitch
-    if (Math.abs(y - lastY) < 16) return;
-    // hide only when clearly scrolling down, deep in the page; show on real scroll-up or near top
-    if (y > 260 && y > lastY && !(navLinks && navLinks.classList.contains('open'))) {
-      nav.style.transform = 'translateY(-100%)';
-    } else if (y < lastY || y < 120) {
-      nav.style.transform = 'translateY(0)';
-    }
-    lastY = y;
   }
   window.addEventListener('scroll', function () {
     if (raf) return;

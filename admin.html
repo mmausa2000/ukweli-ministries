@@ -76,6 +76,11 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 <div id="msg" class="msg" hidden></div>
 </div>
 
+<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px">Site photos</h2>
+<p class="note">These are the photos on the <a href="index.html">home page</a> — the rotating hero montage, leadership portraits, and app screenshots. Replace any of them here (uses the same admin token above). Reset returns the original photo.</p>
+<div id="slots-msg" class="msg" hidden></div>
+<div class="grid" id="slots"></div>
+
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px">Uploaded photos</h2>
 <p class="note" id="list-note">Loading…</p>
 <div class="grid" id="list"></div>
@@ -199,7 +204,133 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
       .finally(function () { btn.disabled = false; });
   });
 
+  // ---- Site photo slots (home-page hero montage, portraits, app shots) ----
+  var SLOTS = [
+    { key: 'hero-1', name: 'Hero 1 — Flour distribution (DR Congo)', def: 'assets/hero-gathering.jpg' },
+    { key: 'hero-2', name: 'Hero 2 — Waterfall baptism (Nairobi)', def: 'assets/montage-baptism.jpg' },
+    { key: 'hero-3', name: 'Hero 3 — Tanzania gathering', def: 'assets/montage-pulpit.jpg' },
+    { key: 'hero-4', name: 'Hero 4 — Open-air praise (Kenya)', def: 'assets/montage-praise.jpg' },
+    { key: 'leader-meshak', name: 'Portrait — Meshak Maliyabwana M.', def: 'assets/meshak-mausa.jpg' },
+    { key: 'leader-selemani', name: 'Portrait — Selemani Bulako', def: 'assets/selemani-bulako.jpg' },
+    { key: 'leader-barnaba', name: 'Portrait — Barnaba Kabwe', def: 'assets/barnaba-kabwe.jpg' },
+    { key: 'leader-ishmael', name: 'Portrait — Ishmael Ndayishimiye', def: 'assets/ishmael-ndayishimiye.jpg' },
+    { key: 'app-biblearcade', name: 'App — BibleArcade', def: 'assets/biblearcade.png' },
+    { key: 'app-youlive', name: 'App — YouLive', def: 'assets/youlive.png' }
+  ];
+  var slotsEl = document.getElementById('slots');
+  var slotsMsg = document.getElementById('slots-msg');
+
+  function showSlots(kind, text) {
+    slotsMsg.className = 'msg ' + kind;
+    slotsMsg.textContent = text;
+    slotsMsg.hidden = false;
+  }
+
+  function needToken() {
+    var token = tokenEl.value.trim();
+    if (!token) {
+      showSlots('err', 'Enter the admin token in the box at the top first.');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      return null;
+    }
+    try { sessionStorage.setItem('ukweli_admin_token', token); } catch (e) {}
+    return token;
+  }
+
+  function setSlot(slot, path) {
+    return fetch('/api/site-images', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(path === null
+        ? { token: tokenEl.value.trim(), slot: slot, reset: true }
+        : { token: tokenEl.value.trim(), slot: slot, path: path })
+    }).then(function (r) {
+      if (r.status === 401) throw new Error('Invalid admin token.');
+      if (!r.ok) return r.text().then(function (t) { throw new Error(t || ('Failed (' + r.status + ')')); });
+      return r.json();
+    });
+  }
+
+  function refreshSlots() {
+    fetch('/api/site-images')
+      .then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (map) {
+        slotsEl.textContent = '';
+        SLOTS.forEach(function (s) {
+          var url = map[s.key];
+          var tile = document.createElement('div');
+          tile.className = 'tile';
+          var img = document.createElement('img');
+          img.src = url || s.def;
+          img.alt = s.name; img.loading = 'lazy';
+          var meta = document.createElement('div');
+          meta.className = 'meta';
+          var t = document.createElement('div'); t.className = 't'; t.textContent = s.name;
+          var c = document.createElement('div'); c.className = 'c'; c.textContent = url ? 'Custom photo' : 'Original photo';
+          meta.appendChild(t); meta.appendChild(c);
+
+          var file = document.createElement('input');
+          file.type = 'file'; file.accept = 'image/jpeg,image/png,image/webp'; file.hidden = true;
+          var rep = document.createElement('button');
+          rep.textContent = 'Replace';
+          rep.addEventListener('click', function () { if (needToken()) file.click(); });
+          file.addEventListener('change', function () {
+            var f = file.files[0];
+            var token = needToken();
+            if (!f || !token) return;
+            rep.disabled = true; rep.textContent = 'Uploading…';
+            slotsMsg.hidden = true;
+            fetch('/api/upload-url', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({ token: token, filename: f.name })
+            })
+              .then(function (r) {
+                if (r.status === 401) throw new Error('Invalid admin token.');
+                if (!r.ok) throw new Error('Could not start upload (' + r.status + ')');
+                return r.json();
+              })
+              .then(function (u) {
+                return fetch(u.uploadUrl, {
+                  method: 'PUT',
+                  headers: { 'Content-Type': f.type || 'application/octet-stream' },
+                  body: f
+                }).then(function (r) {
+                  if (!r.ok) throw new Error('File upload failed (' + r.status + ')');
+                  return u.path;
+                });
+              })
+              .then(function (path) { return setSlot(s.key, path); })
+              .then(function () {
+                showSlots('ok', '"' + s.name + '" updated — it is live on the home page.');
+                refreshSlots();
+              })
+              .catch(function (e2) { showSlots('err', e2.message); })
+              .finally(function () { rep.disabled = false; rep.textContent = 'Replace'; });
+          });
+
+          tile.appendChild(img); tile.appendChild(meta); tile.appendChild(rep);
+          if (url) {
+            var rst = document.createElement('button');
+            rst.textContent = 'Reset';
+            rst.addEventListener('click', function () {
+              if (!needToken()) return;
+              if (!confirm('Put back the original photo for "' + s.name + '"?')) return;
+              setSlot(s.key, null)
+                .then(function () { showSlots('ok', '"' + s.name + '" reset to the original photo.'); refreshSlots(); })
+                .catch(function (e2) { showSlots('err', e2.message); });
+            });
+            tile.appendChild(rst);
+          }
+          tile.appendChild(file);
+          slotsEl.appendChild(tile);
+        });
+      })
+      .catch(function () { showSlots('err', 'Could not load the site photos.'); });
+  }
+
   refresh();
+  refreshSlots();
 })();
 </script>
 </body>
