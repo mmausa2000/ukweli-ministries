@@ -139,8 +139,24 @@ Continue with Google</button>
       tokWrap.hidden = false;
     }
   }
-  sb.auth.getSession().then(function (d) { session = d.data.session; renderAuth(); });
-  sb.auth.onAuthStateChange(function (_e, s) { session = s; renderAuth(); });
+  function checkAdmin() {
+    if (!session) { authMsg.hidden = true; return; }
+    fetch('/api/me', { headers: { Authorization: 'Bearer ' + session.access_token } })
+      .then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (m) {
+        if (m && !m.isAdmin) {
+          authMsg.className = 'msg err';
+          authMsg.textContent = 'This Google account is signed in but does not have admin access. Ask the site admin to add your email, or use the admin token.';
+          authMsg.hidden = false;
+          tokWrap.hidden = false;
+        } else {
+          authMsg.hidden = true;
+        }
+      })
+      .catch(function () {});
+  }
+  sb.auth.getSession().then(function (d) { session = d.data.session; renderAuth(); checkAdmin(); });
+  sb.auth.onAuthStateChange(function (_e, s) { session = s; renderAuth(); checkAdmin(); });
 
   document.getElementById('google-btn').addEventListener('click', function () {
     sb.auth.signInWithOAuth({

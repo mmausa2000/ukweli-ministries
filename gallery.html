@@ -91,6 +91,8 @@ div[style*="minmax(320px"]{grid-template-columns:1fr!important}
 main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:center}
 }
 </style>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
+<script src="assets/auth.js" defer></script>
 </head>
 <body>
 
@@ -120,6 +122,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <a href="index.html#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
 </div>
 <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
+<span id="auth-nav"></span>
 <a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
 <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
