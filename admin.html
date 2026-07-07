@@ -9,6 +9,7 @@
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
 <style>
 *{box-sizing:border-box}
 body{margin:0;background:#F7F2EA;color:#5B5044;font-family:'Hanken Grotesk',sans-serif;-webkit-font-smoothing:antialiased}
@@ -37,6 +38,8 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 .tile button{margin:0 12px 12px;padding:8px 13px;background:transparent;border:1px solid rgba(138,58,46,.4);color:#8A3A2E;border-radius:10px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer}
 .tile button:hover{background:#8A3A2E;color:#FBF8F2}
 .note{font:500 13.5px/1.6 'Hanken Grotesk',sans-serif;color:#8A7C68}
+.gbtn{display:inline-flex;align-items:center;gap:12px;padding:14px 26px;background:#fff;border:1px solid #DDD3C1;border-radius:14px;font:600 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.08);transition:box-shadow .18s,transform .18s}
+.gbtn:hover{box-shadow:0 4px 14px -6px rgba(33,26,18,.25);transform:translateY(-1px)}
 @media (max-width:600px){
 .wrap{padding:36px 18px 72px}
 .card{padding:20px 16px}
@@ -48,12 +51,30 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 <div class="wrap">
 <div class="kicker">Ukweli Ministries · Admin</div>
 <h1>Manage the gallery</h1>
-<p class="note">Uploads go live on the <a href="gallery.html">Gallery</a> page immediately. You need the admin token to upload or delete.</p>
+<p class="note">Uploads go live on the <a href="gallery.html">Gallery</a> page immediately. Sign in with Google (or the admin token) to make changes.</p>
 
-<div class="card" style="margin-top:28px">
+<div class="card" style="margin-top:28px" id="auth-card">
+<div id="auth-out">
+<div style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:26px;color:#211A12;margin-bottom:6px">Sign in to manage the site</div>
+<p class="note" style="margin:0 0 18px">Use the church Google account. New admins sign in the same way; access is granted to approved emails only.</p>
+<button type="button" class="gbtn" id="google-btn">
+<svg width="18" height="18" viewBox="0 0 48 48" aria-hidden="true"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+Continue with Google</button>
+<button type="button" id="tok-toggle" style="display:block;margin-top:14px;background:none;border:none;padding:0;font:500 13.5px/1 'Hanken Grotesk',sans-serif;color:#8A7C68;text-decoration:underline;cursor:pointer">Use the admin token instead</button>
+</div>
+<div id="auth-in" hidden style="display:flex;align-items:center;justify-content:space-between;gap:14px;flex-wrap:wrap">
+<div><div class="note" style="margin:0">Signed in as</div><div style="font:600 15px/1.4 'Hanken Grotesk',sans-serif;color:#211A12" id="auth-email"></div></div>
+<button type="button" id="signout-btn" style="padding:11px 18px;background:transparent;border:1px solid rgba(33,26,18,.22);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer">Sign out</button>
+</div>
+<div id="auth-msg" class="msg" hidden></div>
+</div>
+
+<div class="card" style="margin-top:20px">
 <form id="up-form">
+<div id="tok-wrap" hidden>
 <label for="token">Admin token</label>
 <input type="password" id="token" autocomplete="off" placeholder="paste the admin token">
+</div>
 <label for="photo">Photo or video (JPEG/PNG/WebP up to 20 MB · MP4/MOV/WebM up to 500 MB)</label>
 <input type="file" id="photo" accept="image/jpeg,image/png,image/webp,video/mp4,video/webm,video/quicktime">
 <label for="cat">Category</label>
@@ -77,7 +98,7 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 </div>
 
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px">Site photos</h2>
-<p class="note">These are the photos on the <a href="index.html">home page</a> — the rotating hero montage, leadership portraits, and app screenshots. Replace any of them here (uses the same admin token above). Reset returns the original photo.</p>
+<p class="note">These are the photos on the <a href="index.html">home page</a> — the rotating hero montage, leadership portraits, and app screenshots. Replace any of them here. Reset returns the original photo.</p>
 <div id="slots-msg" class="msg" hidden></div>
 <div class="grid" id="slots"></div>
 
@@ -95,6 +116,52 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
   var btn = document.getElementById('up-btn');
 
   try { tokenEl.value = sessionStorage.getItem('ukweli_admin_token') || ''; } catch (e) {}
+
+  // ---- Google sign-in (Supabase Auth); the admin token still works as a fallback ----
+  var sb = supabase.createClient(
+    'https://prrrxklacammcjovnfbc.supabase.co',
+    'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InBycnJ4a2xhY2FtbWNqb3ZuZmJjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODMzNDYzMTAsImV4cCI6MjA5ODkyMjMxMH0.gmgJiEJDbEmiLiUsXKCrfXLQUITtVK-KtB_mJeyk_cU'
+  );
+  var session = null;
+  var authOut = document.getElementById('auth-out');
+  var authIn = document.getElementById('auth-in');
+  var authEmail = document.getElementById('auth-email');
+  var authMsg = document.getElementById('auth-msg');
+  var tokWrap = document.getElementById('tok-wrap');
+
+  function renderAuth() {
+    authOut.hidden = !!session;
+    authIn.hidden = !session;
+    if (session) {
+      authEmail.textContent = (session.user && session.user.email) || '';
+      tokWrap.hidden = true;
+    } else if (tokenEl.value) {
+      tokWrap.hidden = false;
+    }
+  }
+  sb.auth.getSession().then(function (d) { session = d.data.session; renderAuth(); });
+  sb.auth.onAuthStateChange(function (_e, s) { session = s; renderAuth(); });
+
+  document.getElementById('google-btn').addEventListener('click', function () {
+    sb.auth.signInWithOAuth({
+      provider: 'google',
+      options: { redirectTo: location.origin + location.pathname }
+    });
+  });
+  document.getElementById('signout-btn').addEventListener('click', function () {
+    sb.auth.signOut().then(function () { session = null; renderAuth(); });
+  });
+  document.getElementById('tok-toggle').addEventListener('click', function () {
+    tokWrap.hidden = !tokWrap.hidden;
+    if (!tokWrap.hidden) tokenEl.focus();
+  });
+
+  function authHeaders() {
+    var h = { 'Content-Type': 'application/json' };
+    if (session) h.Authorization = 'Bearer ' + session.access_token;
+    return h;
+  }
+  var AUTH_ERR = 'Not authorized. Sign in with an approved Google account or paste the admin token.';
 
   function show(kind, text) {
     msg.className = 'msg ' + kind;
@@ -132,10 +199,10 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
             if (!confirm('Delete "' + p.label + '" from the gallery?')) return;
             fetch('/api/delete', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
+              headers: authHeaders(),
               body: JSON.stringify({ token: tokenEl.value.trim(), id: p.id })
             }).then(function (r) {
-              if (r.status === 401) throw new Error('Invalid admin token.');
+              if (r.status === 401) throw new Error(AUTH_ERR);
               if (!r.ok) throw new Error('Delete failed (' + r.status + ').');
               refresh();
             }).catch(function (e2) { show('err', e2.message); });
@@ -153,10 +220,10 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
     var token = tokenEl.value.trim();
     var file = document.getElementById('photo').files[0];
     var label = document.getElementById('label').value.trim();
-    if (!token) return show('err', 'Enter the admin token.');
+    if (!session && !token) return show('err', AUTH_ERR);
     if (!file) return show('err', 'Choose a photo to upload.');
     if (!label) return show('err', 'Give the photo a title.');
-    try { sessionStorage.setItem('ukweli_admin_token', token); } catch (e2) {}
+    if (token) { try { sessionStorage.setItem('ukweli_admin_token', token); } catch (e2) {} }
 
     var cat = document.getElementById('cat').value;
     var cap = document.getElementById('cap').value.trim();
@@ -165,11 +232,11 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
     // 1) get a signed upload URL, 2) send the file straight to storage, 3) save the record
     fetch('/api/upload-url', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify({ token: token, filename: file.name })
     })
       .then(function (r) {
-        if (r.status === 401) throw new Error('Invalid admin token.');
+        if (r.status === 401) throw new Error(AUTH_ERR);
         if (!r.ok) throw new Error('Could not start upload (' + r.status + ')');
         return r.json();
       })
@@ -186,7 +253,7 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
       .then(function (path) {
         return fetch('/api/save', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: authHeaders(),
           body: JSON.stringify({ token: token, cat: cat, label: label, cap: cap, path: path })
         });
       })
@@ -228,24 +295,24 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 
   function needToken() {
     var token = tokenEl.value.trim();
-    if (!token) {
-      showSlots('err', 'Enter the admin token in the box at the top first.');
+    if (!session && !token) {
+      showSlots('err', AUTH_ERR);
       window.scrollTo({ top: 0, behavior: 'smooth' });
       return null;
     }
-    try { sessionStorage.setItem('ukweli_admin_token', token); } catch (e) {}
-    return token;
+    if (token) { try { sessionStorage.setItem('ukweli_admin_token', token); } catch (e) {} }
+    return token || 'session';
   }
 
   function setSlot(slot, path) {
     return fetch('/api/site-images', {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers: authHeaders(),
       body: JSON.stringify(path === null
         ? { token: tokenEl.value.trim(), slot: slot, reset: true }
         : { token: tokenEl.value.trim(), slot: slot, path: path })
     }).then(function (r) {
-      if (r.status === 401) throw new Error('Invalid admin token.');
+      if (r.status === 401) throw new Error(AUTH_ERR);
       if (!r.ok) return r.text().then(function (t) { throw new Error(t || ('Failed (' + r.status + ')')); });
       return r.json();
     });
@@ -277,17 +344,16 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
           rep.addEventListener('click', function () { if (needToken()) file.click(); });
           file.addEventListener('change', function () {
             var f = file.files[0];
-            var token = needToken();
-            if (!f || !token) return;
+            if (!f || !needToken()) return;
             rep.disabled = true; rep.textContent = 'Uploading…';
             slotsMsg.hidden = true;
             fetch('/api/upload-url', {
               method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ token: token, filename: f.name })
+              headers: authHeaders(),
+              body: JSON.stringify({ token: tokenEl.value.trim(), filename: f.name })
             })
               .then(function (r) {
-                if (r.status === 401) throw new Error('Invalid admin token.');
+                if (r.status === 401) throw new Error(AUTH_ERR);
                 if (!r.ok) throw new Error('Could not start upload (' + r.status + ')');
                 return r.json();
               })

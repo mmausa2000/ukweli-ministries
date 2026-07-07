@@ -1,9 +1,11 @@
 // Admin: mint a signed upload URL so the browser sends the file straight to
 // Supabase Storage (bypasses the serverless body-size limit).
+import { isAdmin } from './_lib/auth.js';
+
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   const { token, filename } = req.body || {};
-  if (!token || token !== process.env.UKWELI_ADMIN_TOKEN) {
+  if (!(await isAdmin(req, token))) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   try {

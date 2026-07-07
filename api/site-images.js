@@ -1,6 +1,8 @@
 // Site photo slots (hero montage, portraits, app shots) stored as gallery_items
 // rows with cat "_site" (label = slot key). GET is public; POST/reset need the
 // admin token. Pages fall back to the baked-in asset when a slot has no row.
+import { isAdmin } from './_lib/auth.js';
+
 const SLOT_RE = /^[a-z0-9-]{1,40}$/;
 
 export default async function handler(req, res) {
@@ -29,7 +31,7 @@ export default async function handler(req, res) {
 
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   const { token, slot, path, reset } = req.body || {};
-  if (!token || token !== process.env.UKWELI_ADMIN_TOKEN) {
+  if (!(await isAdmin(req, token))) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   if (!slot || !SLOT_RE.test(slot)) return res.status(400).json({ error: 'bad slot' });
