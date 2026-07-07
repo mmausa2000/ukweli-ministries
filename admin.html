@@ -252,7 +252,8 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
   }
 
   function refreshSlots() {
-    fetch('/api/site-images')
+    // cache-buster: the API response is CDN-cached for the public pages
+    fetch('/api/site-images?t=' + Date.now())
       .then(function (r) { return r.ok ? r.json() : {}; })
       .then(function (map) {
         slotsEl.textContent = '';
