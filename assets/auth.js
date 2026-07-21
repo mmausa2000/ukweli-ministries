@@ -30,8 +30,9 @@
     wrap.style.cssText = 'position:relative;display:inline-flex';
     var b = document.createElement('button');
     b.type = 'button';
-    var av = (session.user.user_metadata && session.user.user_metadata.avatar_url) || '';
-    b.innerHTML = (av ? '<img src="' + av + '" alt="" style="width:22px;height:22px;border-radius:50%" referrerpolicy="no-referrer">' : '') +
+    var md = (session.user && session.user.user_metadata) || {};
+    var av = md.avatar_url || md.picture || '';
+    b.innerHTML = (av ? '<img src="' + av + '" alt="" style="width:22px;height:22px;border-radius:50%;object-fit:cover" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' : '') +
       '<span>' + firstName(session) + '</span><span style="font-size:10px">\u25BE</span>';
     b.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:9px 14px;background:transparent;border:1px solid rgba(33,26,18,.22);color:#211A12;border-radius:14px;font:600 14px/1 \'Hanken Grotesk\',sans-serif;cursor:pointer';
     var menu = document.createElement('div');
