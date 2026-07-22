@@ -90,6 +90,9 @@ div[style*="minmax(320px"]{grid-template-columns:1fr!important}
 @media (max-width:480px){
 main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:center}
 }
+#gsearch:focus{border-color:var(--clay,#B0542F);box-shadow:0 0 0 3px rgba(176,84,47,.12)}
+#gevent:focus{border-color:var(--clay,#B0542F);box-shadow:0 0 0 3px rgba(176,84,47,.12)}
+@media(max-width:640px){#gpeoplewrap span{display:none}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/auth.js" defer></script>
@@ -145,24 +148,31 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <button data-filter="Missions" class="filter-btn">Missions</button>
 <button data-filter="Media" class="filter-btn">Media</button>
 </div>
-<div style="margin-top:16px;max-width:560px">
-  <div style="position:relative">
-    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#8A7C68" stroke-width="2" stroke-linecap="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
-    <input id="gsearch" type="search" autocomplete="off" placeholder="Search by name, place, or moment"
-      aria-label="Search photos"
-      style="width:100%;padding:13px 40px 13px 40px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:14px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none">
-    <button id="gclear" type="button" aria-label="Clear search" hidden
-      style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;padding:8px;line-height:0;color:#8A7C68;font:600 15px/1 'Hanken Grotesk',sans-serif">&times;</button>
-  </div>
-  <div style="display:flex;gap:10px;margin-top:11px;flex-wrap:wrap;align-items:center">
-    <label for="gevent" style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68">Event</label>
+<div style="margin-top:26px;display:flex;flex-direction:column;gap:15px">
+  <!-- Search and event sit on one line and share the full content width, so the
+       controls read as a toolbar instead of a narrow column hugging the left. -->
+  <div style="display:flex;gap:12px;flex-wrap:wrap;align-items:stretch">
+    <div style="position:relative;flex:1 1 380px;min-width:240px">
+      <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#8A7C68" stroke-width="2" stroke-linecap="round" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+      <input id="gsearch" type="text" autocomplete="off" placeholder="Search by name, place, or moment"
+        aria-label="Search photos"
+        style="width:100%;height:52px;padding:0 42px 0 42px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:14px;font:500 15.5px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;transition:border-color .18s,box-shadow .18s">
+      <button id="gclear" type="button" aria-label="Clear search" hidden
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;padding:6px;line-height:0;color:#8A7C68;font:400 20px/1 'Hanken Grotesk',sans-serif">&times;</button>
+    </div>
     <select id="gevent" aria-label="Filter by event"
-      style="flex:1;min-width:200px;padding:11px 13px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 14.5px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;cursor:pointer">
+      style="flex:0 1 268px;min-width:200px;height:52px;padding:0 40px 0 16px;border:1px solid #E0D6C4;background:#FBF8F2 url(&quot;data:image/svg+xml;utf8,<svg xmlns=&apos;http://www.w3.org/2000/svg&apos; viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;%238A7C68&apos; stroke-width=&apos;2&apos; stroke-linecap=&apos;round&apos;><path d=&apos;M6 9l6 6 6-6&apos;/></svg>&quot;) no-repeat right 14px center/17px;border-radius:14px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none">
       <option value="">All events</option>
     </select>
   </div>
-  <div id="gpeople" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px"></div>
-  <div id="gcount" style="font:500 13px/1.5 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:11px"></div>
+
+  <!-- Who appears in the photos, as one-tap filters -->
+  <div id="gpeoplewrap" hidden style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap">
+    <span style="font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#A2937C;flex:0 0 auto;padding-top:2px">In the photos</span>
+    <div id="gpeople" style="display:flex;flex-wrap:wrap;gap:8px;flex:1 1 300px"></div>
+  </div>
+
+  <div id="gcount" style="font:500 13.5px/1.5 'Hanken Grotesk',sans-serif;color:#8A7C68;min-height:1px"></div>
 </div>
 <div style="margin-top:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
 <button type="button" id="share-open" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14.5px/1 'Hanken Grotesk',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Share a photo</button>
@@ -532,7 +542,12 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         if (nm.length > 3) tally[nm] = (tally[nm] || 0) + 1;
       });
     });
-    var top = Object.keys(tally).sort(function (a, b) { return tally[b] - tally[a]; }).slice(0, 8);
+    // Only real, repeated people - old one-off captions like "Our ministers with
+    // the students" also parse as a name, so require more than a single photo.
+    var top = Object.keys(tally).filter(function (n) { return tally[n] > 1; })
+      .sort(function (a, b) { return tally[b] - tally[a]; }).slice(0, 8);
+    var wrap = document.getElementById('gpeoplewrap');
+    if (wrap) wrap.hidden = !top.length;
     peopleEl.textContent = '';
     top.forEach(function (nm) {
       var c = document.createElement('button');
