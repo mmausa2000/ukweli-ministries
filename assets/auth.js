@@ -52,7 +52,12 @@
     email.style.cssText = 'padding:9px 13px;font:500 12px/1.4 \'Hanken Grotesk\',sans-serif;color:#8A7C68;border-bottom:1px solid #EAE1D1;margin-bottom:4px;word-break:break-all';
     menu.appendChild(email);
     if (me && me.isAdmin) item('Manage site', null, '/admin');
-    item('Sign out', function () { sb.auth.signOut().then(function () { session = null; me = null; render(); }); });
+    item('Sign out', function () { sb.auth.signOut().then(function () {
+      session = null; me = null;
+      window.ukweliMe = null;
+      document.dispatchEvent(new CustomEvent('ukweli-me', { detail: null }));
+      render();
+    }); });
     b.addEventListener('click', function (e) {
       e.stopPropagation();
       open = !open;
@@ -67,7 +72,12 @@
     if (!session) return;
     fetch('/api/me', { headers: { Authorization: 'Bearer ' + session.access_token } })
       .then(function (r) { return r.ok ? r.json() : null; })
-      .then(function (m) { me = m; render(); })
+      .then(function (m) {
+        me = m;
+        window.ukweliMe = m;
+        document.dispatchEvent(new CustomEvent('ukweli-me', { detail: m }));
+        render();
+      })
       .catch(function () {});
   }
 

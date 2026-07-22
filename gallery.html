@@ -145,6 +145,25 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <button data-filter="Missions" class="filter-btn">Missions</button>
 <button data-filter="Media" class="filter-btn">Media</button>
 </div>
+<div style="margin-top:16px;max-width:560px">
+  <div style="position:relative">
+    <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#8A7C68" stroke-width="2" stroke-linecap="round" style="position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
+    <input id="gsearch" type="search" autocomplete="off" placeholder="Search by name, place, or moment"
+      aria-label="Search photos"
+      style="width:100%;padding:13px 40px 13px 40px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:14px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none">
+    <button id="gclear" type="button" aria-label="Clear search" hidden
+      style="position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;padding:8px;line-height:0;color:#8A7C68;font:600 15px/1 'Hanken Grotesk',sans-serif">&times;</button>
+  </div>
+  <div style="display:flex;gap:10px;margin-top:11px;flex-wrap:wrap;align-items:center">
+    <label for="gevent" style="font:600 11.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68">Event</label>
+    <select id="gevent" aria-label="Filter by event"
+      style="flex:1;min-width:200px;padding:11px 13px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 14.5px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;cursor:pointer">
+      <option value="">All events</option>
+    </select>
+  </div>
+  <div id="gpeople" style="display:flex;flex-wrap:wrap;gap:8px;margin-top:11px"></div>
+  <div id="gcount" style="font:500 13px/1.5 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:11px"></div>
+</div>
 <div style="margin-top:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
 <button type="button" id="share-open" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14.5px/1 'Hanken Grotesk',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Share a photo</button>
 <span style="font:500 13.5px/1.5 'Hanken Grotesk',sans-serif;color:#8A7C68">Have a moment from the family? Add it, our team reviews every photo before it appears.</span>
@@ -296,7 +315,24 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   function renderGrid(filter) {
     grid.textContent = '';
     openStrip = null;
-    ITEMS.filter(function (i) { return filter === 'All' || i.cat === filter; }).forEach(function (item) {
+    var q = (currentQuery || '').trim().toLowerCase();
+    var shown = ITEMS.filter(function (i) {
+      if (filter !== 'All' && i.cat !== filter) return false;
+      if (currentEvent && (i.label || '') !== currentEvent) return false;
+      if (!q) return true;
+      // Names live in the caption, so one haystack covers people, places and moments.
+      return ((i.label || '') + ' ' + (i.cap || '') + ' ' + (i.cat || '')).toLowerCase().indexOf(q) !== -1;
+    });
+    updateCount(shown.length, q);
+    if (!shown.length) {
+      var none = document.createElement('div');
+      none.style.cssText = "grid-column:1/-1;padding:38px 20px;text-align:center;font:500 15px/1.6 'Hanken Grotesk',sans-serif;color:#8A7C68";
+      none.textContent = q
+        ? 'No photos match “' + q + '”' + (currentEvent ? ' in ' + currentEvent : '') + '. Try a name like Bishop Selemani Bulako.'
+        : (currentEvent ? 'No photos in ' + currentEvent + ' yet.' : 'Nothing here yet.');
+      grid.appendChild(none);
+    }
+    shown.forEach(function (item) {
       var btn = document.createElement('button');
       btn.className = 'gitem';
       btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;transition:transform .25s ease,box-shadow .25s ease;font-family:inherit';
@@ -362,6 +398,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       meta.appendChild(title); meta.appendChild(cap);
 
       btn.appendChild(frame); btn.appendChild(meta);
+      btn.__item = item;
       btn.addEventListener('click', function () {
         if (item.frames && item.frames.length > 1) toggleBurst(btn, item);
         else openLightbox(item);
@@ -418,6 +455,96 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   }
 
   var currentFilter = 'All';
+  var currentQuery = '';
+  var currentEvent = '';
+  var eventEl = document.getElementById('gevent');
+
+  // Events are read off the labels themselves, so each year's convention shows
+  // up on its own as soon as its photos are added - nothing to hardcode.
+  function buildEvents() {
+    if (!eventEl) return;
+    var tally = {};
+    ITEMS.forEach(function (i) {
+      var l = (i.label || '').trim();
+      if (/\b(19|20)\d{2}\b/.test(l)) tally[l] = (tally[l] || 0) + 1;
+    });
+    var keys = Object.keys(tally).sort(function (a, b) {
+      var ya = (a.match(/\b(19|20)\d{2}\b/) || [0])[0];
+      var yb = (b.match(/\b(19|20)\d{2}\b/) || [0])[0];
+      return yb - ya || a.localeCompare(b);
+    });
+    var keep = currentEvent;
+    eventEl.textContent = '';
+    var all = document.createElement('option');
+    all.value = ''; all.textContent = 'All events';
+    eventEl.appendChild(all);
+    keys.forEach(function (k) {
+      var o = document.createElement('option');
+      o.value = k; o.textContent = k + ' (' + tally[k] + ')';
+      eventEl.appendChild(o);
+    });
+    eventEl.value = keep;
+  }
+  if (eventEl) {
+    eventEl.addEventListener('change', function () {
+      currentEvent = this.value;
+      renderGrid(currentFilter);
+    });
+  }
+  var searchEl = document.getElementById('gsearch');
+  var clearEl = document.getElementById('gclear');
+  var countEl = document.getElementById('gcount');
+  var peopleEl = document.getElementById('gpeople');
+
+  function updateCount(n, q) {
+    if (!countEl) return;
+    if (!q) { countEl.textContent = ''; return; }
+    countEl.textContent = n === 0
+      ? 'No photos match “' + q + '”.'
+      : n + (n === 1 ? ' photo' : ' photos') + ' matching “' + q + '”';
+  }
+  function setQuery(v) {
+    currentQuery = v;
+    if (searchEl.value !== v) searchEl.value = v;
+    clearEl.hidden = !v;
+    [].forEach.call(peopleEl.children, function (c) {
+      var on = c.dataset.name.toLowerCase() === v.trim().toLowerCase();
+      c.style.background = on ? 'var(--clay,#B0542F)' : 'transparent';
+      c.style.color = on ? '#FBF8F2' : '#211A12';
+    });
+    renderGrid(currentFilter);
+  }
+  if (searchEl) {
+    searchEl.addEventListener('input', function () { setQuery(this.value); });
+    clearEl.addEventListener('click', function () { setQuery(''); searchEl.focus(); });
+  }
+
+  // People chips: pulled from the captions themselves, so the list stays true
+  // to whoever has actually been named in the gallery.
+  function buildPeople() {
+    if (!peopleEl) return;
+    var tally = {};
+    ITEMS.forEach(function (i) {
+      var m = /^(.+?) at the /.exec(i.cap || '');
+      if (!m) return;
+      m[1].split(/,| and /).forEach(function (nm) {
+        nm = nm.trim();
+        if (nm.length > 3) tally[nm] = (tally[nm] || 0) + 1;
+      });
+    });
+    var top = Object.keys(tally).sort(function (a, b) { return tally[b] - tally[a]; }).slice(0, 8);
+    peopleEl.textContent = '';
+    top.forEach(function (nm) {
+      var c = document.createElement('button');
+      c.type = 'button'; c.dataset.name = nm;
+      c.textContent = nm + ' (' + tally[nm] + ')';
+      c.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;color:#211A12;border-radius:999px;padding:7px 13px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .16s";
+      c.addEventListener('click', function () {
+        setQuery(currentQuery.trim().toLowerCase() === nm.toLowerCase() ? '' : nm);
+      });
+      peopleEl.appendChild(c);
+    });
+  }
   filterWrap.addEventListener('click', function (e) {
     var b = e.target.closest('[data-filter]');
     if (!b) return;
@@ -469,6 +596,128 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
   renderGrid(currentFilter);
 
+  // ---------- Admin right-click menu ----------
+  // Signed-in site admins (per /api/me) manage photos straight from the grid:
+  // right-click a tile for Delete / Edit / Move / Copy link. Everyone else
+  // keeps the browser's normal context menu.
+  var isAdminUser = !!(window.ukweliMe && window.ukweliMe.isAdmin);
+  document.addEventListener('ukweli-me', function (e) {
+    isAdminUser = !!(e.detail && e.detail.isAdmin);
+    if (!isAdminUser) hideMenu();
+  });
+
+  var menuEl = null;
+  function hideMenu() { if (menuEl) { menuEl.remove(); menuEl = null; } }
+  document.addEventListener('click', hideMenu);
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') hideMenu(); });
+  window.addEventListener('scroll', hideMenu, { passive: true });
+
+  function adminToken() {
+    if (!window.ukweliAuth) return Promise.resolve(null);
+    return window.ukweliAuth.auth.getSession().then(function (d) {
+      return d.data.session ? d.data.session.access_token : null;
+    });
+  }
+  function adminPost(path, body) {
+    return adminToken().then(function (t) {
+      if (!t) throw new Error('Your session expired. Sign in again.');
+      return fetch(path, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', Authorization: 'Bearer ' + t },
+        body: JSON.stringify(body)
+      });
+    }).then(function (r) { return r.json().then(function (j) { return { ok: r.ok, j: j }; }); })
+      .then(function (x) {
+        if (!x.ok || x.j.error) throw new Error(x.j.error || 'Request failed.');
+        return x.j;
+      });
+  }
+
+  function menuItem(label, fn, opts) {
+    opts = opts || {};
+    var a = document.createElement('button');
+    a.type = 'button';
+    a.textContent = label;
+    a.style.cssText = "display:block;width:100%;text-align:left;padding:10px 13px;background:none;border:none;border-radius:9px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;color:" + (opts.danger ? '#8A3A2E' : '#211A12') + ";cursor:" + (opts.disabled ? 'default' : 'pointer') + (opts.disabled ? ';opacity:.45' : '');
+    if (!opts.disabled) {
+      a.addEventListener('mouseenter', function () { a.style.background = opts.danger ? '#F5E4DE' : '#F1E9DA'; });
+      a.addEventListener('mouseleave', function () { a.style.background = 'none'; });
+      a.addEventListener('click', function (e) { e.stopPropagation(); fn(); });
+    }
+    return a;
+  }
+
+  function showMenu(x, y, item) {
+    hideMenu();
+    menuEl = document.createElement('div');
+    menuEl.style.cssText = 'position:fixed;z-index:130;min-width:200px;background:#FBF8F2;border:1px solid #EAE1D1;border-radius:14px;box-shadow:0 20px 44px -18px rgba(33,26,18,.4);padding:6px;animation:fadeIn .12s ease';
+    menuEl.addEventListener('contextmenu', function (e) { e.preventDefault(); });
+
+    var head = document.createElement('div');
+    head.textContent = item.label;
+    head.style.cssText = "padding:8px 13px;font:600 11px/1.4 'Hanken Grotesk',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A7C68;border-bottom:1px solid #EAE1D1;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
+    menuEl.appendChild(head);
+
+    if (item.id) {
+      menuEl.appendChild(menuItem('Edit title & caption…', function () {
+        hideMenu();
+        var label = prompt('Title:', item.label);
+        if (label === null) return;
+        var cap = prompt('Caption:', item.cap || '');
+        if (cap === null) return;
+        adminPost('/api/update', { id: item.id, label: label, cap: cap })
+          .then(function (j) {
+            item.label = j.label; item.cap = j.cap;
+            renderGrid(currentFilter);
+          })
+          .catch(function (e) { alert(e.message); });
+      }));
+
+      ['Worship', 'Community', 'Missions', 'Media'].forEach(function (c) {
+        if (c === item.cat) return;
+        menuEl.appendChild(menuItem('Move to ' + c, function () {
+          hideMenu();
+          adminPost('/api/update', { id: item.id, cat: c })
+            .then(function (j) { item.cat = j.cat; renderGrid(currentFilter); })
+            .catch(function (e) { alert(e.message); });
+        }));
+      });
+
+      menuEl.appendChild(menuItem('Delete photo…', function () {
+        hideMenu();
+        if (!confirm('Delete "' + item.label + '" from the gallery? This also removes the stored file and cannot be undone.')) return;
+        adminPost('/api/delete', { id: item.id })
+          .then(function () {
+            ITEMS = ITEMS.filter(function (i) { return i !== item; });
+            renderGrid(currentFilter);
+          })
+          .catch(function (e) { alert(e.message); });
+      }, { danger: true }));
+    } else {
+      menuEl.appendChild(menuItem('Built-in photo — managed in code', null, { disabled: true }));
+    }
+
+    menuEl.appendChild(menuItem('Copy image link', function () {
+      hideMenu();
+      var url = /^https?:/.test(item.img) ? item.img : location.origin + '/' + item.img;
+      (navigator.clipboard ? navigator.clipboard.writeText(url) : Promise.reject())
+        .catch(function () { prompt('Copy the link:', url); });
+    }));
+
+    document.body.appendChild(menuEl);
+    var r = menuEl.getBoundingClientRect();
+    menuEl.style.left = Math.min(x, window.innerWidth - r.width - 10) + 'px';
+    menuEl.style.top = Math.min(y, window.innerHeight - r.height - 10) + 'px';
+  }
+
+  grid.addEventListener('contextmenu', function (e) {
+    if (!isAdminUser) return;
+    var btn = e.target.closest('.gitem');
+    if (!btn || !btn.__item) return;
+    e.preventDefault();
+    showMenu(e.clientX, e.clientY, btn.__item);
+  });
+
   // When the Rust backend is running, merge photos uploaded from the site
   // (newest first). On static hosting this fetch just fails silently.
   fetch('/api/gallery')
@@ -478,6 +727,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       ITEMS = uploaded.map(function (p) {
         return { cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames };
       }).concat(ITEMS);
+      buildPeople();
+      buildEvents();
       renderGrid(currentFilter);
     })
     .catch(function () {});
