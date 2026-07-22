@@ -295,6 +295,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
   function renderGrid(filter) {
     grid.textContent = '';
+    openStrip = null;
     ITEMS.filter(function (i) { return filter === 'All' || i.cat === filter; }).forEach(function (item) {
       var btn = document.createElement('button');
       btn.className = 'gitem';
@@ -327,6 +328,13 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
 
       frame.appendChild(ph); frame.appendChild(badge);
+      // A moment shot as a burst shows one tile; the count hints at the rest.
+      if (item.frames && item.frames.length > 1) {
+        var stack = document.createElement('span');
+        stack.textContent = item.frames.length + ' photos';
+        stack.style.cssText = "position:absolute;top:10px;right:10px;font:600 10px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;color:#F7F2EA;background:rgba(33,26,18,.62);backdrop-filter:blur(3px);padding:5px 9px;border-radius:6px";
+        frame.appendChild(stack);
+      }
       if (item.kind === 'video') {
         var play = document.createElement('span');
         play.style.cssText = 'position:absolute;inset:0;display:grid;place-items:center;pointer-events:none';
@@ -354,9 +362,59 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       meta.appendChild(title); meta.appendChild(cap);
 
       btn.appendChild(frame); btn.appendChild(meta);
-      btn.addEventListener('click', function () { openLightbox(item); });
+      btn.addEventListener('click', function () {
+        if (item.frames && item.frames.length > 1) toggleBurst(btn, item);
+        else openLightbox(item);
+      });
       grid.appendChild(btn);
     });
+  }
+
+  // Burst expander: opens a compact, scrollable strip of that moment's frames
+  // in the grid flow (deliberately NOT a full-screen takeover). Tapping any
+  // frame opens it in the lightbox; tapping the tile again closes the strip.
+  var openStrip = null;
+  function closeBurst() {
+    if (openStrip) { openStrip.remove(); openStrip = null; }
+  }
+  function toggleBurst(btn, item) {
+    var was = openStrip && openStrip.dataset.for === item.img;
+    closeBurst();
+    if (was) return;
+    var strip = document.createElement('div');
+    strip.dataset.for = item.img;
+    strip.style.cssText = 'grid-column:1/-1;background:#F1EADD;border:1px solid #E0D6C4;border-radius:var(--r,14px);padding:13px 14px;animation:fadeIn .18s ease';
+    var head = document.createElement('div');
+    head.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:11px';
+    var t = document.createElement('span');
+    t.textContent = item.frames.length + ' photos from this moment';
+    t.style.cssText = "font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#8A7C68;flex:1";
+    var x = document.createElement('button');
+    x.textContent = 'Close';
+    x.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;border-radius:9px;padding:6px 12px;font:600 12px/1 'Hanken Grotesk',sans-serif;color:#211A12;cursor:pointer";
+    x.addEventListener('click', function (e) { e.stopPropagation(); closeBurst(); });
+    head.appendChild(t); head.appendChild(x);
+    var rail = document.createElement('div');
+    rail.style.cssText = 'display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin';
+    item.frames.forEach(function (src, i) {
+      var f = document.createElement('button');
+      f.style.cssText = 'flex:0 0 auto;border:none;padding:0;background:none;cursor:pointer;border-radius:10px;overflow:hidden;line-height:0';
+      var im = document.createElement('img');
+      im.src = src; im.loading = 'lazy'; im.alt = item.label + ' — frame ' + (i + 1);
+      im.style.cssText = 'width:104px;height:130px;object-fit:cover;display:block;border:1px solid #E0D6C4;border-radius:10px;transition:transform .18s ease';
+      f.appendChild(im);
+      f.addEventListener('mouseenter', function () { im.style.transform = 'scale(1.04)'; });
+      f.addEventListener('mouseleave', function () { im.style.transform = 'none'; });
+      f.addEventListener('click', function (e) {
+        e.stopPropagation();
+        openLightbox({ cat: item.cat, label: item.label, cap: item.cap, img: src, kind: 'photo' });
+      });
+      rail.appendChild(f);
+    });
+    strip.appendChild(head); strip.appendChild(rail);
+    btn.parentNode.insertBefore(strip, btn.nextSibling);
+    openStrip = strip;
+    strip.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
   }
 
   var currentFilter = 'All';
@@ -418,7 +476,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     .then(function (uploaded) {
       if (!Array.isArray(uploaded) || !uploaded.length) return;
       ITEMS = uploaded.map(function (p) {
-        return { cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind };
+        return { cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames };
       }).concat(ITEMS);
       renderGrid(currentFilter);
     })
