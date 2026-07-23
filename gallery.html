@@ -12,6 +12,8 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 *{box-sizing:border-box}
@@ -45,7 +47,7 @@ a{color:inherit}
 }
 
 /* Filter pills */
-.filter-btn{padding:10px 18px;border:1px solid rgba(33,26,18,.16);background:transparent;color:#3F382E;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border-radius:999px;cursor:pointer;transition:all .18s}
+.filter-btn{padding:10px 18px;border:1px solid rgba(33,26,18,.16);background:transparent;color:#3F382E;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:999px;cursor:pointer;transition:all .18s}
 .filter-btn.active{background:var(--clay,#B0542F);color:#FBF8F2;border-color:var(--clay,#B0542F)}
 
 /* ---------- Responsive (tablet & mobile) ---------- */
@@ -96,16 +98,20 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 #gsearch:focus{border-color:var(--clay,#B0542F);box-shadow:0 0 0 3px rgba(176,84,47,.12)}
 #gevent:focus{border-color:var(--clay,#B0542F);box-shadow:0 0 0 3px rgba(176,84,47,.12)}
 @media(max-width:640px){#gpeoplewrap span{display:none}}
+/* Metric-matched fallbacks: the fallback renders close to the web font's size,
+   so when the web font swaps in the text barely reflows (kills the header twitch). */
+@font-face{font-family:'Hanken Fallback';src:local('Arial');size-adjust:97%;ascent-override:92%;descent-override:24%;line-gap-override:0%}
+@font-face{font-family:'Cormorant Fallback';src:local('Georgia');size-adjust:88%;ascent-override:95%;descent-override:28%;line-gap-override:0%}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/auth.js" defer></script>
 </head>
 <body>
 
-<div id="root" style="--clay:#B0542F;--wheat:#C0913C;--r:14px;--rlg:22px;background:#F7F2EA;color:#5B5044;font-family:'Hanken Grotesk',sans-serif;overflow-x:clip">
+<div id="root" style="--clay:#B0542F;--wheat:#C0913C;--r:14px;--rlg:22px;background:#F7F2EA;color:#5B5044;font-family:'Hanken Grotesk','Hanken Fallback',sans-serif;overflow-x:clip">
 
 <!-- ANNOUNCEMENT BAR -->
-<div style="background:#221A12;color:#EDE3D2;font:500 13px/1.4 'Hanken Grotesk',sans-serif">
+<div style="background:#221A12;color:#EDE3D2;font:500 13px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif">
 <div style="max-width:1180px;margin:0 auto;padding:9px 32px;display:flex;gap:10px 20px;align-items:center;justify-content:center;flex-wrap:wrap;text-align:center">
 <span style="display:inline-flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:50%;background:var(--clay,#B0542F);animation:livePulse 2.4s infinite"></span>Join us this Sunday: IBADA at 9:00 AM · 2551 Aster Ave, Iowa City</span>
 <a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" style="color:var(--wheat,#C0913C);text-decoration:none;font-weight:600;white-space:nowrap">Watch live ↗</a>
@@ -115,21 +121,21 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease">
 <nav class="header-nav" style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
 <a href="/" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
-<span style="font:600 25px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
-<span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:4px">Ministries</span>
+<span style="font:600 25px/1 'Cormorant Garamond','Cormorant Fallback',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
+<span style="font:600 9.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:4px">Ministries</span>
 </a>
 <div class="nav-links" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:flex-end;flex:1 1 auto">
-<a href="/#mission" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">About</a>
-<a href="/#worship" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Worship</a>
-<a href="/#watch" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Watch</a>
-<a href="/#apps" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Apps</a>
-<a href="/missions" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Missions</a>
-<a href="/gallery" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:var(--clay,#B0542F);text-decoration:none">Gallery</a>
-<a href="/#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
+<a href="/#mission" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">About</a>
+<a href="/#worship" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Worship</a>
+<a href="/#watch" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Watch</a>
+<a href="/#apps" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Apps</a>
+<a href="/missions" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Missions</a>
+<a href="/gallery" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:var(--clay,#B0542F);text-decoration:none">Gallery</a>
+<a href="/#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
 </div>
 <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
 <span id="auth-nav"></span>
-<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
 <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
 </nav>
@@ -140,9 +146,9 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <!-- GALLERY HEADER -->
 <section style="padding:66px 32px 34px">
 <div style="max-width:1180px;margin:0 auto">
-<div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-bottom:22px"><a href="/" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Gallery</span></div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Gallery</div>
-<h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,5.4vw,72px);line-height:1.02;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Moments from the family</h1>
+<div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-bottom:22px"><a href="/" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Gallery</span></div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Gallery</div>
+<h1 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(42px,5.4vw,72px);line-height:1.02;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Moments from the family</h1>
 <p style="max-width:560px;font-size:17.5px;line-height:1.68;color:#5B5044;margin:0">Worship, fellowship, and the work: glimpses of Ukweli, in Iowa City and across the water.</p>
 <div id="filters" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:30px">
 <button data-filter="All" class="filter-btn active">All</button>
@@ -159,27 +165,27 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       <svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="#8A7C68" stroke-width="2" stroke-linecap="round" style="position:absolute;left:15px;top:50%;transform:translateY(-50%);pointer-events:none"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>
       <input id="gsearch" type="text" autocomplete="off" placeholder="Search by name, place, or moment"
         aria-label="Search photos"
-        style="width:100%;height:52px;padding:0 42px 0 42px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:14px;font:500 15.5px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;transition:border-color .18s,box-shadow .18s">
+        style="width:100%;height:52px;padding:0 42px 0 42px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:14px;font:500 15.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;outline:none;transition:border-color .18s,box-shadow .18s">
       <button id="gclear" type="button" aria-label="Clear search" hidden
-        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;padding:6px;line-height:0;color:#8A7C68;font:400 20px/1 'Hanken Grotesk',sans-serif">&times;</button>
+        style="position:absolute;right:12px;top:50%;transform:translateY(-50%);border:none;background:none;cursor:pointer;padding:6px;line-height:0;color:#8A7C68;font:400 20px/1 'Hanken Grotesk','Hanken Fallback',sans-serif">&times;</button>
     </div>
     <select id="gevent" aria-label="Filter by event"
-      style="flex:0 1 268px;min-width:200px;height:52px;padding:0 40px 0 16px;border:1px solid #E0D6C4;background:#FBF8F2 url(&quot;data:image/svg+xml;utf8,<svg xmlns=&apos;http://www.w3.org/2000/svg&apos; viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;%238A7C68&apos; stroke-width=&apos;2&apos; stroke-linecap=&apos;round&apos;><path d=&apos;M6 9l6 6 6-6&apos;/></svg>&quot;) no-repeat right 14px center/17px;border-radius:14px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none">
+      style="flex:0 1 268px;min-width:200px;height:52px;padding:0 40px 0 16px;border:1px solid #E0D6C4;background:#FBF8F2 url(&quot;data:image/svg+xml;utf8,<svg xmlns=&apos;http://www.w3.org/2000/svg&apos; viewBox=&apos;0 0 24 24&apos; fill=&apos;none&apos; stroke=&apos;%238A7C68&apos; stroke-width=&apos;2&apos; stroke-linecap=&apos;round&apos;><path d=&apos;M6 9l6 6 6-6&apos;/></svg>&quot;) no-repeat right 14px center/17px;border-radius:14px;font:500 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;outline:none;cursor:pointer;appearance:none;-webkit-appearance:none">
       <option value="">All events</option>
     </select>
   </div>
 
   <!-- Who appears in the photos, as one-tap filters -->
   <div id="gpeoplewrap" hidden style="display:flex;gap:12px;align-items:baseline;flex-wrap:wrap">
-    <span style="font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#A2937C;flex:0 0 auto;padding-top:2px">In the photos</span>
+    <span style="font:600 11px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#A2937C;flex:0 0 auto;padding-top:2px">In the photos</span>
     <div id="gpeople" style="display:flex;flex-wrap:wrap;gap:8px;flex:1 1 300px"></div>
   </div>
 
-  <div id="gcount" style="font:500 13.5px/1.5 'Hanken Grotesk',sans-serif;color:#8A7C68;min-height:1px"></div>
+  <div id="gcount" style="font:500 13.5px/1.5 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;min-height:1px"></div>
 </div>
 <div style="margin-top:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
-<button type="button" id="share-open" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14.5px/1 'Hanken Grotesk',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Share a photo</button>
-<span style="font:500 13.5px/1.5 'Hanken Grotesk',sans-serif;color:#8A7C68">Have a moment from the family? Add it, our team reviews every photo before it appears.</span>
+<button type="button" id="share-open" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Share a photo</button>
+<span style="font:500 13.5px/1.5 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68">Have a moment from the family? Add it, our team reviews every photo before it appears.</span>
 </div>
 </div>
 </section>
@@ -192,12 +198,12 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <!-- CTA -->
 <section style="padding:88px 32px;text-align:center;background:#FBF8F2;border-top:1px solid #EFE7D8">
 <div style="max-width:620px;margin:0 auto">
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Keep watching</div>
-<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,4vw,48px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 16px">There's always more to see</h2>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Keep watching</div>
+<h2 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(30px,4vw,48px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 16px">There's always more to see</h2>
 <p style="font-size:17px;line-height:1.7;color:#5B5044;margin:0 auto 30px;max-width:480px">New photos and full worship services are shared every week across our channels.</p>
 <div style="display:flex;flex-wrap:wrap;gap:13px;justify-content:center">
-<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 26px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Facebook Photos ↗</a>
-<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 24px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">YouTube ↗</a>
+<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 26px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Facebook Photos ↗</a>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 24px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">YouTube ↗</a>
 </div>
 </div>
 </section>
@@ -207,21 +213,21 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <div style="max-width:1180px;margin:0 auto">
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px;padding-bottom:44px;border-bottom:1px solid rgba(201,188,166,.16)">
 <div>
-<div style="display:flex;flex-direction:column;line-height:.86;margin-bottom:16px"><span style="font:600 26px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#F6EEDE">Ukweli</span><span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--wheat,#C0913C);margin-top:4px">Ministries</span></div>
+<div style="display:flex;flex-direction:column;line-height:.86;margin-bottom:16px"><span style="font:600 26px/1 'Cormorant Garamond','Cormorant Fallback',serif;letter-spacing:.02em;color:#F6EEDE">Ukweli</span><span style="font:600 9.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--wheat,#C0913C);margin-top:4px">Ministries</span></div>
 <p style="font-size:14.5px;line-height:1.6;color:#A99C84;margin:0 0 18px;max-width:240px">Brought forth by the word of truth (James 1:18). One family of churches, from Iowa City across the USA, Europe, and East Africa.</p>
 <div style="display:flex;gap:9px">
-<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">YouTube</a>
-<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">Facebook</a>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">YouTube</a>
+<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">Facebook</a>
 </div>
 </div>
 <div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Visit</div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Visit</div>
 <div style="font-size:14.5px;line-height:1.7;color:#A99C84">Ukweli Church of Christ<br>2551 Aster Ave<br>Iowa City, IA 52245</div>
 <div style="font-size:14.5px;line-height:1.7;color:#A99C84;margin-top:12px">Sundays · IBADA 9:00 AM</div>
-<a href="https://www.google.com/maps/search/?api=1&amp;query=2551+Aster+Ave+Iowa+City+IA" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;color:var(--wheat,#C0913C);text-decoration:none">Get directions ↗</a>
+<a href="https://www.google.com/maps/search/?api=1&amp;query=2551+Aster+Ave+Iowa+City+IA" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:var(--wheat,#C0913C);text-decoration:none">Get directions ↗</a>
 </div>
 <div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Explore</div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Explore</div>
 <div style="display:flex;flex-direction:column;gap:10px">
 <a href="/#mission" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">About</a>
 <a href="/#worship" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">Worship</a>
@@ -232,14 +238,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 </div>
 </div>
 <div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Our apps</div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Our apps</div>
 <div style="display:flex;flex-direction:column;gap:10px">
 <a href="https://biblearcade.app" target="_blank" rel="noopener" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">BibleArcade ↗</a>
 <a href="https://youlive.me" target="_blank" rel="noopener" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">YouLive ↗</a>
 </div>
 </div>
 </div>
-<div style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding-top:26px;font:500 12.5px/1.6 'Hanken Grotesk',sans-serif;color:#7E7460">
+<div style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding-top:26px;font:500 12.5px/1.6 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#7E7460">
 <span>© 2026 Ukweli Ministries · Iowa nonprofit · a 501(c)(3) church · EIN 42-3528698</span>
 <span>Iowa City, Iowa</span>
 </div>
@@ -253,8 +259,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <div id="lightbox-card" style="max-width:760px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease">
 <div id="lb-photo" style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span id="lb-mark" style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span><img id="lb-img" alt="" hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1"><video id="lb-video" controls playsinline hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1;background:#211A12"></video></div>
 <div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px">
-<div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
-<button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
+<div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
+<button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
 </div>
 </div>
 </div>
@@ -351,17 +357,28 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var key = filter + '|' + currentEvent + '|' + q + '|' + shown.map(function (i) { return i.img; }).join(',');
     if (key === lastRenderKey) return;
     lastRenderKey = key;
+    // Photos first, then all videos grouped together in their own place.
+    var photos = shown.filter(function (i) { return i.kind !== 'video'; });
+    var videos = shown.filter(function (i) { return i.kind === 'video'; });
+    shown = photos.concat(videos);
     var frag = document.createDocumentFragment();
     var appendTarget = frag;
     if (!shown.length) {
       var none = document.createElement('div');
-      none.style.cssText = "grid-column:1/-1;padding:38px 20px;text-align:center;font:500 15px/1.6 'Hanken Grotesk',sans-serif;color:#8A7C68";
+      none.style.cssText = "grid-column:1/-1;padding:38px 20px;text-align:center;font:500 15px/1.6 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68";
       none.textContent = q
         ? 'No photos match “' + q + '”' + (currentEvent ? ' in ' + currentEvent : '') + '. Try a name like Bishop Selemani Bulako.'
         : (currentEvent ? 'No photos in ' + currentEvent + ' yet.' : 'Nothing here yet.');
       appendTarget.appendChild(none);
     }
+    var videoStart = photos.length;
     shown.forEach(function (item, idx) {
+      if (idx === videoStart && videos.length) {
+        var vh = document.createElement('div');
+        vh.style.cssText = "grid-column:1/-1;margin:14px 0 2px;display:flex;align-items:center;gap:11px";
+        vh.innerHTML = '<span style="font:600 11px/1 \'Hanken Grotesk\',\'Hanken Fallback\',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#A2937C">Videos</span><span style="flex:1;height:1px;background:#E7DECF"></span>';
+        appendTarget.appendChild(vh);
+      }
       var btn = document.createElement('button');
       btn.className = 'gitem';
       btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;font-family:inherit';
@@ -396,14 +413,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
       var badge = document.createElement('span');
       badge.textContent = item.cat;
-      badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
+      badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
 
       frame.appendChild(ph); frame.appendChild(badge);
       // A moment shot as a burst shows one tile; the count hints at the rest.
       if (item.frames && item.frames.length > 1) {
         var stack = document.createElement('span');
         stack.textContent = item.frames.length + ' photos';
-        stack.style.cssText = "position:absolute;top:10px;right:10px;font:600 10px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;color:#F7F2EA;background:rgba(33,26,18,.62);backdrop-filter:blur(3px);padding:5px 9px;border-radius:6px";
+        stack.style.cssText = "position:absolute;top:10px;right:10px;font:600 10px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.06em;color:#F7F2EA;background:rgba(33,26,18,.62);backdrop-filter:blur(3px);padding:5px 9px;border-radius:6px";
         frame.appendChild(stack);
       }
       if (item.kind === 'video') {
@@ -426,10 +443,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       meta.style.cssText = 'padding:11px 3px 0';
       var title = document.createElement('div');
       title.textContent = item.label;
-      title.style.cssText = "font-family:'Cormorant Garamond',serif;font-weight:600;font-size:18px;line-height:1.15;color:#211A12";
+      title.style.cssText = "font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:18px;line-height:1.15;color:#211A12";
       var cap = document.createElement('div');
       cap.textContent = item.cap;
-      cap.style.cssText = "font:500 13px/1.4 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:2px";
+      cap.style.cssText = "font:500 13px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-top:2px";
       meta.appendChild(title); meta.appendChild(cap);
 
       btn.appendChild(frame); btn.appendChild(meta);
@@ -461,10 +478,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     head.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:11px';
     var t = document.createElement('span');
     t.textContent = item.frames.length + ' photos from this moment';
-    t.style.cssText = "font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#8A7C68;flex:1";
+    t.style.cssText = "font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#8A7C68;flex:1";
     var x = document.createElement('button');
     x.textContent = 'Close';
-    x.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;border-radius:9px;padding:6px 12px;font:600 12px/1 'Hanken Grotesk',sans-serif;color:#211A12;cursor:pointer";
+    x.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;border-radius:9px;padding:6px 12px;font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;cursor:pointer";
     x.addEventListener('click', function (e) { e.stopPropagation(); closeBurst(); });
     head.appendChild(t); head.appendChild(x);
     var rail = document.createElement('div');
@@ -579,7 +596,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       var c = document.createElement('button');
       c.type = 'button'; c.dataset.name = nm;
       c.textContent = nm + ' (' + tally[nm] + ')';
-      c.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;color:#211A12;border-radius:999px;padding:7px 13px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer;transition:all .16s";
+      c.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;color:#211A12;border-radius:999px;padding:7px 13px;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;cursor:pointer;transition:all .16s";
       c.addEventListener('click', function () {
         setQuery(currentQuery.trim().toLowerCase() === nm.toLowerCase() ? '' : nm);
       });
@@ -679,7 +696,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var a = document.createElement('button');
     a.type = 'button';
     a.textContent = label;
-    a.style.cssText = "display:block;width:100%;text-align:left;padding:10px 13px;background:none;border:none;border-radius:9px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;color:" + (opts.danger ? '#8A3A2E' : '#211A12') + ";cursor:" + (opts.disabled ? 'default' : 'pointer') + (opts.disabled ? ';opacity:.45' : '');
+    a.style.cssText = "display:block;width:100%;text-align:left;padding:10px 13px;background:none;border:none;border-radius:9px;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:" + (opts.danger ? '#8A3A2E' : '#211A12') + ";cursor:" + (opts.disabled ? 'default' : 'pointer') + (opts.disabled ? ';opacity:.45' : '');
     if (!opts.disabled) {
       a.addEventListener('mouseenter', function () { a.style.background = opts.danger ? '#F5E4DE' : '#F1E9DA'; });
       a.addEventListener('mouseleave', function () { a.style.background = 'none'; });
@@ -696,7 +713,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
     var head = document.createElement('div');
     head.textContent = item.label;
-    head.style.cssText = "padding:8px 13px;font:600 11px/1.4 'Hanken Grotesk',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A7C68;border-bottom:1px solid #EAE1D1;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
+    head.style.cssText = "padding:8px 13px;font:600 11px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.08em;text-transform:uppercase;color:#8A7C68;border-bottom:1px solid #EAE1D1;margin-bottom:4px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis";
     menuEl.appendChild(head);
 
     if (item.id) {
@@ -792,25 +809,25 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <!-- SHARE A PHOTO MODAL -->
 <div id="upModal" hidden style="position:fixed;inset:0;z-index:120;background:rgba(20,15,9,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:24px;animation:fadeIn .2s ease">
 <form id="upForm" style="max-width:470px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);padding:26px 24px;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease" novalidate>
-<div style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:26px;color:#211A12;margin-bottom:4px">Share a photo</div>
-<p style="font:500 14px/1.55 'Hanken Grotesk',sans-serif;color:#8A7C68;margin:0 0 18px">Add a moment from the family. Our team reviews every photo before it appears on the gallery.</p>
-<label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Photo or video</label>
-<input id="upFile" type="file" accept="image/*,video/*" style="width:100%;font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044;margin-bottom:14px">
-<label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Title</label>
-<input id="upTitle" type="text" maxlength="80" placeholder="e.g. After Sunday worship" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;margin-bottom:14px">
-<label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Caption <span style="text-transform:none;font-weight:500">(optional)</span></label>
-<input id="upCap" type="text" maxlength="160" placeholder="A few words about the moment" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none;margin-bottom:14px">
+<div style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:26px;color:#211A12;margin-bottom:4px">Share a photo</div>
+<p style="font:500 14px/1.55 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin:0 0 18px">Add a moment from the family. Our team reviews every photo before it appears on the gallery.</p>
+<label style="display:block;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Photo or video</label>
+<input id="upFile" type="file" accept="image/*,video/*" style="width:100%;font:500 14px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#5B5044;margin-bottom:14px">
+<label style="display:block;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Title</label>
+<input id="upTitle" type="text" maxlength="80" placeholder="e.g. After Sunday worship" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;outline:none;margin-bottom:14px">
+<label style="display:block;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Caption <span style="text-transform:none;font-weight:500">(optional)</span></label>
+<input id="upCap" type="text" maxlength="160" placeholder="A few words about the moment" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;outline:none;margin-bottom:14px">
 <div style="display:flex;gap:12px;flex-wrap:wrap">
-<div style="flex:1;min-width:140px"><label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Section</label>
-<select id="upCat" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none"><option>Community</option><option>Worship</option><option>Missions</option><option>Media</option></select></div>
-<div style="flex:1;min-width:140px"><label style="display:block;font:600 12.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Your name <span style="text-transform:none;font-weight:500">(optional)</span></label>
-<input id="upName" type="text" maxlength="60" placeholder="Shown as credit" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk',sans-serif;color:#211A12;outline:none"></div>
+<div style="flex:1;min-width:140px"><label style="display:block;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Section</label>
+<select id="upCat" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;outline:none"><option>Community</option><option>Worship</option><option>Missions</option><option>Media</option></select></div>
+<div style="flex:1;min-width:140px"><label style="display:block;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.06em;text-transform:uppercase;color:#8A7C68;margin:0 0 7px">Your name <span style="text-transform:none;font-weight:500">(optional)</span></label>
+<input id="upName" type="text" maxlength="60" placeholder="Shown as credit" style="width:100%;padding:12px 14px;border:1px solid #E0D6C4;background:#FBF8F2;border-radius:12px;font:500 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;outline:none"></div>
 </div>
 <input id="upHp" type="text" name="website" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-<div id="upMsg" hidden style="margin-top:15px;padding:12px 14px;border-radius:11px;font:500 14px/1.5 'Hanken Grotesk',sans-serif"></div>
+<div id="upMsg" hidden style="margin-top:15px;padding:12px 14px;border-radius:11px;font:500 14px/1.5 'Hanken Grotesk','Hanken Fallback',sans-serif"></div>
 <div style="display:flex;gap:11px;margin-top:20px">
-<button type="submit" id="upSubmit" class="btn-clay" style="flex:1;padding:14px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;transition:filter .18s,transform .18s">Submit for review</button>
-<button type="button" id="upCancel" class="btn-ink" style="padding:14px 20px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk',sans-serif;border:1px solid rgba(33,26,18,.22);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Cancel</button>
+<button type="submit" id="upSubmit" class="btn-clay" style="flex:1;padding:14px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;transition:filter .18s,transform .18s">Submit for review</button>
+<button type="button" id="upCancel" class="btn-ink" style="padding:14px 20px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:1px solid rgba(33,26,18,.22);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Cancel</button>
 </div>
 </form>
 </div>
