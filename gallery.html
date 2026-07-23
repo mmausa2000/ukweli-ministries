@@ -100,6 +100,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
    so when the web font swaps in the text barely reflows (kills the header twitch). */
 @font-face{font-family:'Hanken Fallback';src:local('Arial');size-adjust:97%;ascent-override:92%;descent-override:24%;line-gap-override:0%}
 @font-face{font-family:'Cormorant Fallback';src:local('Georgia');size-adjust:88%;ascent-override:95%;descent-override:28%;line-gap-override:0%}
+#lb-prev:hover,#lb-next:hover{background:rgba(20,15,9,.78)}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/auth.js" defer></script>
@@ -255,7 +256,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <!-- LIGHTBOX -->
 <div id="lightbox" hidden style="position:fixed;inset:0;z-index:100;background:rgba(20,15,9,.82);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);display:flex;align-items:center;justify-content:center;padding:28px;animation:fadeIn .2s ease">
 <div id="lightbox-card" style="max-width:760px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease">
-<div id="lb-photo" style="aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span id="lb-mark" style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span><img id="lb-img" alt="" hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1"><video id="lb-video" controls playsinline hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1;background:#211A12"></video></div>
+<div id="lb-photo" style="position:relative;aspect-ratio:16/10;background:repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px);display:grid;place-items:center;border-bottom:1px solid #E7DECF"><span id="lb-mark" style="font:500 12px/1 ui-monospace,Menlo,monospace;color:#9A8B74;letter-spacing:.05em">[ photo ]</span><img id="lb-img" alt="" hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1"><video id="lb-video" controls playsinline hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1;background:#211A12"></video>
+<button id="lb-prev" aria-label="Previous photo" hidden style="position:absolute;left:12px;top:50%;transform:translateY(-50%);z-index:2;width:46px;height:46px;border-radius:50%;border:none;background:rgba(20,15,9,.5);backdrop-filter:blur(3px);color:#F7F2EA;font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:background .16s">&#8249;</button>
+<button id="lb-next" aria-label="Next photo" hidden style="position:absolute;right:12px;top:50%;transform:translateY(-50%);z-index:2;width:46px;height:46px;border-radius:50%;border:none;background:rgba(20,15,9,.5);backdrop-filter:blur(3px);color:#F7F2EA;font-size:22px;line-height:1;cursor:pointer;display:grid;place-items:center;transition:background .16s">&#8250;</button>
+<span id="lb-counter" hidden style="position:absolute;bottom:12px;left:50%;transform:translateX(-50%);z-index:2;background:rgba(20,15,9,.55);backdrop-filter:blur(3px);color:#F7F2EA;font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.03em;padding:6px 12px;border-radius:999px"></span></div>
 <div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px">
 <div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
 <button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
@@ -493,10 +497,12 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       f.appendChild(im);
       f.addEventListener('mouseenter', function () { im.style.transform = 'scale(1.04)'; });
       f.addEventListener('mouseleave', function () { im.style.transform = 'none'; });
-      f.addEventListener('click', function (e) {
-        e.stopPropagation();
-        openLightbox({ cat: item.cat, label: item.label, cap: item.cap, img: src, kind: 'photo' });
-      });
+      (function (frameIndex) {
+        f.addEventListener('click', function (e) {
+          e.stopPropagation();
+          openLightbox({ cat: item.cat, label: item.label, cap: item.cap, kind: 'photo' }, item.frames, frameIndex);
+        });
+      })(i);
       rail.appendChild(f);
     });
     strip.appendChild(head); strip.appendChild(rail);
@@ -611,13 +617,37 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
   var lbPhoto = document.getElementById('lb-photo');
   var lbImg = document.getElementById('lb-img');
+  var lbPrev = document.getElementById('lb-prev');
+  var lbNext = document.getElementById('lb-next');
+  var lbCounter = document.getElementById('lb-counter');
   var lbMark = document.getElementById('lb-mark');
   var lbVideo = document.getElementById('lb-video');
 
-  function openLightbox(item) {
+  var lbList = null;   // array of image srcs when opened from a burst
+  var lbIndex = 0;
+  var lbMeta = null;   // {cat,label,cap} for the burst, reused across frames
+
+  function showFrame(i) {
+    if (!lbList) return;
+    lbIndex = (i + lbList.length) % lbList.length;
+    lbImg.hidden = true; lbVideo.hidden = true; lbMark.hidden = false;
+    lbImg.src = lbList[lbIndex];
+    lbImg.alt = (lbMeta.label || '') + ' — frame ' + (lbIndex + 1);
+    lbImg.hidden = false; lbMark.hidden = true;
+    lbPhoto.style.background = '#211A12';
+    lbCounter.textContent = (lbIndex + 1) + ' / ' + lbList.length;
+  }
+
+  function openLightbox(item, list, index) {
+    // Burst mode: `list` is that moment's frame srcs; arrows page through them.
+    lbList = (list && list.length > 1) ? list : null;
+    lbMeta = { cat: item.cat, label: item.label, cap: item.cap };
+    var multi = !!lbList;
+    lbPrev.hidden = lbNext.hidden = lbCounter.hidden = !multi;
     lbCat.textContent = item.cat;
     lbLabel.textContent = item.label;
     lbCap.textContent = item.cap;
+    if (multi) { showFrame(index || 0); lightbox.hidden = false; return; }
     lbImg.hidden = true;
     lbVideo.hidden = true;
     lbMark.hidden = false;
@@ -640,6 +670,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   }
   function closeLightbox() {
     lightbox.hidden = true;
+    lbList = null; lbPrev.hidden = lbNext.hidden = lbCounter.hidden = true;
     lbVideo.pause();
     lbVideo.removeAttribute('src');
     lbVideo.load();
@@ -648,7 +679,22 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   lightbox.addEventListener('click', closeLightbox);
   lightboxCard.addEventListener('click', function (e) { e.stopPropagation(); });
   document.getElementById('lb-close').addEventListener('click', closeLightbox);
-  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') closeLightbox(); });
+  lbPrev.addEventListener('click', function (e) { e.stopPropagation(); showFrame(lbIndex - 1); });
+  lbNext.addEventListener('click', function (e) { e.stopPropagation(); showFrame(lbIndex + 1); });
+  document.addEventListener('keydown', function (e) {
+    if (lightbox.hidden) return;
+    if (e.key === 'Escape') closeLightbox();
+    else if (lbList && e.key === 'ArrowLeft') showFrame(lbIndex - 1);
+    else if (lbList && e.key === 'ArrowRight') showFrame(lbIndex + 1);
+  });
+  // Swipe on touch to move between frames.
+  var tsx = 0;
+  lbPhoto.addEventListener('touchstart', function (e) { tsx = e.touches[0].clientX; }, { passive: true });
+  lbPhoto.addEventListener('touchend', function (e) {
+    if (!lbList) return;
+    var dx = e.changedTouches[0].clientX - tsx;
+    if (dx > 45) showFrame(lbIndex - 1); else if (dx < -45) showFrame(lbIndex + 1);
+  }, { passive: true });
 
   renderGrid(currentFilter);
 
