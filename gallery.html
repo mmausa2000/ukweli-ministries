@@ -314,6 +314,15 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     { cat: 'Missions', label: 'To the hills', cap: 'The Word in the countryside', img: 'assets/tz-outreach-17.webp' }
   ];
 
+  // Grid thumbnails: rewrite a public Storage URL to the on-the-fly render
+  // endpoint at grid width, so tiles fetch ~460px images (a few KB) instead of
+  // the full 2000px file. Non-Supabase assets (local /assets) pass through.
+  function thumb(url, w) {
+    if (!url || url.indexOf('/storage/v1/object/public/') === -1) return url;
+    return url.replace('/storage/v1/object/public/', '/storage/v1/render/image/public/')
+      + '?width=' + w + '&quality=68&resize=cover';
+  }
+
   var grid = document.getElementById('grid');
   var filterWrap = document.getElementById('filters');
   var lightbox = document.getElementById('lightbox');
@@ -342,7 +351,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         : (currentEvent ? 'No photos in ' + currentEvent + ' yet.' : 'Nothing here yet.');
       grid.appendChild(none);
     }
-    shown.forEach(function (item) {
+    shown.forEach(function (item, idx) {
       var btn = document.createElement('button');
       btn.className = 'gitem';
       btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;transition:transform .25s ease,box-shadow .25s ease;font-family:inherit';
@@ -360,9 +369,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         ph.style.cssText = 'aspect-ratio:4/5;width:100%;height:auto;object-fit:cover;display:block;background:#211A12;transform:scale(var(--z,1));transition:transform .45s ease';
       } else if (item.img) {
         ph = document.createElement('img');
-        ph.src = item.img;
+        ph.src = thumb(item.img, 460);
+        ph.srcset = thumb(item.img, 460) + ' 460w, ' + thumb(item.img, 760) + ' 760w';
+        ph.sizes = '(max-width:640px) 50vw, 232px';
         ph.alt = item.label + ' — ' + item.cap;
-        ph.loading = 'lazy';
+        // First screenful (the newest photos) loads at full priority; the
+        // rest lazy-load as the visitor scrolls.
+        if (idx < 8) { ph.loading = 'eager'; ph.fetchPriority = 'high'; }
+        else ph.loading = 'lazy';
         ph.style.cssText = 'aspect-ratio:4/5;width:100%;height:auto;object-fit:cover;display:block;transform:scale(var(--z,1));transition:transform .45s ease';
       } else {
         ph = document.createElement('div');
@@ -447,7 +461,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       var f = document.createElement('button');
       f.style.cssText = 'flex:0 0 auto;border:none;padding:0;background:none;cursor:pointer;border-radius:10px;overflow:hidden;line-height:0';
       var im = document.createElement('img');
-      im.src = src; im.loading = 'lazy'; im.alt = item.label + ' — frame ' + (i + 1);
+      im.src = thumb(src, 220); im.loading = 'lazy'; im.alt = item.label + ' — frame ' + (i + 1);
       im.style.cssText = 'width:104px;height:130px;object-fit:cover;display:block;border:1px solid #E0D6C4;border-radius:10px;transition:transform .18s ease';
       f.appendChild(im);
       f.addEventListener('mouseenter', function () { im.style.transform = 'scale(1.04)'; });
@@ -733,18 +747,32 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     showMenu(e.clientX, e.clientY, btn.__item);
   });
 
-  // When the Rust backend is running, merge photos uploaded from the site
-  // (newest first). On static hosting this fetch just fails silently.
+  // Merge photos uploaded from the site ahead of the built-in set (the API
+  // returns newest first). The last good response is cached in localStorage
+  // and rendered immediately on the next visit, so uploads appear with the
+  // page instead of popping in after it; the live fetch then refreshes the
+  // cache and only re-renders when something actually changed.
+  var STATIC_ITEMS = ITEMS.slice();
+  function mergeUploaded(uploaded) {
+    ITEMS = uploaded.map(function (p) {
+      return { id: p.id, cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames };
+    }).concat(STATIC_ITEMS);
+    buildPeople();
+    buildEvents();
+    renderGrid(currentFilter);
+  }
+  var cachedUploads = null;
+  try { cachedUploads = JSON.parse(localStorage.getItem('ukweli-gallery-v1') || 'null'); } catch (e) {}
+  if (Array.isArray(cachedUploads) && cachedUploads.length) mergeUploaded(cachedUploads);
+
   fetch('/api/gallery')
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (uploaded) {
-      if (!Array.isArray(uploaded) || !uploaded.length) return;
-      ITEMS = uploaded.map(function (p) {
-        return { cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames };
-      }).concat(ITEMS);
-      buildPeople();
-      buildEvents();
-      renderGrid(currentFilter);
+      if (!Array.isArray(uploaded)) return;
+      var fresh = JSON.stringify(uploaded);
+      try { localStorage.setItem('ukweli-gallery-v1', fresh); } catch (e) {}
+      if (fresh === JSON.stringify(cachedUploads)) return;
+      if (uploaded.length) mergeUploaded(uploaded);
     })
     .catch(function () {});
 })();
