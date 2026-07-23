@@ -32,12 +32,15 @@ a{color:inherit}
 .btn-ink:hover{background:#211A12;color:#F7F2EA;border-color:#211A12}
 .btn-ink.lift:hover{transform:translateY(-1px)}
 .pill-dark:hover{border-color:var(--wheat,#C0913C);color:var(--wheat,#C0913C)}
-.gitem:hover{transform:translateY(-3px);--z:1.06}
+.gitem{--z:1}
+.gitem:hover .gframe{transform:translateY(-3px);box-shadow:0 12px 28px -14px rgba(33,26,18,.35)}
+.gitem:hover{--z:1.06}
 [hidden]{display:none!important}
 
 /* Touch devices: no hover-lift transforms (they cause jumpy taps) */
 @media (hover:none){
-.btn-clay:hover,.btn-ink.lift:hover,.gitem:hover{transform:none!important}
+.btn-clay:hover,.btn-ink.lift:hover{transform:none!important}
+.gitem:hover .gframe{transform:none!important}
 .gitem:hover{--z:1}
 }
 
@@ -331,8 +334,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   var lbLabel = document.getElementById('lb-label');
   var lbCap = document.getElementById('lb-cap');
 
+  var lastRenderKey = '';
   function renderGrid(filter) {
-    grid.textContent = '';
     openStrip = null;
     var q = (currentQuery || '').trim().toLowerCase();
     var shown = ITEMS.filter(function (i) {
@@ -343,21 +346,29 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       return ((i.label || '') + ' ' + (i.cap || '') + ' ' + (i.cat || '')).toLowerCase().indexOf(q) !== -1;
     });
     updateCount(shown.length, q);
+    // Skip the rebuild when nothing visible changed (cache->API load fired it
+    // twice with identical data, flashing the whole grid).
+    var key = filter + '|' + currentEvent + '|' + q + '|' + shown.map(function (i) { return i.img; }).join(',');
+    if (key === lastRenderKey) return;
+    lastRenderKey = key;
+    var frag = document.createDocumentFragment();
+    var appendTarget = frag;
     if (!shown.length) {
       var none = document.createElement('div');
       none.style.cssText = "grid-column:1/-1;padding:38px 20px;text-align:center;font:500 15px/1.6 'Hanken Grotesk',sans-serif;color:#8A7C68";
       none.textContent = q
         ? 'No photos match “' + q + '”' + (currentEvent ? ' in ' + currentEvent : '') + '. Try a name like Bishop Selemani Bulako.'
         : (currentEvent ? 'No photos in ' + currentEvent + ' yet.' : 'Nothing here yet.');
-      grid.appendChild(none);
+      appendTarget.appendChild(none);
     }
     shown.forEach(function (item, idx) {
       var btn = document.createElement('button');
       btn.className = 'gitem';
-      btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;transition:transform .25s ease,box-shadow .25s ease;font-family:inherit';
+      btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;font-family:inherit';
 
       var frame = document.createElement('div');
-      frame.style.cssText = 'position:relative;border-radius:var(--r,14px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 1px 2px rgba(33,26,18,.05)';
+      frame.className = 'gframe';
+      frame.style.cssText = 'position:relative;border-radius:var(--r,14px);overflow:hidden;border:1px solid #E7DECF;box-shadow:0 1px 2px rgba(33,26,18,.05);transition:transform .25s ease,box-shadow .25s ease;will-change:transform';
 
       var ph;
       if (item.img && item.kind === 'video') {
@@ -427,8 +438,9 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         if (item.frames && item.frames.length > 1) toggleBurst(btn, item);
         else openLightbox(item);
       });
-      grid.appendChild(btn);
+      appendTarget.appendChild(btn);
     });
+    grid.replaceChildren(frag);
   }
 
   // Burst expander: opens a compact, scrollable strip of that moment's frames
