@@ -345,8 +345,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   function renderGrid(filter) {
     var q = (currentQuery || '').trim().toLowerCase();
     var shown = ITEMS.filter(function (i) {
-      if (filter !== 'All' && i.cat !== filter) return false;
-      if (currentEvent && (i.label || '') !== currentEvent) return false;
+      // A search spans every category (a name shouldn't be trapped in the
+      // active tab); category/event filters apply only when not searching.
+      if (!q && filter !== 'All' && i.cat !== filter) return false;
+      if (!q && currentEvent && (i.label || '') !== currentEvent) return false;
       if (!q) return true;
       // Names live in the caption, so one haystack covers people, places and moments.
       return ((i.label || '') + ' ' + (i.cap || '') + ' ' + (i.cat || '')).toLowerCase().indexOf(q) !== -1;
