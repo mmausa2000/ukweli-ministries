@@ -101,6 +101,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 @font-face{font-family:'Hanken Fallback';src:local('Arial');size-adjust:97%;ascent-override:92%;descent-override:24%;line-gap-override:0%}
 @font-face{font-family:'Cormorant Fallback';src:local('Georgia');size-adjust:88%;ascent-override:95%;descent-override:28%;line-gap-override:0%}
 #lb-prev:hover,#lb-next:hover{background:rgba(20,15,9,.78)}
+@media(min-width:720px){.gitem.feature{grid-column:span 2;grid-row:span 2}.gitem.feature .gframe img,.gitem.feature .gframe video{aspect-ratio:auto;height:100%}.gitem.feature .gframe{height:100%}}
+.gitem.feature .gframe{border-color:#d8cdb6}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/auth.js" defer></script>
@@ -151,10 +153,6 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <p style="max-width:560px;font-size:17.5px;line-height:1.68;color:#5B5044;margin:0">Worship, fellowship, and the work: glimpses of Ukweli, in Iowa City and across the water.</p>
 <div id="filters" style="display:flex;flex-wrap:wrap;gap:10px;margin-top:30px">
 <button data-filter="All" class="filter-btn active">All</button>
-<button data-filter="Worship" class="filter-btn">Worship</button>
-<button data-filter="Community" class="filter-btn">Community</button>
-<button data-filter="Missions" class="filter-btn">Missions</button>
-<button data-filter="Media" class="filter-btn">Media</button>
 </div>
 <div style="margin-top:26px;display:flex;flex-direction:column;gap:15px">
   <!-- Search and event sit on one line and share the full content width, so the
@@ -191,7 +189,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
 <!-- GALLERY GRID -->
 <section style="padding:20px 32px 96px">
-<div id="grid" style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(232px,1fr));gap:18px"></div>
+<div id="grid" style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:24px;grid-auto-flow:dense"></div>
 </section>
 
 <!-- CTA -->
@@ -373,6 +371,12 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         : (currentEvent ? 'No photos in ' + currentEvent + ' yet.' : 'Nothing here yet.');
       appendTarget.appendChild(none);
     }
+    // Lead with a professional (Lumix P10..) shot as the featured hero when one
+    // exists in this view, so the strongest image anchors the layout.
+    var heroPick = shown.findIndex(function (i) {
+      return i.kind !== 'video' && /\/P10\d+\.webp/i.test(i.img || '');
+    });
+    if (heroPick > 0) { var hp = shown.splice(heroPick, 1)[0]; shown.unshift(hp); }
     var videoStart = photos.length;
     shown.forEach(function (item, idx) {
       if (idx === videoStart && videos.length) {
@@ -383,6 +387,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       }
       var btn = document.createElement('button');
       btn.className = 'gitem';
+      if (idx === 0 && item.kind !== 'video') btn.classList.add('feature');
       btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;font-family:inherit';
 
       var frame = document.createElement('div');
@@ -472,6 +477,32 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
   // Events are read off the labels themselves, so each year's convention shows
   // up on its own as soon as its photos are added - nothing to hardcode.
+  // Category tabs are generated from the data so new activities (Awards,
+  // Baptism, ...) appear automatically. Ordered by a preferred sequence, then
+  // any extras alphabetically; each shows its count.
+  var TAB_ORDER = ['Baptism','After the Baptism','Awards','Church Service','Worship','Community','Missions','Media'];
+  function buildTabs() {
+    var tally = {};
+    ITEMS.forEach(function (i) { var c=(i.cat||'').trim(); if(c) tally[c]=(tally[c]||0)+1; });
+    var cats = Object.keys(tally).sort(function(a,b){
+      var ia=TAB_ORDER.indexOf(a), ib=TAB_ORDER.indexOf(b);
+      if(ia<0)ia=99; if(ib<0)ib=99;
+      return ia-ib || a.localeCompare(b);
+    });
+    // wipe all but the "All" button, then append
+    filterWrap.querySelectorAll('[data-filter]:not([data-filter="All"])').forEach(function(x){x.remove()});
+    cats.forEach(function(c){
+      var b=document.createElement('button');
+      b.className='filter-btn'; b.dataset.filter=c;
+      b.textContent=c+' ('+tally[c]+')';
+      filterWrap.appendChild(b);
+    });
+    // keep the active state valid
+    filterWrap.querySelectorAll('.filter-btn').forEach(function(x){
+      x.classList.toggle('active', x.dataset.filter===currentFilter);
+    });
+  }
+
   function buildEvents() {
     if (!eventEl) return;
     var tally = {};
@@ -684,6 +715,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     if (dx > 45) showFrame(lbIndex - 1); else if (dx < -45) showFrame(lbIndex + 1);
   }, { passive: true });
 
+  buildTabs();
   renderGrid(currentFilter);
 
   // ---------- Admin right-click menu ----------
@@ -819,6 +851,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       return { id: p.id, cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames };
     }).concat(STATIC_ITEMS);
     buildPeople();
+    buildTabs();
     buildEvents();
     renderGrid(currentFilter);
   }
