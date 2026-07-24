@@ -264,6 +264,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
 <button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
 </div>
+<div id="lb-strip" hidden style="display:flex;gap:8px;overflow-x:auto;padding:0 20px 18px;scrollbar-width:thin"></div>
 </div>
 </div>
 
@@ -344,7 +345,6 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
   var lastRenderKey = '';
   function renderGrid(filter) {
-    openStrip = null;
     var q = (currentQuery || '').trim().toLowerCase();
     var shown = ITEMS.filter(function (i) {
       if (filter !== 'All' && i.cat !== filter) return false;
@@ -454,7 +454,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       btn.appendChild(frame); btn.appendChild(meta);
       btn.__item = item;
       btn.addEventListener('click', function () {
-        if (item.frames && item.frames.length > 1) toggleBurst(btn, item);
+        if (item.frames && item.frames.length > 1) openLightbox(item, item.frames, 0);
         else openLightbox(item);
       });
       appendTarget.appendChild(btn);
@@ -465,52 +465,6 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   // Burst expander: opens a compact, scrollable strip of that moment's frames
   // in the grid flow (deliberately NOT a full-screen takeover). Tapping any
   // frame opens it in the lightbox; tapping the tile again closes the strip.
-  var openStrip = null;
-  function closeBurst() {
-    if (openStrip) { openStrip.remove(); openStrip = null; }
-  }
-  function toggleBurst(btn, item) {
-    var was = openStrip && openStrip.dataset.for === item.img;
-    closeBurst();
-    if (was) return;
-    var strip = document.createElement('div');
-    strip.dataset.for = item.img;
-    strip.style.cssText = 'grid-column:1/-1;background:#F1EADD;border:1px solid #E0D6C4;border-radius:var(--r,14px);padding:13px 14px;animation:fadeIn .18s ease';
-    var head = document.createElement('div');
-    head.style.cssText = 'display:flex;align-items:center;gap:10px;margin-bottom:11px';
-    var t = document.createElement('span');
-    t.textContent = item.frames.length + ' photos from this moment';
-    t.style.cssText = "font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.04em;text-transform:uppercase;color:#8A7C68;flex:1";
-    var x = document.createElement('button');
-    x.textContent = 'Close';
-    x.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;border-radius:9px;padding:6px 12px;font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#211A12;cursor:pointer";
-    x.addEventListener('click', function (e) { e.stopPropagation(); closeBurst(); });
-    head.appendChild(t); head.appendChild(x);
-    var rail = document.createElement('div');
-    rail.style.cssText = 'display:flex;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin';
-    item.frames.forEach(function (src, i) {
-      var f = document.createElement('button');
-      f.style.cssText = 'flex:0 0 auto;border:none;padding:0;background:none;cursor:pointer;border-radius:10px;overflow:hidden;line-height:0';
-      var im = document.createElement('img');
-      im.src = thumb(src, 220); im.loading = 'lazy'; im.alt = item.label + ' — frame ' + (i + 1);
-      im.style.cssText = 'width:104px;height:130px;object-fit:cover;display:block;border:1px solid #E0D6C4;border-radius:10px;transition:transform .18s ease';
-      f.appendChild(im);
-      f.addEventListener('mouseenter', function () { im.style.transform = 'scale(1.04)'; });
-      f.addEventListener('mouseleave', function () { im.style.transform = 'none'; });
-      (function (frameIndex) {
-        f.addEventListener('click', function (e) {
-          e.stopPropagation();
-          openLightbox({ cat: item.cat, label: item.label, cap: item.cap, kind: 'photo' }, item.frames, frameIndex);
-        });
-      })(i);
-      rail.appendChild(f);
-    });
-    strip.appendChild(head); strip.appendChild(rail);
-    btn.parentNode.insertBefore(strip, btn.nextSibling);
-    openStrip = strip;
-    strip.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-  }
-
   var currentFilter = 'All';
   var currentQuery = '';
   var currentEvent = '';
@@ -636,6 +590,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     lbImg.hidden = false; lbMark.hidden = true;
     lbPhoto.style.background = '#211A12';
     lbCounter.textContent = (lbIndex + 1) + ' / ' + lbList.length;
+    markStrip();
   }
 
   function openLightbox(item, list, index) {
@@ -647,7 +602,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     lbCat.textContent = item.cat;
     lbLabel.textContent = item.label;
     lbCap.textContent = item.cap;
-    if (multi) { showFrame(index || 0); lightbox.hidden = false; return; }
+    buildStrip(multi ? lbList : null);
+    if (multi) { showFrame(index || 0); openLB(); return; }
     lbImg.hidden = true;
     lbVideo.hidden = true;
     lbMark.hidden = false;
@@ -666,11 +622,43 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     } else {
       lbPhoto.style.background = 'repeating-linear-gradient(135deg,#EDE4D3 0 15px,#F3ECDE 15px 30px)';
     }
+    openLB();
+  }
+  function openLB() {
+    var sbw = window.innerWidth - document.documentElement.clientWidth;
+    if (sbw > 0) document.body.style.paddingRight = sbw + 'px';
+    document.body.style.overflow = 'hidden';
     lightbox.hidden = false;
   }
+  var lbStrip = document.getElementById('lb-strip');
+  function buildStrip(list) {
+    if (!list) { lbStrip.hidden = true; lbStrip.textContent = ''; return; }
+    lbStrip.hidden = false; lbStrip.textContent = '';
+    list.forEach(function (src, i) {
+      var t = document.createElement('button');
+      t.dataset.i = i;
+      t.style.cssText = 'flex:0 0 auto;border:2px solid transparent;padding:0;background:none;cursor:pointer;border-radius:8px;overflow:hidden;line-height:0;transition:border-color .15s';
+      var im = document.createElement('img');
+      im.src = thumb(src, 150); im.loading = 'lazy'; im.alt = 'frame ' + (i + 1);
+      im.style.cssText = 'width:60px;height:74px;object-fit:cover;display:block';
+      t.appendChild(im);
+      t.addEventListener('click', function (e) { e.stopPropagation(); showFrame(i); });
+      lbStrip.appendChild(t);
+    });
+  }
+  function markStrip() {
+    [].forEach.call(lbStrip.children, function (c) {
+      var on = +c.dataset.i === lbIndex;
+      c.style.borderColor = on ? 'var(--clay,#B0542F)' : 'transparent';
+      if (on) c.scrollIntoView({ inline: 'nearest', block: 'nearest' });
+    });
+  }
   function closeLightbox() {
+    document.body.style.overflow = '';
+    document.body.style.paddingRight = '';
     lightbox.hidden = true;
     lbList = null; lbPrev.hidden = lbNext.hidden = lbCounter.hidden = true;
+    lbStrip.hidden = true; lbStrip.textContent = '';
     lbVideo.pause();
     lbVideo.removeAttribute('src');
     lbVideo.load();
