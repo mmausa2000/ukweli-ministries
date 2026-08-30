@@ -2,6 +2,8 @@
 // Hidden rows use a category starting with "_" (e.g. "_site" for hero photos,
 // "_content" for editable text, "_pending|Cat" for unapproved submissions).
 // Those are filtered out here so only approved public photos are shown.
+import { isDuplicateConventionExtra, organizeGalleryRow } from './_lib/gallery-organize.js';
+
 export default async function handler(req, res) {
   try {
     const r = await fetch(
@@ -34,6 +36,10 @@ export default async function handler(req, res) {
     }
     const items = rows
       .filter((x) => !String(x.cat || '').startsWith('_'))
+      // These are byte-for-byte copies of the corresponding baptism-2026
+      // uploads. Keep one public copy instead of showing the same picture twice.
+      .filter((x) => !isDuplicateConventionExtra(x))
+      .map(organizeGalleryRow)
       .map((x) => ({
         id: x.id,
         cat: x.cat,

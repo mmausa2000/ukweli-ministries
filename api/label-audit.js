@@ -1,6 +1,8 @@
 // Public, read-only export of every gallery picture and its current labels.
 // Burst rows are expanded so each underlying picture receives its own code.
 
+import { isDuplicateConventionExtra, organizeGalleryRow } from './_lib/gallery-organize.js';
+
 const STATIC_ITEMS = [
   ['Worship', 'In prayer', 'A moment of prayer', 'assets/mali-prayer.webp'],
   ['Missions', 'Preaching in the community', 'Sharing the Word in the streets of Tanzania', 'assets/tz-outreach-1.webp'],
@@ -30,12 +32,6 @@ function fileOf(url) {
   return String(url || '').split('?')[0].split('#')[0].split('/').pop() || '(unknown file)';
 }
 
-function recommendedTitle(item) {
-  if (!/^Holy Convention 2026$/i.test(item.label || '')) return item.label || '';
-  const exactDate = String(item.cap || '').match(/\bJuly (18|19), 2026\b/i);
-  return exactDate ? `Holy Convention 2026 — July ${exactDate[1]}` : item.label;
-}
-
 function expandItem(item, baseCode) {
   const sources = item.frames && item.frames.length ? item.frames : [item.img];
   return sources.map((src, index) => ({
@@ -43,10 +39,12 @@ function expandItem(item, baseCode) {
     id: item.id || '',
     file: fileOf(src),
     kind: item.kind || (/\.(mp4|webm|mov)$/i.test(fileOf(src)) ? 'video' : 'photo'),
-    cat: item.cat || '',
-    label: item.label || '',
+    storedCat: item.storedCat || item.cat || '',
+    websiteCat: item.cat || '',
+    storedLabel: item.storedLabel || item.label || '',
+    websiteLabel: item.label || '',
     cap: item.cap || '',
-    recommended: recommendedTitle(item),
+    duplicate: Boolean(item.duplicate),
     src: src || '',
   }));
 }
@@ -75,15 +73,21 @@ export default async function handler(req, res) {
 
     const publicRows = sourceRows
       .filter((row) => !String(row.cat || '').startsWith('_'))
-      .map((row) => ({
-        id: row.id,
-        cat: row.cat,
-        label: row.label,
-        cap: row.cap || '',
-        img: row.url,
-        kind: /\.(mp4|webm|mov)(\?|$)/i.test(row.url) ? 'video' : 'photo',
-        frames: frames.get(row.url) || undefined,
-      }));
+      .map((row) => {
+        const organized = organizeGalleryRow(row);
+        return {
+          id: row.id,
+          storedCat: row.cat,
+          storedLabel: row.label,
+          cat: organized.cat,
+          label: organized.label,
+          cap: row.cap || '',
+          img: row.url,
+          kind: /\.(mp4|webm|mov)(\?|$)/i.test(row.url) ? 'video' : 'photo',
+          frames: frames.get(row.url) || undefined,
+          duplicate: isDuplicateConventionExtra(row),
+        };
+      });
 
     const entries = [];
     for (const item of publicRows) entries.push(...expandItem(item, codeOf(item.id)));
@@ -99,9 +103,11 @@ export default async function handler(req, res) {
       'UKWELI MINISTRIES — COMPLETE PICTURE LABEL AUDIT',
       `Generated: ${new Date().toISOString()}`,
       `Pictures/videos listed: ${entries.length}`,
+      `Exact duplicate gallery records marked to hide: ${publicRows.filter((item) => item.duplicate).length}`,
       '',
       'Use the code to find the exact gallery tile. Burst frames add -01, -02, etc.',
-      'Current titles and captions are copied exactly from the gallery records.',
+      'Stored labels are copied exactly; website labels show the corrected organization.',
+      'Duplicates remain listed here for accountability but are hidden from the public gallery.',
       'Named people are marked for confirmation rather than guessed.',
       '',
     ];
@@ -111,10 +117,12 @@ export default async function handler(req, res) {
         `${String(index + 1).padStart(4, '0')}. [${entry.code}] ${entry.file}`,
         `Record ID: ${entry.id || '(built-in picture)'}`,
         `Type: ${entry.kind}`,
-        `Category: ${entry.cat}`,
-        `Current title: ${entry.label}`,
-        `Recommended title: ${entry.recommended}`,
+        `Stored category: ${entry.storedCat}`,
+        `Website category: ${entry.websiteCat}`,
+        `Stored title: ${entry.storedLabel}`,
+        `Website title: ${entry.websiteLabel}`,
         `Current caption: ${entry.cap || '(none)'}`,
+        `Organization action: ${entry.duplicate ? 'HIDE this exact duplicate copy; keep the baptism-2026 copy.' : 'Keep visible in the category above.'}`,
         `People check: ${namesNeedReview ? 'CONFIRM every named person in this exact picture.' : 'No named-person check required.'}`,
         `Image: ${entry.src}`,
         '',

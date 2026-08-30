@@ -641,7 +641,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   // Category tabs are generated from the data so new activities (Awards,
   // Baptism, ...) appear automatically. Ordered by a preferred sequence, then
   // any extras alphabetically; each shows its count.
-  var TAB_ORDER = ['Baptism','After the Baptism','Awards','Church Service','Worship','Community','Missions','Media'];
+  var TAB_ORDER = ['Baptism','After Baptism','Awards','After Service','Worship','Community','Missions','Media'];
   function buildTabs() {
     var tally = {};
     ITEMS.forEach(function (i) { var c=(i.cat||'').trim(); if(c) tally[c]=(tally[c]||0)+1; });
