@@ -19,12 +19,18 @@ export default async function handler(req, res) {
     // keyed by its cover URL. Attached here so the gallery shows ONE tile per
     // moment that expands to the rest, instead of a wall of near-identical shots.
     const frames = new Map();
+    let people = {};
     for (const x of rows) {
-      if (String(x.cat || '') !== '_frames') continue;
-      try {
-        const list = JSON.parse(x.cap || '[]');
-        if (Array.isArray(list) && list.length > 1) frames.set(x.label, list);
-      } catch {}
+      const cat = String(x.cat || '');
+      if (cat === '_frames') {
+        try {
+          const list = JSON.parse(x.cap || '[]');
+          if (Array.isArray(list) && list.length > 1) frames.set(x.label, list);
+        } catch {}
+      } else if (cat === '_people') {
+        // Name -> face-avatar URL, shown as round icons on the "In the photos" chips.
+        try { people = JSON.parse(x.cap || '{}') || {}; } catch {}
+      }
     }
     const items = rows
       .filter((x) => !String(x.cat || '').startsWith('_'))
@@ -36,9 +42,12 @@ export default async function handler(req, res) {
         img: x.url,
         kind: /\.(mp4|webm|mov)(\?|$)/i.test(x.url) ? 'video' : 'photo',
         frames: frames.get(x.url) || undefined,
+        // Upload time — the gallery's last-resort tiebreak when ordering shots
+        // newest-first (no EXIF capture time is stored on the row).
+        at: x.created_at,
       }));
     res.setHeader('Cache-Control', 's-maxage=60, stale-while-revalidate=300');
-    res.status(200).json(items);
+    res.status(200).json({ items, people });
   } catch (e) {
     res.status(502).json({ error: String((e && e.message) || e) });
   }

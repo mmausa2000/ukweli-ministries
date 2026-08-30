@@ -101,8 +101,19 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 @font-face{font-family:'Hanken Fallback';src:local('Arial');size-adjust:97%;ascent-override:92%;descent-override:24%;line-gap-override:0%}
 @font-face{font-family:'Cormorant Fallback';src:local('Georgia');size-adjust:88%;ascent-override:95%;descent-override:28%;line-gap-override:0%}
 #lb-prev:hover,#lb-next:hover{background:rgba(20,15,9,.78)}
-@media(min-width:720px){.gitem.feature{grid-column:span 2;grid-row:span 2}.gitem.feature .gframe img,.gitem.feature .gframe video{aspect-ratio:auto;height:100%}.gitem.feature .gframe{height:100%}}
-.gitem.feature .gframe{border-color:#d8cdb6}
+/* Compact auto-rotating showcase (camera-forward, not a giant collage tile). */
+#ghero{position:relative;max-width:1180px;margin:0 auto 26px;border-radius:16px;overflow:hidden;border:1px solid #E7DECF;box-shadow:0 10px 30px -18px rgba(33,26,18,.4);cursor:pointer;background:#211A12;aspect-ratio:21/9;display:none}
+#ghero.on{display:block}
+#ghero .ghslide{position:absolute;inset:0;opacity:0;transition:opacity 1.1s ease;background-size:cover;background-position:center}
+#ghero .ghslide.show{opacity:1}
+#ghero .ghgrad{position:absolute;inset:0;background:linear-gradient(to top,rgba(20,15,9,.6) 0%,rgba(20,15,9,.05) 42%,transparent 70%);pointer-events:none}
+#ghero .ghcap{position:absolute;left:22px;bottom:18px;right:22px;color:#F7F2EA;pointer-events:none}
+#ghero .ghcap b{display:block;font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:clamp(20px,3.4vw,32px);line-height:1.1}
+#ghero .ghcap span{font:600 11px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:rgba(247,242,234,.82)}
+#ghero .ghdots{position:absolute;top:14px;right:14px;display:flex;gap:6px}
+#ghero .ghdots i{width:6px;height:6px;border-radius:50%;background:rgba(247,242,234,.45);transition:background .3s,width .3s}
+#ghero .ghdots i.on{background:#F7F2EA;width:18px;border-radius:3px}
+@media(max-width:600px){#ghero{aspect-ratio:16/10}}
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
 <script src="assets/auth.js" defer></script>
@@ -182,6 +193,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 </div>
 <div style="margin-top:20px;display:flex;align-items:center;gap:14px;flex-wrap:wrap">
 <button type="button" id="share-open" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:12px 20px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:none;border-radius:var(--r,14px);cursor:pointer;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">Share a photo</button>
+<a href="/api/label-audit" class="btn-ink" style="display:inline-flex;align-items:center;gap:8px;padding:12px 18px;background:transparent;color:#211A12;font:600 14px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:1px solid rgba(33,26,18,.22);border-radius:var(--r,14px);cursor:pointer;text-decoration:none;transition:all .18s">Download label audit (.txt)</a>
 <span style="font:500 13.5px/1.5 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68">Have a moment from the family? Add it, our team reviews every photo before it appears.</span>
 </div>
 </div>
@@ -189,6 +201,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
 <!-- GALLERY GRID -->
 <section style="padding:20px 32px 96px">
+<div id="ghero" aria-label="Featured photos"><div class="ghgrad"></div><div class="ghcap"></div><div class="ghdots"></div></div>
 <div id="grid" style="max-width:1180px;margin:0 auto;display:grid;grid-template-columns:repeat(auto-fill,minmax(268px,1fr));gap:24px;grid-auto-flow:dense"></div>
 </section>
 
@@ -305,7 +318,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   // Gallery data — placeholder slots, ready for real photos
   var ITEMS = [
     { cat: 'Worship', label: 'In prayer', cap: 'A moment of prayer', img: 'assets/mali-prayer.webp' },
-    { cat: 'Missions', label: 'Tanzania', cap: 'One family across the water', img: 'assets/tz-outreach-1.webp' },
+    { cat: 'Missions', label: 'Preaching in the community', cap: 'Sharing the Word in the streets of Tanzania', img: 'assets/tz-outreach-1.webp' },
     { cat: 'Missions', label: 'Street preaching', cap: 'Open-air outreach in Tanzania', img: 'assets/tz-outreach-2.webp' },
     { cat: 'Missions', label: 'Taking the Word out', cap: 'Street ministry in Tanzania', img: 'assets/tz-outreach-3.webp' },
     { cat: 'Missions', label: 'Into the streets', cap: 'Evening outreach in Tanzania', img: 'assets/tz-outreach-4.webp' },
@@ -333,6 +346,135 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       + '?width=' + w + '&quality=68&resize=cover';
   }
 
+  // Undo thumb(): the plain stored file behind a resized URL.
+  function original(url) {
+    if (!url || url.indexOf('/storage/v1/render/image/public/') === -1) return url;
+    return url.split('?')[0].replace('/storage/v1/render/image/public/', '/storage/v1/object/public/');
+  }
+
+  // Thumbnails are resized by Supabase on demand. The first request for a size
+  // is generated on the spot, and a phone opening the gallery cold asks for
+  // hundreds at once — enough of them are refused that Chrome blocks the error
+  // body (ERR_BLOCKED_BY_ORB) and the tile renders as a broken image. Every
+  // photo also exists as a plain stored file that is only served, never
+  // generated, so a tile that fails falls back to that and always appears.
+  // Retried once on the same size first, since a refusal is usually momentary.
+  function guard(img, fallbackUrl) {
+    var stage = 0;
+    img.addEventListener('error', function () {
+      stage++;
+      if (stage === 1) {                      // momentary refusal: ask again
+        var again = img.currentSrc || img.src;
+        img.removeAttribute('srcset'); img.removeAttribute('sizes');
+        img.src = again.indexOf('#') === -1 ? again + '#r' : again;
+        return;
+      }
+      if (stage === 2) {                      // still failing: the stored file
+        var orig = fallbackUrl || original(img.src);
+        if (orig && orig !== img.src.split('#')[0]) { img.src = orig; return; }
+      }
+      img.style.visibility = 'hidden';        // nothing left to try
+    });
+  }
+
+  // Short, stable, human-quotable code for a photo: first 5 hex of its id.
+  function codeOf(item) {
+    return String(item && item.id || '').replace(/-/g, '').slice(0, 5).toUpperCase();
+  }
+  // Professional camera (Lumix S1II files are P10xxxxx) vs casual phone shots.
+  function isLumix(item) { return /\/P10\d/i.test((item && item.img) || ''); }
+
+  // "Time taken" ordering. No EXIF capture time is stored, so the shot time is
+  // reconstructed from the strongest signal each item carries: the event date
+  // written into its label, then the camera's frame number (IMG_5095 was shot
+  // after IMG_4818 on the same camera), then the upload time.
+  var MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+  function labelTime(item) {
+    var s = (item && item.label) || '';
+    var y = s.match(/\b(19|20)\d{2}\b/);
+    var year = y ? +y[0] : 1970;
+    var m = s.match(/\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)[a-z]*\.?\s+(\d{1,2})\b/i);
+    if (!m) return Date.UTC(year, 0, 1);
+    return Date.UTC(year, MONTHS[m[1].toLowerCase()], +m[2]);
+  }
+  // Camera frame number and its prefix: .../IMG_5095.webp -> { pre:'img_', n:5095 }.
+  // Prefixes are compared before the numbers, since two cameras' counters aren't
+  // on the same scale.
+  function frameNo(item) {
+    var f = String((item && item.img) || '').split('?')[0].split('/').pop();
+    var m = f.match(/([A-Za-z_-]*)(\d{3,})/);
+    return m ? { pre: m[1].toLowerCase(), n: +m[2] } : { pre: '', n: 0 };
+  }
+  function uploadTime(item) { return (item && item.at && Date.parse(item.at)) || 0; }
+  // Newest first.
+  function takenDesc(a, b) {
+    var d = labelTime(b) - labelTime(a);
+    if (d) return d;
+    var fa = frameNo(a), fb = frameNo(b);
+    if (fa.pre === fb.pre && fa.n !== fb.n) return fb.n - fa.n;
+    return (uploadTime(b) - uploadTime(a)) || (fb.n - fa.n);
+  }
+  // Name -> face-avatar URL for the "In the photos" chips (filled from the API).
+  var PEOPLE_AVATARS = {};
+  // Copy a photo code to the clipboard with a brief "Copied" flash on the badge.
+  function copyCode(code, el) {
+    var done = function () {
+      var old = el.textContent, bg = el.style.background;
+      el.textContent = 'Copied ✓'; el.style.background = 'rgba(46,120,60,.9)';
+      setTimeout(function () { el.textContent = old; el.style.background = bg; }, 1000);
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(code).then(done, done);
+    } else {
+      var t = document.createElement('textarea'); t.value = code; document.body.appendChild(t);
+      t.select(); try { document.execCommand('copy'); } catch (e) {} t.remove(); done();
+    }
+  }
+
+  // Compact auto-rotating showcase: cross-fades the strongest shots of the
+  // current view. Rebuilds on filter change; one timer, cleaned up each time.
+  var heroEl = document.getElementById('ghero');
+  var heroTimer = null, heroKey = '';
+  function buildHero(pool) {
+    var pics = (pool || []).filter(function (i) { return i.img && i.kind !== 'video'; }).slice(0, 6);
+    var key = pics.map(function (i) { return i.img; }).join(',');
+    if (key === heroKey) return;          // same set -> keep the running rotation
+    heroKey = key;
+    if (heroTimer) { clearInterval(heroTimer); heroTimer = null; }
+    heroEl.querySelectorAll('.ghslide').forEach(function (n) { n.remove(); });
+    var dots = heroEl.querySelector('.ghdots');
+    var cap = heroEl.querySelector('.ghcap');
+    dots.textContent = '';
+    if (pics.length < 2) { heroEl.classList.remove('on'); return; }
+    heroEl.classList.add('on');
+    var slides = pics.map(function (i, n) {
+      var s = document.createElement('div');
+      s.className = 'ghslide';
+      // A CSS background has no error hook, so the resized file is fetched
+      // first and only painted once it actually arrives; if it is refused,
+      // the plain stored file is painted instead of an empty panel.
+      (function (slide, stored) {
+        var pre = new Image();
+        pre.onload = function () { slide.style.backgroundImage = 'url("' + pre.src + '")'; };
+        pre.onerror = function () { pre.onerror = null; pre.src = stored; };
+        pre.src = thumb(stored, 1120);
+      })(s, i.img);
+      heroEl.insertBefore(s, heroEl.firstChild);
+      var d = document.createElement('i'); dots.appendChild(d);
+      return s;
+    });
+    var at = 0;
+    function go(n) {
+      slides.forEach(function (s, k) { s.classList.toggle('show', k === n); });
+      dots.querySelectorAll('i').forEach(function (d, k) { d.classList.toggle('on', k === n); });
+      cap.innerHTML = '<span>' + (pics[n].cat || '') + '</span><b>' + (pics[n].label || '') + '</b>';
+      at = n;
+    }
+    go(0);
+    heroTimer = setInterval(function () { go((at + 1) % slides.length); }, 4200);
+    heroEl.onclick = function () { openLightbox(pics[at]); };
+  }
+
   var grid = document.getElementById('grid');
   var filterWrap = document.getElementById('filters');
   var lightbox = document.getElementById('lightbox');
@@ -350,8 +492,9 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       if (!q && filter !== 'All' && i.cat !== filter) return false;
       if (!q && currentEvent && (i.label || '') !== currentEvent) return false;
       if (!q) return true;
-      // Names live in the caption, so one haystack covers people, places and moments.
-      return ((i.label || '') + ' ' + (i.cap || '') + ' ' + (i.cat || '')).toLowerCase().indexOf(q) !== -1;
+      // Names live in the caption, so one haystack covers people, places and
+      // moments; the photo code lets you jump straight to one exact shot.
+      return ((i.label || '') + ' ' + (i.cap || '') + ' ' + (i.cat || '') + ' ' + codeOf(i)).toLowerCase().indexOf(q) !== -1;
     });
     updateCount(shown.length, q);
     // Skip the rebuild when nothing visible changed (cache->API load fired it
@@ -359,10 +502,15 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var key = filter + '|' + currentEvent + '|' + q + '|' + shown.map(function (i) { return i.img; }).join(',');
     if (key === lastRenderKey) return;
     lastRenderKey = key;
-    // Photos first, then all videos grouped together in their own place.
-    var photos = shown.filter(function (i) { return i.kind !== 'video'; });
-    var videos = shown.filter(function (i) { return i.kind === 'video'; });
+    // Latest first: the most recent moments lead the grid, oldest trail it.
+    // Videos still gather at the end under their own heading, newest first too.
+    var photos = shown.filter(function (i) { return i.kind !== 'video'; }).sort(takenDesc);
+    var videos = shown.filter(function (i) { return i.kind === 'video'; }).sort(takenDesc);
     shown = photos.concat(videos);
+    // The showcase still favours the professional Lumix (P10…) frames, now in
+    // that same newest-first order.
+    var lumix = photos.filter(isLumix);
+    buildHero(lumix.length ? lumix : photos);
     var frag = document.createDocumentFragment();
     var appendTarget = frag;
     if (!shown.length) {
@@ -373,12 +521,6 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         : (currentEvent ? 'No photos in ' + currentEvent + ' yet.' : 'Nothing here yet.');
       appendTarget.appendChild(none);
     }
-    // Lead with a professional (Lumix P10..) shot as the featured hero when one
-    // exists in this view, so the strongest image anchors the layout.
-    var heroPick = shown.findIndex(function (i) {
-      return i.kind !== 'video' && /\/P10\d+\.webp/i.test(i.img || '');
-    });
-    if (heroPick > 0) { var hp = shown.splice(heroPick, 1)[0]; shown.unshift(hp); }
     var videoStart = photos.length;
     shown.forEach(function (item, idx) {
       if (idx === videoStart && videos.length) {
@@ -389,7 +531,6 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       }
       var btn = document.createElement('button');
       btn.className = 'gitem';
-      if (idx === 0 && item.kind !== 'video') btn.classList.add('feature');
       btn.style.cssText = 'display:block;width:100%;border:none;padding:0;margin:0;background:none;cursor:pointer;text-align:left;font-family:inherit';
 
       var frame = document.createElement('div');
@@ -406,10 +547,15 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         ph.style.cssText = 'aspect-ratio:4/5;width:100%;height:auto;object-fit:cover;display:block;background:#211A12';
       } else if (item.img) {
         ph = document.createElement('img');
-        ph.src = thumb(item.img, 460);
-        ph.srcset = thumb(item.img, 460) + ' 460w, ' + thumb(item.img, 760) + ' 760w';
-        ph.sizes = '(max-width:640px) 50vw, 232px';
+        // One width for every screen, deliberately. Each distinct size is a
+        // separate image Supabase has to generate and cache, so asking for two
+        // doubled the work on a cold gallery for no visible gain — a tile is
+        // ~195px on a phone and ~268px on a desktop, and 560 covers both at
+        // retina. One size also means the second visitor hits a warm cache.
+        ph.src = thumb(item.img, 560);
         ph.alt = item.label + ' — ' + item.cap;
+        ph.decoding = 'async';
+        guard(ph, item.img);
         // First screenful (the newest photos) loads at full priority; the
         // rest lazy-load as the visitor scrolls.
         if (idx < 8) { ph.loading = 'eager'; ph.fetchPriority = 'high'; }
@@ -424,7 +570,20 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       badge.textContent = item.cat;
       badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
 
-      frame.appendChild(ph); frame.appendChild(badge);
+      // Stable per-photo code (first 5 hex of the id) shown so anyone can point
+      // at an exact shot — "tag 3F9A2 as Apostle Maliyabwana" — no ambiguity.
+      // Click copies the code to the clipboard (doesn't open the lightbox).
+      var codeTag = document.createElement('span');
+      var theCode = codeOf(item);
+      codeTag.textContent = theCode;
+      codeTag.title = 'Click to copy code';
+      codeTag.style.cssText = "position:absolute;bottom:10px;left:10px;font:700 10px/1 ui-monospace,Menlo,monospace;letter-spacing:.12em;color:#F7F2EA;background:rgba(33,26,18,.6);backdrop-filter:blur(3px);padding:5px 8px;border-radius:6px;cursor:copy;z-index:3";
+      codeTag.addEventListener('click', function (e) {
+        e.stopPropagation(); e.preventDefault();
+        copyCode(theCode, codeTag);
+      });
+
+      frame.appendChild(ph); frame.appendChild(badge); frame.appendChild(codeTag);
       // A moment shot as a burst shows one tile; the count hints at the rest.
       if (item.frames && item.frames.length > 1) {
         var stack = document.createElement('span');
@@ -586,8 +745,21 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     top.forEach(function (nm) {
       var c = document.createElement('button');
       c.type = 'button'; c.dataset.name = nm;
-      c.textContent = nm + ' (' + tally[nm] + ')';
-      c.style.cssText = "border:1px solid rgba(33,26,18,.2);background:transparent;color:#211A12;border-radius:999px;padding:7px 13px;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;cursor:pointer;transition:all .16s";
+      // A round face icon (when we have one) makes the chip scannable at a glance.
+      var av = PEOPLE_AVATARS[nm];
+      var pad = av ? '5px 13px 5px 5px' : '7px 13px';
+      c.style.cssText = "display:inline-flex;align-items:center;gap:8px;border:1px solid rgba(33,26,18,.2);background:transparent;color:#211A12;border-radius:999px;padding:" + pad + ";font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;cursor:pointer;transition:all .16s";
+      if (av) {
+        var im = document.createElement('img');
+        im.src = av; im.alt = nm; im.loading = 'lazy';
+        im.style.cssText = 'width:26px;height:26px;border-radius:50%;object-fit:cover;flex:0 0 auto;border:1px solid rgba(33,26,18,.12)';
+        // A missing face should leave a plain chip, never a broken-image icon.
+        im.addEventListener('error', function () { im.remove(); c.style.padding = '7px 13px'; });
+        c.appendChild(im);
+      }
+      var lbl = document.createElement('span');
+      lbl.textContent = nm + ' (' + tally[nm] + ')';
+      c.appendChild(lbl);
       c.addEventListener('click', function () {
         setQuery(currentQuery.trim().toLowerCase() === nm.toLowerCase() ? '' : nm);
       });
@@ -609,6 +781,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   var lbCounter = document.getElementById('lb-counter');
   var lbMark = document.getElementById('lb-mark');
   var lbVideo = document.getElementById('lb-video');
+
+  // A photo that will not load should leave the "[ photo ]" mark showing
+  // rather than an empty black panel with no explanation.
+  lbImg.addEventListener('error', function () { lbImg.hidden = true; lbMark.hidden = false; });
 
   var lbList = null;   // array of image srcs when opened from a burst
   var lbIndex = 0;
@@ -632,7 +808,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     lbMeta = { cat: item.cat, label: item.label, cap: item.cap };
     var multi = !!lbList;
     lbPrev.hidden = lbNext.hidden = lbCounter.hidden = !multi;
-    lbCat.textContent = item.cat;
+    lbCat.textContent = item.cat + (codeOf(item) ? '  ·  ' + codeOf(item) : '');
     lbLabel.textContent = item.label;
     lbCap.textContent = item.cap;
     buildStrip(multi ? lbList : null);
@@ -674,6 +850,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       var im = document.createElement('img');
       im.src = thumb(src, 150); im.loading = 'lazy'; im.alt = 'frame ' + (i + 1);
       im.style.cssText = 'width:60px;height:74px;object-fit:cover;display:block';
+      guard(im, src);
       t.appendChild(im);
       t.addEventListener('click', function (e) { e.stopPropagation(); showFrame(i); });
       lbStrip.appendChild(t);
@@ -850,7 +1027,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   var STATIC_ITEMS = ITEMS.slice();
   function mergeUploaded(uploaded) {
     ITEMS = uploaded.map(function (p) {
-      return { id: p.id, cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames };
+      return { id: p.id, cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames, at: p.at };
     }).concat(STATIC_ITEMS);
     buildPeople();
     buildTabs();
@@ -859,13 +1036,18 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   }
   var cachedUploads = null;
   try { cachedUploads = JSON.parse(localStorage.getItem('ukweli-gallery-v1') || 'null'); } catch (e) {}
-  if (Array.isArray(cachedUploads) && cachedUploads.length) mergeUploaded(cachedUploads);
+  var cachedItems = Array.isArray(cachedUploads) ? cachedUploads : (cachedUploads && cachedUploads.items);
+  if (cachedUploads && cachedUploads.people) PEOPLE_AVATARS = cachedUploads.people;
+  if (Array.isArray(cachedItems) && cachedItems.length) mergeUploaded(cachedItems);
 
   fetch('/api/gallery')
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(function (uploaded) {
+    .then(function (data) {
+      // API returns { items, people }; tolerate the old bare-array shape too.
+      var uploaded = Array.isArray(data) ? data : (data && data.items);
       if (!Array.isArray(uploaded)) return;
-      var fresh = JSON.stringify(uploaded);
+      if (data && data.people) PEOPLE_AVATARS = data.people;
+      var fresh = JSON.stringify(data);
       try { localStorage.setItem('ukweli-gallery-v1', fresh); } catch (e) {}
       if (fresh === JSON.stringify(cachedUploads)) return;
       if (uploaded.length) mergeUploaded(uploaded);

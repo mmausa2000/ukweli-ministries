@@ -262,7 +262,11 @@ Continue with Google</button>
   function refresh() {
     fetch('/api/gallery')
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
-      .then(function (photos) {
+      .then(function (data) {
+        // The gallery API also returns people-avatar metadata. Keep accepting
+        // the older bare-array response for cached or older deployments.
+        var photos = Array.isArray(data) ? data : (data && data.items);
+        if (!Array.isArray(photos)) throw new Error('Invalid gallery response.');
         list.textContent = '';
         if (!photos.length) { listNote.textContent = 'Nothing uploaded yet.'; return; }
         listNote.textContent = photos.length + ' item(s) uploaded from the site, grouped by section.';

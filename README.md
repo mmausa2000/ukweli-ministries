@@ -25,7 +25,7 @@ UKWELI_ADMIN_TOKEN=your-secret PORT=8080 cargo run --release --manifest-path ser
 If `UKWELI_ADMIN_TOKEN` is unset, the server generates a token and prints it at startup.
 Uploads land in `data/uploads/` (+ `data/gallery.json`); newsletter emails in `data/subscribers.jsonl`. The `data/` directory is gitignored.
 
-API: `GET /api/gallery` · `POST /api/upload` (multipart: token, photo/video file, cat, label, cap; photos ≤20 MB, videos ≤500 MB) · `POST /api/delete` (JSON: token, id) · `POST /api/subscribe` (JSON: email).
+API: `GET /api/gallery` (returns `{ items, people }`) · `GET /api/label-audit` (downloads a complete picture-label checklist) · `POST /api/upload` (multipart: token, photo/video file, cat, label, cap; photos ≤20 MB, videos ≤500 MB) · `POST /api/delete` (JSON: token, id) · `POST /api/subscribe` (JSON: email).
 
 **Static only** (no uploads — gallery shows the built-in photos, newsletter stores locally in the browser):
 
