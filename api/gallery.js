@@ -2,7 +2,7 @@
 // Hidden rows use a category starting with "_" (e.g. "_site" for hero photos,
 // "_content" for editable text, "_pending|Cat" for unapproved submissions).
 // Those are filtered out here so only approved public photos are shown.
-import { isDuplicateConventionExtra, organizeGalleryRow } from './_lib/gallery-organize.js';
+import { galleryTags, isDuplicateConventionExtra, organizeGalleryRow } from './_lib/gallery-organize.js';
 
 export default async function handler(req, res) {
   try {
@@ -45,6 +45,7 @@ export default async function handler(req, res) {
         cat: x.cat,
         label: x.label,
         cap: x.cap || '',
+        tags: galleryTags(x),
         img: x.url,
         kind: /\.(mp4|webm|mov)(\?|$)/i.test(x.url) ? 'video' : 'photo',
         frames: frames.get(x.url) || undefined,

@@ -32,6 +32,23 @@ const JULY19_BAPTISM_EXTRA_FILES = new Set([
   'IMG_5195', 'IMG_5196', 'IMG_5197', 'IMG_5198',
 ]);
 
+const AFRICA_MISSION_PATTERN = /\b(?:africa|tanzania|kenya|d\.?r\.?\s+congo|drc|rwanda|burundi|uganda|zambia|malawi|mozambique)\b/i;
+
+// Mission work is an additional dimension, not always the photo's primary
+// activity. A baptism or worship gathering during an Africa trip should stay
+// filed as Baptism/Worship while also appearing in Missions.
+export function galleryTags(row) {
+  const tags = [];
+  const category = String((row && row.cat) || '');
+  const context = `${(row && row.label) || ''} ${(row && row.cap) || ''} ${(row && (row.url || row.img)) || ''}`;
+  if (/^missions$/i.test(category)) tags.push('Missions');
+  if (AFRICA_MISSION_PATTERN.test(context)) {
+    if (!tags.includes('Missions')) tags.push('Missions');
+    tags.push('Africa Missions');
+  }
+  return tags;
+}
+
 function cleanPath(url) {
   try { return decodeURIComponent(new URL(String(url || '')).pathname); } catch {}
   return decodeURIComponent(String(url || '').split('?')[0].split('#')[0]);

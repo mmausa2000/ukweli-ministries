@@ -492,6 +492,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var rank = TAB_ORDER.indexOf(category);
     return rank < 0 ? TAB_ORDER.length : rank;
   }
+  function hasCategory(item, category) {
+    return item.cat === category || (Array.isArray(item.tags) && item.tags.indexOf(category) !== -1);
+  }
+  function categoryForView(item, filter) {
+    return filter === 'Missions' && hasCategory(item, 'Missions')
+      ? 'Mission Trips'
+      : (item.cat || 'Moments');
+  }
   function activityName(event, category) {
     return event === 'Holy Convention 2026 — July 19' && category === 'Baptism'
       ? 'Afternoon Baptism'
@@ -504,12 +512,12 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var shown = ITEMS.filter(function (i) {
       // A search spans every category (a name shouldn't be trapped in the
       // active tab); category/event filters apply only when not searching.
-      if (!q && filter !== 'All' && i.cat !== filter) return false;
+      if (!q && filter !== 'All' && !hasCategory(i, filter)) return false;
       if (!q && currentEvent && (i.label || '') !== currentEvent) return false;
       if (!q) return true;
       // Names live in the caption, so one haystack covers people, places and
       // moments; the photo code lets you jump straight to one exact shot.
-      return ((i.label || '') + ' ' + (i.cap || '') + ' ' + (i.cat || '') + ' ' + codeOf(i)).toLowerCase().indexOf(q) !== -1;
+      return ((i.label || '') + ' ' + (i.cap || '') + ' ' + (i.cat || '') + ' ' + (i.tags || []).join(' ') + ' ' + codeOf(i)).toLowerCase().indexOf(q) !== -1;
     });
     updateCount(shown.length, q);
     // Skip the rebuild when nothing visible changed (cache->API load fired it
@@ -553,14 +561,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 
     var groupCounts = {};
     shown.forEach(function (item) {
-      var groupKey = eventName(item) + '\u0000' + (item.cat || 'Moments');
+      var groupKey = eventName(item) + '\u0000' + categoryForView(item, filter);
       groupCounts[groupKey] = (groupCounts[groupKey] || 0) + 1;
     });
     var previousEvent = '';
     var previousCategory = '';
     shown.forEach(function (item, idx) {
       var itemEvent = eventName(item);
-      var itemCategory = item.cat || 'Moments';
+      var itemCategory = categoryForView(item, filter);
       if (itemEvent !== previousEvent) {
         var eventHeading = document.createElement('h2');
         eventHeading.textContent = itemEvent;
@@ -700,7 +708,15 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   // any extras alphabetically; each shows its count.
   function buildTabs() {
     var tally = {};
-    ITEMS.forEach(function (i) { var c=(i.cat||'').trim(); if(c) tally[c]=(tally[c]||0)+1; });
+    ITEMS.forEach(function (i) {
+      var seen = {};
+      [i.cat].concat(Array.isArray(i.tags) ? i.tags : []).forEach(function (value) {
+        var c = String(value || '').trim();
+        if (!c || c === 'Africa Missions' || seen[c]) return;
+        seen[c] = true;
+        tally[c] = (tally[c] || 0) + 1;
+      });
+    });
     var cats = Object.keys(tally).sort(function(a,b){
       var ia=TAB_ORDER.indexOf(a), ib=TAB_ORDER.indexOf(b);
       if(ia<0)ia=99; if(ib<0)ib=99;
@@ -1083,7 +1099,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   var STATIC_ITEMS = ITEMS.slice();
   function mergeUploaded(uploaded) {
     ITEMS = uploaded.map(function (p) {
-      return { id: p.id, cat: p.cat, label: p.label, cap: p.cap, img: p.img, kind: p.kind, frames: p.frames, at: p.at };
+      return { id: p.id, cat: p.cat, label: p.label, cap: p.cap, tags: p.tags, img: p.img, kind: p.kind, frames: p.frames, at: p.at };
     }).concat(STATIC_ITEMS);
     buildPeople();
     buildTabs();
