@@ -492,6 +492,11 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var rank = TAB_ORDER.indexOf(category);
     return rank < 0 ? TAB_ORDER.length : rank;
   }
+  function activityName(event, category) {
+    return event === 'Holy Convention 2026 — July 19' && category === 'Baptism'
+      ? 'Afternoon Baptism'
+      : category;
+  }
 
   var lastRenderKey = '';
   function renderGrid(filter) {
@@ -569,7 +574,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         var groupKey = itemEvent + '\u0000' + itemCategory;
         groupHeading.style.cssText = "grid-column:1/-1;margin:14px 0 2px;display:flex;align-items:center;gap:11px";
         var groupTitle = document.createElement('h3');
-        groupTitle.textContent = itemCategory;
+        groupTitle.textContent = activityName(itemEvent, itemCategory);
         groupTitle.style.cssText = "margin:0;font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A6B50";
         var groupCount = document.createElement('span');
         groupCount.textContent = groupCounts[groupKey];
@@ -859,7 +864,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     lbMeta = { cat: item.cat, label: item.label, cap: item.cap };
     var multi = !!lbList;
     lbPrev.hidden = lbNext.hidden = lbCounter.hidden = !multi;
-    lbCat.textContent = item.cat + (codeOf(item) ? '  ·  ' + codeOf(item) : '');
+    lbCat.textContent = activityName(eventName(item), item.cat) + (codeOf(item) ? '  ·  ' + codeOf(item) : '');
     lbLabel.textContent = item.label;
     lbCap.textContent = item.cap;
     buildStrip(multi ? lbList : null);

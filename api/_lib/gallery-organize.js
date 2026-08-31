@@ -28,8 +28,8 @@ function isJuly19AwardFrame(stem) {
 // The surrounding convention-extra frames show the gathering afterward.
 const JULY19_BAPTISM_EXTRA_FILES = new Set([
   'IMG_5172',
-  'IMG_5191', 'IMG_5192', 'IMG_5193', 'IMG_5194',
-  'IMG_5195', 'IMG_5196', 'IMG_5197',
+  'IMG_5190', 'IMG_5191', 'IMG_5192', 'IMG_5193', 'IMG_5194',
+  'IMG_5195', 'IMG_5196', 'IMG_5197', 'IMG_5198',
 ]);
 
 function cleanPath(url) {
@@ -101,9 +101,6 @@ export function organizeGalleryRow(row) {
     if (JULY19_BAPTISM_EXTRA_FILES.has(stem)) {
       organized.cat = 'Baptism';
       organized.label = 'Holy Convention 2026 — July 19';
-    } else if (stem === 'IMG_5190' || stem === 'IMG_5198') {
-      organized.cat = 'Baptism';
-      organized.label = 'Holy Convention 2026 — Baptism';
     } else if (/^baptism$/i.test(rawCategory)) {
       organized.cat = 'Baptism';
       organized.label = 'Holy Convention 2026 — July 18';
