@@ -12,8 +12,11 @@
 <meta property="og:type" content="website">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap">
 <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;1,500&family=Hanken+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
+@font-face{font-family:'Hanken Fallback';src:local('Arial');size-adjust:97%;ascent-override:92%;descent-override:24%;line-gap-override:0%}
+@font-face{font-family:'Cormorant Fallback';src:local('Georgia');size-adjust:88%;ascent-override:95%;descent-override:28%;line-gap-override:0%}
 *{box-sizing:border-box}
 html{scroll-behavior:smooth;scroll-padding-top:96px}
 body{margin:0;background:#F7F2EA;-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
@@ -32,25 +35,27 @@ a{color:inherit}
 .pill-dark:hover{border-color:var(--wheat,#C0913C);color:var(--wheat,#C0913C)}
 .gitem:hover{transform:translateY(-3px);--z:1.06}
 [hidden]{display:none!important}
+#auth-nav{display:inline-flex;align-items:center;justify-content:center;min-width:75px;min-height:38px}
 
 /* Missions story */
 .missions-hero{padding:68px 32px 58px;background:linear-gradient(180deg,#F7F2EA 0%,#F3EBDD 100%)}
 .missions-hero-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,.9fr) minmax(460px,1.1fr);gap:58px;align-items:center}
-.missions-hero-copy h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(54px,6.2vw,88px);line-height:.94;letter-spacing:-.025em;color:#211A12;margin:0 0 24px;max-width:630px}
+.missions-hero-copy h1{font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(54px,6.2vw,88px);line-height:.94;letter-spacing:-.025em;color:#211A12;margin:0 0 24px;max-width:630px}
 .missions-hero-copy p{max-width:610px;font-size:18px;line-height:1.72;color:#5B5044;margin:0}
 .missions-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
 .missions-hero-visual{position:relative;display:grid;grid-template-columns:1.28fr .82fr;grid-template-rows:1fr 1fr;gap:12px;min-height:520px}
-.missions-hero-visual img{width:100%;height:100%;object-fit:cover;border-radius:20px;border:1px solid rgba(33,26,18,.12);box-shadow:0 18px 48px -28px rgba(33,26,18,.55)}
+.missions-hero-visual img{width:100%;height:100%;object-fit:cover;border-radius:20px;border:1px solid rgba(33,26,18,.12);box-shadow:0 18px 48px -28px rgba(33,26,18,.55);opacity:1;transform:scale(1);transition:opacity .45s ease,transform .8s ease}
+.missions-hero-visual img.is-changing{opacity:.18;transform:scale(1.018)}
 .missions-hero-visual .hero-main{grid-row:1/3}
 .missions-hero-note{position:absolute;left:22px;bottom:22px;max-width:250px;padding:17px 19px;border-radius:16px;background:rgba(33,26,18,.86);color:#F7F2EA;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);box-shadow:0 14px 32px -18px rgba(0,0,0,.8)}
-.missions-hero-note strong{display:block;font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#D9B36A;margin-bottom:8px}
-.missions-hero-note span{display:block;font:500 16px/1.35 'Cormorant Garamond',serif;letter-spacing:.01em}
+.missions-hero-note strong{display:block;font:600 11px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#D9B36A;margin-bottom:8px}
+.missions-hero-note span{display:block;font:500 16px/1.35 'Cormorant Garamond','Cormorant Fallback',serif;letter-spacing:.01em}
 .mission-principles{max-width:1180px;margin:42px auto 0;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid rgba(33,26,18,.12);border-radius:18px;background:rgba(251,248,242,.76);overflow:hidden}
 .mission-principle{padding:21px 24px;display:flex;gap:14px;align-items:flex-start;border-right:1px solid rgba(33,26,18,.1)}
 .mission-principle:last-child{border-right:none}
-.mission-principle i{font:600 12px/1 'Hanken Grotesk',sans-serif;color:#B0542F;font-style:normal;letter-spacing:.1em;padding-top:3px}
-.mission-principle b{display:block;font:600 18px/1.15 'Cormorant Garamond',serif;color:#211A12;margin-bottom:4px}
-.mission-principle span{display:block;font:500 13px/1.45 'Hanken Grotesk',sans-serif;color:#756958}
+.mission-principle i{font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#B0542F;font-style:normal;letter-spacing:.1em;padding-top:3px}
+.mission-principle b{display:block;font:600 18px/1.15 'Cormorant Garamond','Cormorant Fallback',serif;color:#211A12;margin-bottom:4px}
+.mission-principle span{display:block;font:500 13px/1.45 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#756958}
 .mission-band{position:relative;padding:82px 32px;overflow:hidden}
 .mission-band-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:54px 72px;align-items:center}
 .mission-band:nth-of-type(even){background:#FBF8F2}
@@ -61,7 +66,7 @@ a{color:inherit}
 .mission-band-inner.text-only{display:block}
 .mission-band-inner.text-only>div:first-child{max-width:760px}
 .mission-band-inner.text-only p{max-width:720px!important}
-.mission-link{display:inline-flex;align-items:center;gap:9px;margin-top:24px;color:#B0542F;font:700 13px/1 'Hanken Grotesk',sans-serif;letter-spacing:.04em;text-decoration:none}
+.mission-link{display:inline-flex;align-items:center;gap:9px;margin-top:24px;color:#B0542F;font:700 13px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.04em;text-decoration:none}
 .mission-link:hover{gap:13px}
 
 /* Touch devices: no hover-lift transforms (they cause jumpy taps) */
@@ -132,6 +137,14 @@ div[style*="minmax(320px"]{grid-template-columns:1fr!important}
 /* Small phones: full-width CTAs */
 @media (max-width:480px){
 main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:center}
+.header-nav{gap:10px!important}
+.header-nav>div:last-child{gap:8px!important}
+.header-nav .btn-clay{padding-left:13px!important;padding-right:13px!important}
+#auth-nav{min-width:44px;width:44px}
+#auth-nav button{width:44px;height:42px;padding:0!important;justify-content:center;overflow:hidden;gap:0!important}
+#auth-nav.signed-out button{font-size:0!important}
+#auth-nav.signed-out button::before{content:'Sign in';font:600 10px/1 'Hanken Grotesk','Hanken Fallback',sans-serif}
+#auth-nav.signed-in button span{display:none}
 }
 </style>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js" defer></script>
@@ -139,10 +152,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 </head>
 <body>
 
-<div id="root" style="--clay:#B0542F;--wheat:#C0913C;--r:14px;--rlg:22px;background:#F7F2EA;color:#5B5044;font-family:'Hanken Grotesk',sans-serif;overflow-x:clip">
+<div id="root" style="--clay:#B0542F;--wheat:#C0913C;--r:14px;--rlg:22px;background:#F7F2EA;color:#5B5044;font-family:'Hanken Grotesk','Hanken Fallback',sans-serif;overflow-x:clip">
 
 <!-- ANNOUNCEMENT BAR -->
-<div style="background:#221A12;color:#EDE3D2;font:500 13px/1.4 'Hanken Grotesk',sans-serif">
+<div style="background:#221A12;color:#EDE3D2;font:500 13px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif">
 <div style="max-width:1180px;margin:0 auto;padding:9px 32px;display:flex;gap:10px 20px;align-items:center;justify-content:center;flex-wrap:wrap;text-align:center">
 <span style="display:inline-flex;align-items:center;gap:9px"><span style="width:7px;height:7px;border-radius:50%;background:var(--clay,#B0542F);animation:livePulse 2.4s infinite"></span>Join us this Sunday: IBADA at 9:00 AM · 2551 Aster Ave, Iowa City</span>
 <a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" style="color:var(--wheat,#C0913C);text-decoration:none;font-weight:600;white-space:nowrap">Watch live ↗</a>
@@ -152,21 +165,21 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <header id="top" style="position:sticky;top:0;z-index:50;background:rgba(247,242,234,0.82);backdrop-filter:saturate(1.1) blur(10px);-webkit-backdrop-filter:saturate(1.1) blur(10px);border-bottom:1px solid rgba(33,26,18,0.07);transition:box-shadow .3s ease,background .3s ease">
 <nav class="header-nav" style="max-width:1180px;margin:0 auto;padding:15px 32px;display:flex;align-items:center;justify-content:space-between;gap:24px">
 <a href="/" style="display:flex;flex-direction:column;line-height:.86;text-decoration:none">
-<span style="font:600 25px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
-<span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:4px">Ministries</span>
+<span style="font:600 25px/1 'Cormorant Garamond','Cormorant Fallback',serif;letter-spacing:.02em;color:#211A12">Ukweli</span>
+<span style="font:600 9.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--clay,#B0542F);margin-top:4px">Ministries</span>
 </a>
 <div class="nav-links" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:flex-end;flex:1 1 auto">
-<a href="/#mission" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">About</a>
-<a href="/#worship" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Worship</a>
-<a href="/#watch" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Watch</a>
-<a href="/#apps" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Apps</a>
-<a href="/missions" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:var(--clay,#B0542F);text-decoration:none">Missions</a>
-<a href="/gallery" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Gallery</a>
-<a href="/#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
+<a href="/#mission" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">About</a>
+<a href="/#worship" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Worship</a>
+<a href="/#watch" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Watch</a>
+<a href="/#apps" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Apps</a>
+<a href="/missions" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:var(--clay,#B0542F);text-decoration:none">Missions</a>
+<a href="/gallery" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Gallery</a>
+<a href="/#give" class="nav-link" style="font:600 14.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#3F382E;text-decoration:none;transition:color .18s">Give</a>
 </div>
 <div style="display:flex;align-items:center;gap:12px;flex-shrink:0">
 <span id="auth-nav"></span>
-<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="btn-clay" style="display:inline-flex;align-items:center;gap:8px;padding:11px 18px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s"><span style="width:6px;height:6px;border-radius:50%;background:#FBF8F2;animation:livePulse 2.4s infinite"></span>Watch Live</a>
 <button class="nav-burger" type="button" aria-label="Open menu" aria-expanded="false"><span></span><span></span><span></span></button>
 </div>
 </nav>
@@ -178,20 +191,20 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <section class="missions-hero">
 <div class="missions-hero-grid">
 <div class="missions-hero-copy">
-<div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-bottom:30px"><a href="/" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Missions</span></div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:18px">Faith in motion</div>
+<div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-bottom:30px"><a href="/" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Missions</span></div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:18px">Faith in motion</div>
 <h1>Beyond the pulpit</h1>
 <p>The Gospel does not stop at the church door. We cross borders to preach and serve, build tools for the Word, restore dignity, care for the body, and stand in prayer for peace.</p>
 <div class="missions-actions">
-<a href="#africa" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 22px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 8px 20px -13px rgba(33,26,18,.7);transition:filter .18s,transform .18s">Explore the mission <span aria-hidden="true">↓</span></a>
-<a href="/gallery" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 22px;background:transparent;color:#211A12;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">View the gallery <span aria-hidden="true">↗</span></a>
+<a href="#africa" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 22px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 8px 20px -13px rgba(33,26,18,.7);transition:filter .18s,transform .18s">Explore the mission <span aria-hidden="true">↓</span></a>
+<a href="/gallery" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 22px;background:transparent;color:#211A12;font:600 14px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">View the gallery <span aria-hidden="true">↗</span></a>
 </div>
 </div>
 <div class="missions-hero-visual" aria-label="Ukweli Ministries mission work in Tanzania">
-<img class="hero-main" src="assets/tz-outreach-8.webp" alt="Open-air preaching during Ukweli Ministries outreach in Tanzania">
-<img src="assets/tz-outreach-13.webp" alt="Sharing the Word during a Tanzania mission gathering">
-<img src="assets/tz-outreach-17.webp" alt="Teaching during Ukweli Ministries outreach in Tanzania">
-<div class="missions-hero-note"><strong>One Gospel · many places</strong><span>Preaching, serving, building, and praying wherever God opens the way.</span></div>
+<img class="hero-main" data-mission-hero src="assets/tz-outreach-8.webp" alt="Open-air preaching during Ukweli Ministries outreach in Tanzania">
+<img data-mission-hero src="assets/tz-outreach-13.webp" alt="Sharing the Word during a Tanzania mission gathering">
+<img data-mission-hero src="assets/tz-outreach-17.webp" alt="Teaching during Ukweli Ministries outreach in Tanzania">
+<div class="missions-hero-note"><strong>Live mission moments</strong><span>Fresh scenes from preaching, serving, building, and praying wherever God opens the way.</span></div>
 </div>
 </div>
 <div class="mission-principles" aria-label="How Ukweli Ministries serves">
@@ -205,8 +218,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <section id="africa" class="mission-band" style="border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
 <div class="mission-band-inner">
 <div style="flex:1 1 420px">
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Africa Mission Trips</div>
-<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Carrying the Word across borders</h2>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Africa Mission Trips</div>
+<h2 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Carrying the Word across borders</h2>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 14px">Our trips to Africa are part of the mission of Ukweli Ministries. We travel to preach, teach, worship with the churches, baptize new believers, visit families, and serve communities in practical ways.</p>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">A photo may show worship, baptism, or fellowship and still belong to the larger mission trip. These moments are gathered here without losing their more specific activity labels in the main gallery.</p>
 <a class="mission-link" href="/gallery">See every mission moment <span aria-hidden="true">→</span></a>
@@ -221,8 +234,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <section id="tech" class="mission-band" style="background:#FBF8F2;border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
 <div class="mission-band-inner">
 <div style="flex:1 1 420px">
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Tech for the Gospel</div>
-<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Raising builders</h2>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Tech for the Gospel</div>
+<h2 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Raising builders</h2>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 14px">We reach young believers through technology, teaching them engineering and how it can serve the Gospel today. The same hands that learn to code can carry the Word further than any single pulpit.</p>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 22px">Our own apps came out of this conviction. <a href="https://biblearcade.app" target="_blank" rel="noopener" style="color:var(--clay,#B0542F);font-weight:600;text-decoration:none">BibleArcade</a> and <a href="https://youlive.me" target="_blank" rel="noopener" style="color:var(--clay,#B0542F);font-weight:600;text-decoration:none">YouLive</a> were built inside this ministry, and the next generation of builders is learning to do the same.</p>
 </div>
@@ -236,8 +249,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <section id="peace" class="mission-band">
 <div class="mission-band-inner">
 <div style="flex:1 1 420px">
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Peace Advocacy</div>
-<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Peace in every land at war</h2>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Peace Advocacy</div>
+<h2 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Peace in every land at war</h2>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 14px">We advocate for peace in every country at war. We believe war is spiritual before it is political, and what is spiritual bends to prayer.</p>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">So we pray, we intercede, and we raise our voice, believing God can silence guns that diplomacy cannot. From the DR Congo to every troubled land, we stand and cry out for peace.</p>
 </div>
@@ -251,8 +264,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <section id="modesty" class="mission-band" style="background:#FBF8F2;border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
 <div class="mission-band-inner">
 <div style="flex:1 1 420px">
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Modesty &amp; Godly Self-Love</div>
-<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Made in the image of God</h2>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Modesty &amp; Godly Self-Love</div>
+<h2 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Made in the image of God</h2>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 14px">We are bringing back modesty — and with it, true self-love. We were made in the image of God (Genesis 1:27), and we teach men and women to honor that image in how they dress, how they carry themselves, and how they see themselves.</p>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">Worth is not found in the world's standards but in the One who made us (1 Timothy 2:9&ndash;10; 1 Peter 3:3&ndash;4). And we sew what we preach: our modesty ministry makes garments within the church, led from Tanzania by Amosi Kaswahili.</p>
 </div>
@@ -266,8 +279,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <section id="health" class="mission-band">
 <div class="mission-band-inner">
 <div style="flex:1 1 420px">
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Health &amp; Godly Living</div>
-<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Strength to serve the Lord</h2>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Health &amp; Godly Living</div>
+<h2 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Strength to serve the Lord</h2>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 14px">We strongly believe God commands us to live healthy. Our bodies are the temple of the Holy Spirit (1 Corinthians 6:19&ndash;20), so what we eat and how we live is itself an act of worship.</p>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">When we are healthy, we can pray, we can worship, we can serve, and we can do the work of the Lord with full strength (3 John 1:2; Daniel 1:8&ndash;16; 1 Corinthians 10:31).</p>
 </div>
@@ -280,12 +293,12 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <!-- CTA -->
 <section style="padding:88px 32px;text-align:center;background:#FBF8F2;border-top:1px solid #EFE7D8">
 <div style="max-width:620px;margin:0 auto">
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Join the work</div>
-<h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(30px,4vw,48px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 16px">Build with us. Pray with us.</h2>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Join the work</div>
+<h2 style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:500;font-size:clamp(30px,4vw,48px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 16px">Build with us. Pray with us.</h2>
 <p style="font-size:17px;line-height:1.7;color:#5B5044;margin:0 auto 30px;max-width:480px">Young builder, intercessor, or supporter: there is a place for you in this work. Write to us and tell us how you want to serve.</p>
 <div style="display:flex;flex-wrap:wrap;gap:13px;justify-content:center">
-<a href="mailto:info@ukweliministries.org" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 26px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">info@ukweliministries.org</a>
-<a href="/#give" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 24px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">Give to the work</a>
+<a href="mailto:info@ukweliministries.org" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 26px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 1px 2px rgba(33,26,18,.16);transition:filter .18s,transform .18s">info@ukweliministries.org</a>
+<a href="/#give" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 24px;background:transparent;color:#211A12;font:600 15px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">Give to the work</a>
 </div>
 </div>
 </section>
@@ -295,21 +308,21 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <div style="max-width:1180px;margin:0 auto">
 <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(190px,1fr));gap:40px;padding-bottom:44px;border-bottom:1px solid rgba(201,188,166,.16)">
 <div>
-<div style="display:flex;flex-direction:column;line-height:.86;margin-bottom:16px"><span style="font:600 26px/1 'Cormorant Garamond',serif;letter-spacing:.02em;color:#F6EEDE">Ukweli</span><span style="font:600 9.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--wheat,#C0913C);margin-top:4px">Ministries</span></div>
+<div style="display:flex;flex-direction:column;line-height:.86;margin-bottom:16px"><span style="font:600 26px/1 'Cormorant Garamond','Cormorant Fallback',serif;letter-spacing:.02em;color:#F6EEDE">Ukweli</span><span style="font:600 9.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.36em;text-transform:uppercase;color:var(--wheat,#C0913C);margin-top:4px">Ministries</span></div>
 <p style="font-size:14.5px;line-height:1.6;color:#A99C84;margin:0 0 18px;max-width:240px">Brought forth by the word of truth (James 1:18). One family of churches, from Iowa City across the USA, Europe, and East Africa.</p>
 <div style="display:flex;gap:9px">
-<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">YouTube</a>
-<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">Facebook</a>
+<a href="https://www.youtube.com/c/UkweliMinistries" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">YouTube</a>
+<a href="https://www.facebook.com/ukweliministries/photos/" target="_blank" rel="noopener" class="pill-dark" style="padding:8px 14px;border:1px solid rgba(201,188,166,.28);border-radius:999px;font:600 12.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#C9BCA6;text-decoration:none;transition:all .18s">Facebook</a>
 </div>
 </div>
 <div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Visit</div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Visit</div>
 <div style="font-size:14.5px;line-height:1.7;color:#A99C84">Ukweli Church of Christ<br>2551 Aster Ave<br>Iowa City, IA 52245</div>
 <div style="font-size:14.5px;line-height:1.7;color:#A99C84;margin-top:12px">Sundays · IBADA 9:00 AM</div>
-<a href="https://www.google.com/maps/search/?api=1&amp;query=2551+Aster+Ave+Iowa+City+IA" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;color:var(--wheat,#C0913C);text-decoration:none">Get directions ↗</a>
+<a href="https://www.google.com/maps/search/?api=1&amp;query=2551+Aster+Ave+Iowa+City+IA" target="_blank" rel="noopener" style="display:inline-block;margin-top:10px;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:var(--wheat,#C0913C);text-decoration:none">Get directions ↗</a>
 </div>
 <div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Explore</div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Explore</div>
 <div style="display:flex;flex-direction:column;gap:10px">
 <a href="/#mission" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">About</a>
 <a href="/#worship" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">Worship</a>
@@ -320,14 +333,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 </div>
 </div>
 <div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Our apps</div>
+<div style="font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A7C64;margin-bottom:16px">Our apps</div>
 <div style="display:flex;flex-direction:column;gap:10px">
 <a href="https://biblearcade.app" target="_blank" rel="noopener" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">BibleArcade ↗</a>
 <a href="https://youlive.me" target="_blank" rel="noopener" class="f-link" style="font-size:14.5px;color:#C9BCA6;text-decoration:none;transition:color .18s">YouLive ↗</a>
 </div>
 </div>
 </div>
-<div style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding-top:26px;font:500 12.5px/1.6 'Hanken Grotesk',sans-serif;color:#7E7460">
+<div style="display:flex;flex-wrap:wrap;gap:8px 20px;justify-content:space-between;align-items:center;padding-top:26px;font:500 12.5px/1.6 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#7E7460">
 <span>© 2026 Ukweli Ministries · Iowa nonprofit · a 501(c)(3) church · EIN 42-3528698</span>
 <span>Iowa City, Iowa</span>
 </div>
@@ -341,8 +354,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <div id="lightbox-card" style="max-width:760px;width:100%;background:#F7F2EA;border-radius:var(--rlg,22px);overflow:hidden;box-shadow:0 40px 90px -30px rgba(0,0,0,.65);animation:popIn .24s ease">
 <div id="lb-photo" style="aspect-ratio:16/10;background:#211A12;display:grid;place-items:center;border-bottom:1px solid #E7DECF"><img id="lb-img" alt="" hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1"><video id="lb-video" controls playsinline hidden style="width:100%;height:100%;object-fit:contain;grid-area:1/1;background:#211A12"></video></div>
 <div style="padding:20px 24px;display:flex;justify-content:space-between;align-items:center;gap:16px">
-<div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
-<button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
+<div><div id="lb-cat" style="font:600 10.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.12em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:7px"></div><div id="lb-label" style="font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:24px;line-height:1.1;color:#211A12"></div><div id="lb-cap" style="font:500 14px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-top:4px"></div></div>
+<button id="lb-close" class="btn-ink" style="flex-shrink:0;padding:11px 18px;background:transparent;color:#211A12;font:600 13.5px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;border:1px solid rgba(33,26,18,.2);border-radius:var(--r,14px);cursor:pointer;transition:all .18s">Close ✕</button>
 </div>
 </div>
 </div>
@@ -371,9 +384,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     });
   }
 
+  var navThreshold = nav.offsetTop;
   function styleNav() {
     var y = Math.max(0, window.scrollY || 0);
-    var s = y > 20;
+    var s = y >= navThreshold - 1;
     nav.style.boxShadow = s ? '0 6px 24px -14px rgba(33,26,18,0.4)' : 'none';
     nav.style.background = s ? 'rgba(247,242,234,0.92)' : 'rgba(247,242,234,0.82)';
   }
@@ -381,6 +395,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     if (raf) return;
     raf = requestAnimationFrame(function () { raf = null; styleNav(); });
   }, { passive: true });
+  window.addEventListener('resize', function () { navThreshold = nav.offsetTop; styleNav(); });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(function () { navThreshold = nav.offsetTop; styleNav(); });
   styleNav();
 
   // Lightbox
@@ -469,14 +485,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     meta.innerHTML = '';
     var t = document.createElement('div');
     t.textContent = item.label;
-    t.style.cssText = "font-family:'Cormorant Garamond',serif;font-weight:600;font-size:16px;line-height:1.15;color:#211A12";
+    t.style.cssText = "font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:16px;line-height:1.15;color:#211A12";
     meta.appendChild(t);
     btn.appendChild(frame); btn.appendChild(meta);
     btn.addEventListener('click', function () { openLightbox(item); });
     return btn;
   }
 
-  function fill(gridId, cat) {
+  function fill(gridId, cat, items) {
     var grid = document.getElementById(gridId);
     var fallback = STATIC_MEDIA[cat] || [];
     function render(items) {
@@ -491,27 +507,85 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       if (band) band.classList.remove('text-only');
       items.slice(0, 6).forEach(function (item) { grid.appendChild(tile(item)); });
     }
-    fetch('/api/gallery')
+    var mine = items.filter(function (p) {
+      return cat === 'Africa Missions' ? isAfricaMission(p) : p.cat === cat;
+    });
+    render(mine.length ? mine : fallback);
+  }
+
+  var heroImages = Array.prototype.slice.call(document.querySelectorAll('[data-mission-hero]'));
+  var heroPool = STATIC_MEDIA['Africa Missions'].slice();
+  var heroCursor = 0;
+  var heroSlot = 0;
+  var lastMediaKey = '';
+  var hasMissionMedia = false;
+
+  function uniquePhotos(items) {
+    var seen = {};
+    return items.filter(function (item) {
+      if (!item || item.kind === 'video' || !item.img || seen[item.img]) return false;
+      seen[item.img] = true;
+      return true;
+    });
+  }
+
+  function updateHeroPool(items) {
+    var fresh = uniquePhotos(items.filter(isAfricaMission));
+    heroPool = uniquePhotos(fresh.concat(STATIC_MEDIA['Africa Missions']));
+    heroCursor = heroImages.length % heroPool.length;
+    heroImages.forEach(function (img, index) {
+      if (!heroPool[index]) return;
+      img.src = heroPool[index].img;
+      img.alt = heroPool[index].cap || heroPool[index].label || 'Ukweli Ministries mission work';
+    });
+  }
+
+  function rotateHero() {
+    if (document.hidden || heroPool.length <= heroImages.length) return;
+    var img = heroImages[heroSlot % heroImages.length];
+    var next = heroPool[heroCursor % heroPool.length];
+    heroSlot += 1;
+    heroCursor += 1;
+    if (!img || !next || img.src.indexOf(next.img) !== -1) return;
+    var preload = new Image();
+    preload.onload = function () {
+      img.classList.add('is-changing');
+      window.setTimeout(function () {
+        img.src = next.img;
+        img.alt = next.cap || next.label || 'Ukweli Ministries mission work';
+        img.classList.remove('is-changing');
+      }, 260);
+    };
+    preload.src = next.img;
+  }
+
+  function renderMissionMedia(items) {
+    var key = items.map(function (item) { return item.id || item.img; }).join('|');
+    if (hasMissionMedia && key === lastMediaKey) return;
+    lastMediaKey = key;
+    hasMissionMedia = true;
+    fill('africa-grid', 'Africa Missions', items);
+    fill('tech-grid', 'Tech', items);
+    fill('peace-grid', 'Peace', items);
+    fill('modesty-grid', 'Modesty', items);
+    fill('health-grid', 'Health', items);
+    updateHeroPool(items);
+  }
+
+  function loadMissionMedia() {
+    return fetch('/api/gallery?missions=' + Date.now(), { cache: 'no-store' })
       .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
       .then(function (data) {
-        // The gallery API also returns people-avatar metadata. Keep accepting
-        // the older bare-array response for cached or older deployments.
         var items = Array.isArray(data) ? data : (data && data.items);
         if (!Array.isArray(items)) throw new Error('Invalid gallery response.');
-        var mine = items.filter(function (p) {
-          return cat === 'Africa Missions' ? isAfricaMission(p) : p.cat === cat;
-        });
-        render(mine.length ? mine : fallback);
+        renderMissionMedia(items);
       })
-      .catch(function () {
-        render(fallback);
-      });
+      .catch(function () { if (!hasMissionMedia) renderMissionMedia([]); });
   }
-  fill('africa-grid', 'Africa Missions');
-  fill('tech-grid', 'Tech');
-  fill('peace-grid', 'Peace');
-  fill('modesty-grid', 'Modesty');
-  fill('health-grid', 'Health');
+
+  loadMissionMedia();
+  window.setInterval(rotateHero, 5200);
+  window.setInterval(loadMissionMedia, 120000);
 })();
 </script>
 </body>

@@ -14,12 +14,13 @@
   }
 
   function render() {
+    mount.className = session ? 'signed-in' : 'signed-out';
     mount.textContent = '';
     if (!session) {
       var b = document.createElement('button');
       b.type = 'button';
       b.textContent = 'Sign in';
-      b.style.cssText = 'padding:11px 16px;background:transparent;border:1px solid rgba(33,26,18,.22);color:#211A12;border-radius:14px;font:600 14px/1 \'Hanken Grotesk\',sans-serif;cursor:pointer';
+      b.style.cssText = 'padding:11px 16px;background:transparent;border:1px solid rgba(33,26,18,.22);color:#211A12;border-radius:14px;font:600 14px/1 \'Hanken Grotesk\',\'Hanken Fallback\',sans-serif;cursor:pointer';
       b.addEventListener('click', function () {
         sb.auth.signInWithOAuth({ provider: 'google', options: { redirectTo: location.origin + location.pathname } });
       });
@@ -34,14 +35,14 @@
     var av = md.avatar_url || md.picture || '';
     b.innerHTML = (av ? '<img src="' + av + '" alt="" style="width:22px;height:22px;border-radius:50%;object-fit:cover" referrerpolicy="no-referrer" onerror="this.style.display=\'none\'">' : '') +
       '<span>' + firstName(session) + '</span><span style="font-size:10px">\u25BE</span>';
-    b.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:9px 14px;background:transparent;border:1px solid rgba(33,26,18,.22);color:#211A12;border-radius:14px;font:600 14px/1 \'Hanken Grotesk\',sans-serif;cursor:pointer';
+    b.style.cssText = 'display:inline-flex;align-items:center;gap:8px;padding:9px 14px;background:transparent;border:1px solid rgba(33,26,18,.22);color:#211A12;border-radius:14px;font:600 14px/1 \'Hanken Grotesk\',\'Hanken Fallback\',sans-serif;cursor:pointer';
     var menu = document.createElement('div');
     menu.style.cssText = 'position:absolute;top:calc(100% + 8px);right:0;min-width:180px;background:#FBF8F2;border:1px solid #EAE1D1;border-radius:14px;box-shadow:0 20px 44px -18px rgba(33,26,18,.4);padding:6px;display:none;z-index:60';
     function item(label, fn, href) {
       var a = document.createElement(href ? 'a' : 'button');
       if (href) a.href = href; else a.type = 'button';
       a.textContent = label;
-      a.style.cssText = 'display:block;width:100%;text-align:left;padding:11px 13px;background:none;border:none;border-radius:10px;font:600 14px/1 \'Hanken Grotesk\',sans-serif;color:#211A12;cursor:pointer;text-decoration:none';
+      a.style.cssText = 'display:block;width:100%;text-align:left;padding:11px 13px;background:none;border:none;border-radius:10px;font:600 14px/1 \'Hanken Grotesk\',\'Hanken Fallback\',sans-serif;color:#211A12;cursor:pointer;text-decoration:none';
       a.addEventListener('mouseenter', function () { a.style.background = '#F1E9DA'; });
       a.addEventListener('mouseleave', function () { a.style.background = 'none'; });
       if (fn) a.addEventListener('click', fn);
@@ -49,7 +50,7 @@
     }
     var email = document.createElement('div');
     email.textContent = session.user.email;
-    email.style.cssText = 'padding:9px 13px;font:500 12px/1.4 \'Hanken Grotesk\',sans-serif;color:#8A7C68;border-bottom:1px solid #EAE1D1;margin-bottom:4px;word-break:break-all';
+    email.style.cssText = 'padding:9px 13px;font:500 12px/1.4 \'Hanken Grotesk\',\'Hanken Fallback\',sans-serif;color:#8A7C68;border-bottom:1px solid #EAE1D1;margin-bottom:4px;word-break:break-all';
     menu.appendChild(email);
     if (me && me.isAdmin) item('Manage site', null, '/admin');
     item('Sign out', function () { sb.auth.signOut().then(function () {
