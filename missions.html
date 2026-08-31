@@ -33,6 +33,37 @@ a{color:inherit}
 .gitem:hover{transform:translateY(-3px);--z:1.06}
 [hidden]{display:none!important}
 
+/* Missions story */
+.missions-hero{padding:68px 32px 58px;background:linear-gradient(180deg,#F7F2EA 0%,#F3EBDD 100%)}
+.missions-hero-grid{max-width:1180px;margin:0 auto;display:grid;grid-template-columns:minmax(0,.9fr) minmax(460px,1.1fr);gap:58px;align-items:center}
+.missions-hero-copy h1{font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(54px,6.2vw,88px);line-height:.94;letter-spacing:-.025em;color:#211A12;margin:0 0 24px;max-width:630px}
+.missions-hero-copy p{max-width:610px;font-size:18px;line-height:1.72;color:#5B5044;margin:0}
+.missions-actions{display:flex;flex-wrap:wrap;gap:12px;margin-top:30px}
+.missions-hero-visual{position:relative;display:grid;grid-template-columns:1.28fr .82fr;grid-template-rows:1fr 1fr;gap:12px;min-height:520px}
+.missions-hero-visual img{width:100%;height:100%;object-fit:cover;border-radius:20px;border:1px solid rgba(33,26,18,.12);box-shadow:0 18px 48px -28px rgba(33,26,18,.55)}
+.missions-hero-visual .hero-main{grid-row:1/3}
+.missions-hero-note{position:absolute;left:22px;bottom:22px;max-width:250px;padding:17px 19px;border-radius:16px;background:rgba(33,26,18,.86);color:#F7F2EA;backdrop-filter:blur(9px);-webkit-backdrop-filter:blur(9px);box-shadow:0 14px 32px -18px rgba(0,0,0,.8)}
+.missions-hero-note strong{display:block;font:600 11px/1 'Hanken Grotesk',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#D9B36A;margin-bottom:8px}
+.missions-hero-note span{display:block;font:500 16px/1.35 'Cormorant Garamond',serif;letter-spacing:.01em}
+.mission-principles{max-width:1180px;margin:42px auto 0;display:grid;grid-template-columns:repeat(3,1fr);border:1px solid rgba(33,26,18,.12);border-radius:18px;background:rgba(251,248,242,.76);overflow:hidden}
+.mission-principle{padding:21px 24px;display:flex;gap:14px;align-items:flex-start;border-right:1px solid rgba(33,26,18,.1)}
+.mission-principle:last-child{border-right:none}
+.mission-principle i{font:600 12px/1 'Hanken Grotesk',sans-serif;color:#B0542F;font-style:normal;letter-spacing:.1em;padding-top:3px}
+.mission-principle b{display:block;font:600 18px/1.15 'Cormorant Garamond',serif;color:#211A12;margin-bottom:4px}
+.mission-principle span{display:block;font:500 13px/1.45 'Hanken Grotesk',sans-serif;color:#756958}
+.mission-band{position:relative;padding:82px 32px;overflow:hidden}
+.mission-band-inner{max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:54px 72px;align-items:center}
+.mission-band:nth-of-type(even){background:#FBF8F2}
+.mission-media{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:16px}
+.mission-media .gitem>div:first-child{border-radius:18px!important;box-shadow:0 16px 34px -25px rgba(33,26,18,.55)!important}
+.mission-media .gitem>div:last-child{padding-top:11px!important}
+.mission-media .gitem:only-child{max-width:250px}
+.mission-band-inner.text-only{display:block}
+.mission-band-inner.text-only>div:first-child{max-width:760px}
+.mission-band-inner.text-only p{max-width:720px!important}
+.mission-link{display:inline-flex;align-items:center;gap:9px;margin-top:24px;color:#B0542F;font:700 13px/1 'Hanken Grotesk',sans-serif;letter-spacing:.04em;text-decoration:none}
+.mission-link:hover{gap:13px}
+
 /* Touch devices: no hover-lift transforms (they cause jumpy taps) */
 @media (hover:none){
 .btn-clay:hover,.btn-ink.lift:hover,.gitem:hover{transform:none!important}
@@ -67,6 +98,14 @@ section[style*="padding:74px"]{padding-top:44px!important}
 section[style*="padding:66px"]{padding-top:40px!important}
 footer{padding-top:54px!important}
 div[style*="padding:9px 32px"]{padding-left:16px!important;padding-right:16px!important}
+.missions-hero{padding:52px 20px 46px!important}
+.missions-hero-grid{grid-template-columns:1fr;gap:38px}
+.missions-hero-copy h1{font-size:clamp(52px,11vw,74px)}
+.missions-hero-visual{min-height:470px}
+.mission-principles{margin-top:28px;grid-template-columns:1fr}
+.mission-principle{border-right:none;border-bottom:1px solid rgba(33,26,18,.1)}
+.mission-principle:last-child{border-bottom:none}
+.mission-band{padding:64px 20px!important}
 }
 
 /* Phones */
@@ -76,6 +115,18 @@ main section,footer{padding-left:18px!important;padding-right:18px!important}
 section[style*="padding:104px"],section[style*="padding:100px"],section[style*="padding:96px"],section[style*="padding:88px"]{padding-top:58px!important;padding-bottom:58px!important}
 section[style*="padding:64px"]{padding-top:48px!important;padding-bottom:48px!important}
 div[style*="minmax(320px"]{grid-template-columns:1fr!important}
+.missions-hero{padding-top:36px!important}
+.missions-hero-copy h1{font-size:48px;line-height:.98;margin-bottom:18px}
+.missions-hero-copy p{font-size:17px;line-height:1.7}
+.missions-actions{margin-top:24px}
+.missions-hero-visual{min-height:360px;gap:8px;grid-template-columns:1.2fr .8fr}
+.missions-hero-visual img{border-radius:14px}
+.missions-hero-note{left:12px;bottom:12px;max-width:210px;padding:13px 15px;border-radius:13px}
+.mission-principles{border-radius:14px}
+.mission-principle{padding:17px 18px}
+.mission-band{padding-top:54px!important;padding-bottom:54px!important}
+.mission-band-inner{gap:34px}
+.mission-media{grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
 }
 
 /* Small phones: full-width CTAs */
@@ -124,33 +175,51 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <main>
 
 <!-- HEADER -->
-<section style="padding:66px 32px 34px">
-<div style="max-width:1180px;margin:0 auto">
-<div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-bottom:22px"><a href="/" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Missions</span></div>
-<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Missions</div>
-<h1 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(42px,5.4vw,72px);line-height:1.02;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Beyond the pulpit</h1>
-<p style="max-width:650px;font-size:17.5px;line-height:1.68;color:#5B5044;margin:0">The Gospel does not stop at the church door. Our mission includes traveling to preach and serve in Africa, restoring modesty and Godly self-love, living healthy for the work of the Lord, raising builders, and standing for peace.</p>
+<section class="missions-hero">
+<div class="missions-hero-grid">
+<div class="missions-hero-copy">
+<div style="display:flex;align-items:center;gap:9px;font:500 13px/1 'Hanken Grotesk',sans-serif;color:#8A7C68;margin-bottom:30px"><a href="/" class="crumb" style="color:#8A7C68;text-decoration:none;transition:color .18s">Home</a><span>/</span><span style="color:#3F382E">Missions</span></div>
+<div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:18px">Faith in motion</div>
+<h1>Beyond the pulpit</h1>
+<p>The Gospel does not stop at the church door. We cross borders to preach and serve, build tools for the Word, restore dignity, care for the body, and stand in prayer for peace.</p>
+<div class="missions-actions">
+<a href="#africa" class="btn-clay" style="display:inline-flex;align-items:center;gap:9px;padding:15px 22px;background:var(--clay,#B0542F);color:#FBF8F2;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;box-shadow:0 8px 20px -13px rgba(33,26,18,.7);transition:filter .18s,transform .18s">Explore the mission <span aria-hidden="true">↓</span></a>
+<a href="/gallery" class="btn-ink lift" style="display:inline-flex;align-items:center;gap:9px;padding:15px 22px;background:transparent;color:#211A12;font:600 14px/1 'Hanken Grotesk',sans-serif;border-radius:var(--r,14px);text-decoration:none;border:1px solid rgba(33,26,18,.22);transition:all .18s">View the gallery <span aria-hidden="true">↗</span></a>
+</div>
+</div>
+<div class="missions-hero-visual" aria-label="Ukweli Ministries mission work in Tanzania">
+<img class="hero-main" src="assets/tz-outreach-8.webp" alt="Open-air preaching during Ukweli Ministries outreach in Tanzania">
+<img src="assets/tz-outreach-13.webp" alt="Sharing the Word during a Tanzania mission gathering">
+<img src="assets/tz-outreach-17.webp" alt="Teaching during Ukweli Ministries outreach in Tanzania">
+<div class="missions-hero-note"><strong>One Gospel · many places</strong><span>Preaching, serving, building, and praying wherever God opens the way.</span></div>
+</div>
+</div>
+<div class="mission-principles" aria-label="How Ukweli Ministries serves">
+<div class="mission-principle"><i>01</i><div><b>Preach the Word</b><span>In churches, homes, streets, and classrooms.</span></div></div>
+<div class="mission-principle"><i>02</i><div><b>Serve people</b><span>Meeting spiritual and practical needs together.</span></div></div>
+<div class="mission-principle"><i>03</i><div><b>Build for tomorrow</b><span>Strengthening churches and raising new builders.</span></div></div>
 </div>
 </section>
 
 <!-- AFRICA MISSION TRIPS -->
-<section id="africa" style="padding:64px 32px;border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
-<div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:44px 60px;align-items:center">
+<section id="africa" class="mission-band" style="border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
+<div class="mission-band-inner">
 <div style="flex:1 1 420px">
 <div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Africa Mission Trips</div>
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Carrying the Word across borders</h2>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 14px">Our trips to Africa are part of the mission of Ukweli Ministries. We travel to preach, teach, worship with the churches, baptize new believers, visit families, and serve communities in practical ways.</p>
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">A photo may show worship, baptism, or fellowship and still belong to the larger mission trip. These moments are gathered here without losing their more specific activity labels in the main gallery.</p>
+<a class="mission-link" href="/gallery">See every mission moment <span aria-hidden="true">→</span></a>
 </div>
 <div style="flex:1 1 420px">
-<div id="africa-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px"></div>
+<div id="africa-grid" class="mission-media"></div>
 </div>
 </div>
 </section>
 
 <!-- TECH MISSION -->
-<section id="tech" style="padding:64px 32px;background:#FBF8F2;border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
-<div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:44px 60px;align-items:center">
+<section id="tech" class="mission-band" style="background:#FBF8F2;border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
+<div class="mission-band-inner">
 <div style="flex:1 1 420px">
 <div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Tech for the Gospel</div>
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Raising builders</h2>
@@ -158,14 +227,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0 0 22px">Our own apps came out of this conviction. <a href="https://biblearcade.app" target="_blank" rel="noopener" style="color:var(--clay,#B0542F);font-weight:600;text-decoration:none">BibleArcade</a> and <a href="https://youlive.me" target="_blank" rel="noopener" style="color:var(--clay,#B0542F);font-weight:600;text-decoration:none">YouLive</a> were built inside this ministry, and the next generation of builders is learning to do the same.</p>
 </div>
 <div style="flex:1 1 340px">
-<div id="tech-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px"></div>
+<div id="tech-grid" class="mission-media"></div>
 </div>
 </div>
 </section>
 
 <!-- PEACE MISSION -->
-<section id="peace" style="padding:64px 32px">
-<div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:44px 60px;align-items:center">
+<section id="peace" class="mission-band">
+<div class="mission-band-inner">
 <div style="flex:1 1 420px">
 <div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Peace Advocacy</div>
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Peace in every land at war</h2>
@@ -173,14 +242,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">So we pray, we intercede, and we raise our voice, believing God can silence guns that diplomacy cannot. From the DR Congo to every troubled land, we stand and cry out for peace.</p>
 </div>
 <div style="flex:1 1 340px">
-<div id="peace-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px"></div>
+<div id="peace-grid" class="mission-media"></div>
 </div>
 </div>
 </section>
 
 <!-- MODESTY MISSION -->
-<section id="modesty" style="padding:64px 32px;background:#FBF8F2;border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
-<div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:44px 60px;align-items:center">
+<section id="modesty" class="mission-band" style="background:#FBF8F2;border-top:1px solid #EFE7D8;border-bottom:1px solid #EFE7D8">
+<div class="mission-band-inner">
 <div style="flex:1 1 420px">
 <div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Modesty &amp; Godly Self-Love</div>
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Made in the image of God</h2>
@@ -188,14 +257,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">Worth is not found in the world's standards but in the One who made us (1 Timothy 2:9&ndash;10; 1 Peter 3:3&ndash;4). And we sew what we preach: our modesty ministry makes garments within the church, led from Tanzania by Amosi Kaswahili.</p>
 </div>
 <div style="flex:1 1 340px">
-<div id="modesty-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px"></div>
+<div id="modesty-grid" class="mission-media"></div>
 </div>
 </div>
 </section>
 
 <!-- HEALTH MISSION -->
-<section id="health" style="padding:64px 32px">
-<div style="max-width:1180px;margin:0 auto;display:flex;flex-wrap:wrap;gap:44px 60px;align-items:center">
+<section id="health" class="mission-band">
+<div class="mission-band-inner">
 <div style="flex:1 1 420px">
 <div style="font:600 12px/1 'Hanken Grotesk',sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--clay,#B0542F);margin-bottom:16px">Health &amp; Godly Living</div>
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:clamp(32px,4vw,50px);line-height:1.06;letter-spacing:-.01em;color:#211A12;margin:0 0 18px">Strength to serve the Lord</h2>
@@ -203,7 +272,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
 <p style="max-width:540px;font-size:17px;line-height:1.7;color:#5B5044;margin:0">When we are healthy, we can pray, we can worship, we can serve, and we can do the work of the Lord with full strength (3 John 1:2; Daniel 1:8&ndash;16; 1 Corinthians 10:31).</p>
 </div>
 <div style="flex:1 1 340px">
-<div id="health-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:14px"></div>
+<div id="health-grid" class="mission-media"></div>
 </div>
 </div>
 </section>
@@ -412,11 +481,14 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var fallback = STATIC_MEDIA[cat] || [];
     function render(items) {
       grid.textContent = '';
+      var band = grid.closest('.mission-band-inner');
       if (!items.length) {
         grid.parentElement.hidden = true;
+        if (band) band.classList.add('text-only');
         return;
       }
       grid.parentElement.hidden = false;
+      if (band) band.classList.remove('text-only');
       items.slice(0, 6).forEach(function (item) { grid.appendChild(tile(item)); });
     }
     fetch('/api/gallery')
