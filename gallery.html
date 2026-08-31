@@ -483,6 +483,16 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   var lbLabel = document.getElementById('lb-label');
   var lbCap = document.getElementById('lb-cap');
 
+  var TAB_ORDER = ['Baptism','After Baptism','Awards','After Service','Worship','Community','Missions','Media'];
+  function eventName(item) {
+    var label = String((item && item.label) || '').trim();
+    return /\b(19|20)\d{2}\b/.test(label) ? label : 'More moments';
+  }
+  function categoryRank(category) {
+    var rank = TAB_ORDER.indexOf(category);
+    return rank < 0 ? TAB_ORDER.length : rank;
+  }
+
   var lastRenderKey = '';
   function renderGrid(filter) {
     var q = (currentQuery || '').trim().toLowerCase();
@@ -502,8 +512,8 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
     var key = filter + '|' + currentEvent + '|' + q + '|' + shown.map(function (i) { return i.img; }).join(',');
     if (key === lastRenderKey) return;
     lastRenderKey = key;
-    // Latest first: the most recent moments lead the grid, oldest trail it.
-    // Videos still gather at the end under their own heading, newest first too.
+    // Latest first inside each activity. Videos follow the photos in the same
+    // activity group so the event hierarchy stays intact.
     var photos = shown.filter(function (i) { return i.kind !== 'video'; }).sort(takenDesc);
     var videos = shown.filter(function (i) { return i.kind === 'video'; }).sort(takenDesc);
     shown = photos.concat(videos);
@@ -521,13 +531,56 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         : (currentEvent ? 'No photos in ' + currentEvent + ' yet.' : 'Nothing here yet.');
       appendTarget.appendChild(none);
     }
-    var videoStart = photos.length;
+    // Build an actual event -> activity hierarchy. This keeps one parent event
+    // title and one activity subheader above each group instead of repeating
+    // both pieces of metadata on every photo tile.
+    shown.sort(function (a, b) {
+      var eventOrder = labelTime(b) - labelTime(a);
+      if (eventOrder) return eventOrder;
+      var eventA = eventName(a), eventB = eventName(b);
+      if (eventA !== eventB) return eventA.localeCompare(eventB);
+      var categoryOrder = categoryRank(a.cat) - categoryRank(b.cat);
+      if (categoryOrder) return categoryOrder;
+      if (a.cat !== b.cat) return String(a.cat || '').localeCompare(String(b.cat || ''));
+      if (a.kind !== b.kind) return a.kind === 'video' ? 1 : -1;
+      return takenDesc(a, b);
+    });
+
+    var groupCounts = {};
+    shown.forEach(function (item) {
+      var groupKey = eventName(item) + '\u0000' + (item.cat || 'Moments');
+      groupCounts[groupKey] = (groupCounts[groupKey] || 0) + 1;
+    });
+    var previousEvent = '';
+    var previousCategory = '';
     shown.forEach(function (item, idx) {
-      if (idx === videoStart && videos.length) {
-        var vh = document.createElement('div');
-        vh.style.cssText = "grid-column:1/-1;margin:14px 0 2px;display:flex;align-items:center;gap:11px";
-        vh.innerHTML = '<span style="font:600 11px/1 \'Hanken Grotesk\',\'Hanken Fallback\',sans-serif;letter-spacing:.16em;text-transform:uppercase;color:#A2937C">Videos</span><span style="flex:1;height:1px;background:#E7DECF"></span>';
-        appendTarget.appendChild(vh);
+      var itemEvent = eventName(item);
+      var itemCategory = item.cat || 'Moments';
+      if (itemEvent !== previousEvent) {
+        var eventHeading = document.createElement('h2');
+        eventHeading.textContent = itemEvent;
+        eventHeading.style.cssText = "grid-column:1/-1;margin:30px 0 0;font-family:'Cormorant Garamond','Cormorant Fallback',serif;font-weight:600;font-size:clamp(28px,4vw,42px);line-height:1.08;color:#211A12";
+        appendTarget.appendChild(eventHeading);
+        previousEvent = itemEvent;
+        previousCategory = '';
+      }
+      if (itemCategory !== previousCategory) {
+        var groupHeading = document.createElement('div');
+        var groupKey = itemEvent + '\u0000' + itemCategory;
+        groupHeading.style.cssText = "grid-column:1/-1;margin:14px 0 2px;display:flex;align-items:center;gap:11px";
+        var groupTitle = document.createElement('h3');
+        groupTitle.textContent = itemCategory;
+        groupTitle.style.cssText = "margin:0;font:600 12px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.14em;text-transform:uppercase;color:#8A6B50";
+        var groupCount = document.createElement('span');
+        groupCount.textContent = groupCounts[groupKey];
+        groupCount.style.cssText = "font:500 11px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#A2937C";
+        var groupRule = document.createElement('span');
+        groupRule.style.cssText = 'flex:1;height:1px;background:#E7DECF';
+        groupHeading.appendChild(groupTitle);
+        groupHeading.appendChild(groupCount);
+        groupHeading.appendChild(groupRule);
+        appendTarget.appendChild(groupHeading);
+        previousCategory = itemCategory;
       }
       var btn = document.createElement('button');
       btn.className = 'gitem';
@@ -566,10 +619,6 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         ph.style.cssText = 'aspect-ratio:4/5;background:repeating-linear-gradient(135deg,#EDE4D3 0 13px,#F3ECDE 13px 26px);';
       }
 
-      var badge = document.createElement('span');
-      badge.textContent = item.cat;
-      badge.style.cssText = "position:absolute;top:10px;left:10px;font:600 10px/1 'Hanken Grotesk','Hanken Fallback',sans-serif;letter-spacing:.1em;text-transform:uppercase;color:#6B5F4E;background:rgba(247,242,234,.9);padding:5px 9px;border-radius:6px";
-
       // Stable per-photo code (first 5 hex of the id) shown so anyone can point
       // at an exact shot — "tag 3F9A2 as Apostle Maliyabwana" — no ambiguity.
       // Click copies the code to the clipboard (doesn't open the lightbox).
@@ -583,7 +632,7 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
         copyCode(theCode, codeTag);
       });
 
-      frame.appendChild(ph); frame.appendChild(badge); frame.appendChild(codeTag);
+      frame.appendChild(ph); frame.appendChild(codeTag);
       // A moment shot as a burst shows one tile; the count hints at the rest.
       if (item.frames && item.frames.length > 1) {
         var stack = document.createElement('span');
@@ -615,7 +664,10 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
       var cap = document.createElement('div');
       cap.textContent = item.cap;
       cap.style.cssText = "font:500 13px/1.4 'Hanken Grotesk','Hanken Fallback',sans-serif;color:#8A7C68;margin-top:2px";
-      meta.appendChild(title); meta.appendChild(cap);
+      // Dated labels are the event heading above this group. Keep undated labels
+      // as per-photo titles because they can still carry unique context.
+      if (!/\b(19|20)\d{2}\b/.test(item.label || '')) meta.appendChild(title);
+      meta.appendChild(cap);
 
       btn.appendChild(frame); btn.appendChild(meta);
       btn.__item = item;
@@ -641,7 +693,6 @@ main a.btn-clay,main a.btn-ink{width:100%;justify-content:center;text-align:cent
   // Category tabs are generated from the data so new activities (Awards,
   // Baptism, ...) appear automatically. Ordered by a preferred sequence, then
   // any extras alphabetically; each shows its count.
-  var TAB_ORDER = ['Baptism','After Baptism','Awards','After Service','Worship','Community','Missions','Media'];
   function buildTabs() {
     var tally = {};
     ITEMS.forEach(function (i) { var c=(i.cat||'').trim(); if(c) tally[c]=(tally[c]||0)+1; });

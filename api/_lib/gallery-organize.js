@@ -15,6 +15,23 @@ const EXACT_DUPLICATE_EXTRA_FILES = new Set([
   'IMG_7407', 'IMG_7408', 'IMG_7409', 'IMG_7410', 'IMG_7411', 'IMG_7412',
 ]);
 
+// Visual review: this continuous sequence is the recognition/certificate
+// presentation. Some of its first frames arrived with a generic category, so
+// the stored category alone splits one ceremony into two public groups.
+function isJuly19AwardFrame(stem) {
+  const match = /^IMG_(\d+)$/.exec(stem);
+  const frame = match ? Number(match[1]) : 0;
+  return frame >= 4902 && frame <= 5058;
+}
+
+// Visual review: these frames show the baptism taking place in the water.
+// The surrounding convention-extra frames show the gathering afterward.
+const JULY19_BAPTISM_EXTRA_FILES = new Set([
+  'IMG_5172',
+  'IMG_5191', 'IMG_5192', 'IMG_5193', 'IMG_5194',
+  'IMG_5195', 'IMG_5196', 'IMG_5197',
+]);
+
 function cleanPath(url) {
   try { return decodeURIComponent(new URL(String(url || '')).pathname); } catch {}
   return decodeURIComponent(String(url || '').split('?')[0].split('#')[0]);
@@ -67,7 +84,7 @@ export function organizeGalleryRow(row) {
   }
 
   if (folder === 'convention-day23') {
-    if (/awards/i.test(rawCategory)) {
+    if (isJuly19AwardFrame(stem) || /awards/i.test(rawCategory)) {
       organized.cat = 'Awards';
       organized.label = 'Holy Convention 2026 — July 19';
     } else if (/^baptism$/i.test(rawCategory)) {
@@ -81,7 +98,10 @@ export function organizeGalleryRow(row) {
   }
 
   if (folder === 'convention-extra') {
-    if (stem === 'IMG_5190' || stem === 'IMG_5198') {
+    if (JULY19_BAPTISM_EXTRA_FILES.has(stem)) {
+      organized.cat = 'Baptism';
+      organized.label = 'Holy Convention 2026 — July 19';
+    } else if (stem === 'IMG_5190' || stem === 'IMG_5198') {
       organized.cat = 'Baptism';
       organized.label = 'Holy Convention 2026 — Baptism';
     } else if (/^baptism$/i.test(rawCategory)) {
