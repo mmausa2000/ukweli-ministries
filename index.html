@@ -596,6 +596,28 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
   // Keep the Watch section on the latest broadcasts (via /api/latest-videos,
   // a Vercel function reading the YouTube channel feed). Falls back to the
   // baked-in cards if unreachable.
+  function setYouTubeThumbnail(img, videoId) {
+    var maxres = 'https://i.ytimg.com/vi/' + videoId + '/maxresdefault.jpg';
+    var fallback = 'https://i.ytimg.com/vi/' + videoId + '/hqdefault.jpg';
+
+    img.onerror = function () {
+      img.onerror = null;
+      img.onload = null;
+      img.src = fallback;
+    };
+    img.onload = function () {
+      // YouTube returns a real 200 response for its small gray "thumbnail not
+      // ready" image, so onerror never fires. Detect that placeholder by its
+      // dimensions and swap in the universally available HQ thumbnail.
+      if (img.naturalWidth < 300 || img.naturalHeight < 180) {
+        img.onerror = null;
+        img.onload = null;
+        img.src = fallback;
+      }
+    };
+    img.src = maxres;
+  }
+
   fetch('/api/latest-videos')
     .then(function (r) { if (!r.ok) throw new Error(r.status); return r.json(); })
     .then(function (v) {
@@ -604,8 +626,7 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
       var fl = document.getElementById('feat-link');
       fl.href = 'https://www.youtube.com/watch?v=' + f.id;
       var fi = document.getElementById('feat-img');
-      fi.src = 'https://i.ytimg.com/vi/' + f.id + '/maxresdefault.jpg';
-      fi.onerror = function () { fi.onerror = null; fi.src = 'https://i.ytimg.com/vi/' + f.id + '/hqdefault.jpg'; };
+      setYouTubeThumbnail(fi, f.id);
       document.getElementById('feat-title').textContent = f.label;
       (v.recent || []).slice(0, 3).forEach(function (r2, i) {
         var a = document.getElementById('vid' + (i + 1));
@@ -613,8 +634,7 @@ main a.btn-clay,main a.btn-ink,main button.btn-clay{width:100%;justify-content:c
         var t = document.getElementById('vt' + (i + 1));
         if (!a || !im || !t) return;
         a.href = 'https://www.youtube.com/watch?v=' + r2.id;
-        im.src = 'https://i.ytimg.com/vi/' + r2.id + '/maxresdefault.jpg';
-        im.onerror = function () { im.onerror = null; im.src = 'https://i.ytimg.com/vi/' + r2.id + '/hqdefault.jpg'; };
+        setYouTubeThumbnail(im, r2.id);
         t.textContent = r2.label;
       });
     })
