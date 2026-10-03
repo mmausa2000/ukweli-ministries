@@ -1,12 +1,18 @@
 // Admin: list PENDING visitor submissions awaiting review.
 // Pending rows are stored with a category "_pending|<realCat>".
+// ?kind=certificates lists baptism certificate requests instead.
 import { isAdmin } from './_lib/auth.js';
+import { listRequests } from './_lib/certificates.js';
 
 export default async function handler(req, res) {
   if (!(await isAdmin(req, req.query && req.query.token))) {
     return res.status(401).json({ error: 'unauthorized' });
   }
   try {
+    if (req.query && req.query.kind === 'certificates') {
+      res.setHeader('Cache-Control', 'no-store');
+      return res.status(200).json(await listRequests());
+    }
     const sr = process.env.SUPABASE_SERVICE_ROLE_KEY;
     const r = await fetch(
       `${process.env.SUPABASE_URL}/rest/v1/gallery_items?select=*&order=created_at.desc`,

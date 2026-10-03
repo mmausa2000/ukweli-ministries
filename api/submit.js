@@ -7,10 +7,15 @@
 // refused the deploy; they are two halves of one flow, so this is where the
 // seam belongs. Both public URLs still work — the rewrite is not a function.
 //
+// Baptism certificate requests ride here too (step=cert-sign / step=cert, and
+// GET step=cert for the requester's own link); see api/_lib/certificates.js.
+//
 // Safeguards: honeypot, category whitelist, length caps, submissions/ path
 // only, status forced to pending. Pending items never appear on the public
 // gallery (api/gallery.js hides categories starting with "_"), so nothing here
 // can deface the site.
+import { signPhotoUpload, createRequest, readRequest } from './_lib/certificates.js';
+
 const ALLOWED_CATS = ['Worship', 'Community', 'Missions', 'Media'];
 const ALLOWED_FILES = /\.(jpe?g|png|webp|gif|mp4|webm|mov)$/i;
 
@@ -84,7 +89,32 @@ async function recordSubmission(req, res) {
   return res.status(200).json({ ok: true, pending: true });
 }
 
+async function certificate(req, res) {
+  const q = req.query || {};
+  if (req.method === 'GET') {
+    const out = await readRequest(q.id, q.key);
+    res.setHeader('Cache-Control', 'no-store');
+    return res.status(out.status).json(out.body);
+  }
+  if (q.step === 'cert-sign') return res.status(200).json(await signPhotoUpload());
+  // Honeypot: real people leave this empty. Bots fill it. Pretend success, drop it.
+  if ((req.body || {}).website) return res.status(200).json({ ok: true });
+  const out = await createRequest(req.body);
+  return res.status(out.status).json(out.body);
+}
+
 export default async function handler(req, res) {
+  const step = req.query && req.query.step;
+  if (step === 'cert' || step === 'cert-sign') {
+    if (req.method !== 'POST' && !(req.method === 'GET' && step === 'cert')) {
+      return res.status(405).json({ error: 'method' });
+    }
+    try {
+      return await certificate(req, res);
+    } catch (e) {
+      return res.status(502).json({ error: String((e && e.message) || e) });
+    }
+  }
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
   // The rewrite marks the signing step; a stray `filename` body is accepted too
   // so the older two-endpoint clients keep working from any cached page.

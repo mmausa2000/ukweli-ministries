@@ -2,12 +2,23 @@
 // approve -> restore the real category (from "_pending|<realCat>"), making it
 //            visible on the public gallery.
 // reject  -> delete the row and the stored file.
+// kind "certificate" -> approve / save (correct details) / reject a baptism
+// certificate request instead; see api/_lib/certificates.js.
 import { isAdmin } from './_lib/auth.js';
+import { moderateRequest } from './_lib/certificates.js';
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).json({ error: 'method' });
-  const { token, id, action } = req.body || {};
+  const { token, id, action, kind } = req.body || {};
   if (!(await isAdmin(req, token))) return res.status(401).json({ error: 'unauthorized' });
+  if (kind === 'certificate') {
+    try {
+      const out = await moderateRequest(id, action, req.body);
+      return res.status(out.status).json(out.body);
+    } catch (e) {
+      return res.status(502).json({ error: String((e && e.message) || e) });
+    }
+  }
   if (!id || !['approve', 'reject'].includes(action)) {
     return res.status(400).json({ error: 'need id and action (approve|reject)' });
   }

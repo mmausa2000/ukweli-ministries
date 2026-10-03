@@ -8,6 +8,7 @@ Implemented from the Claude Design mock “Ukweli Ministries webpage mock” (`U
 
 - `index.html` — home page (self-contained HTML/CSS/JS, no build step)
 - `gallery.html` — photo gallery with category filters and a lightbox
+- `baptism-certificate.html` — anyone requests a bilingual (English/Swahili) baptism certificate with a passport photo cropped in the browser (35 × 45 mm); admins approve it in `admin.html`, then the requester's private link prints it
 - `admin.html` — upload/manage gallery photos and videos (requires the Rust server)
 - `assets/` — logo, ministry photos, video thumbnails, app screenshots
 - `server/` — Rust (Axum) backend: static hosting, photo & video uploads, newsletter signups
@@ -32,6 +33,10 @@ API: `GET /api/gallery` (returns `{ items, people }` with curated event categori
 ```sh
 python3 -m http.server 8000
 ```
+
+## Baptism certificates (one-time setup)
+
+Run `supabase/baptism_certificates.sql` once in the Supabase SQL editor. It creates the `baptism_certificates` table (RLS on, no anon access) and the private `certificates` photo bucket. The feature reuses existing functions to stay under the Vercel Hobby 12-function limit: `api/submit.js?step=cert-sign|cert` (public request and private-link view), `api/pending.js?kind=certificates` and `api/moderate.js` with `kind: "certificate"` (admin review).
 
 ## Leadership
 

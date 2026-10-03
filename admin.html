@@ -51,6 +51,24 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 .secbar a:hover{border-color:var(--sc,#B0542F);color:var(--sc,#B0542F)}
 .secbar a .dot{width:9px;height:9px;border-radius:50%;background:var(--sc,#B0542F);flex:none}
 .secbar a .n{color:#8A7C68;font-variant-numeric:tabular-nums}
+/* Baptism certificate requests */
+.cert-row{display:grid;grid-template-columns:92px 1fr;gap:18px;padding:18px;border:1px solid #EAE1D1;border-radius:16px;background:#FBF8F2;margin-top:14px}
+.cert-row img{width:92px;aspect-ratio:35/45;object-fit:cover;border-radius:6px;background:#EFE7D8;box-shadow:0 0 0 1px #E0D6C4}
+.cert-row .t{font-family:'Cormorant Garamond',serif;font-weight:600;font-size:21px;line-height:1.15;color:#211A12}
+.cert-row dl{display:grid;grid-template-columns:max-content 1fr;gap:4px 12px;margin:8px 0 0;font:500 13.5px/1.45 'Hanken Grotesk',sans-serif}
+.cert-row dt{color:#8A7C68}
+.cert-row dd{margin:0;color:#3F382E;overflow-wrap:anywhere}
+.cert-row .acts{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px}
+.cert-row .acts button,.cert-row .acts a{padding:9px 13px;border-radius:10px;font:600 12.5px/1 'Hanken Grotesk',sans-serif;cursor:pointer;text-decoration:none;border:1px solid rgba(33,26,18,.22);background:transparent;color:#211A12}
+.cert-row .acts .go{background:#3F5230;border-color:#3F5230;color:#FBF8F2}
+.cert-row .acts .no{border-color:rgba(138,58,46,.4);color:#8A3A2E}
+.cert-row .edit{display:grid;grid-template-columns:1fr 1fr;gap:0 12px}
+.cert-row .edit label{margin:12px 0 6px}
+.cert-row .edit input{padding:10px 12px;font-size:14px;border-radius:10px}
+.pill{display:inline-block;margin-left:8px;padding:4px 9px;border-radius:999px;font:600 11px/1 'Hanken Grotesk',sans-serif;vertical-align:middle}
+.pill.pending{background:#F6ECD7;color:#8A6420}
+.pill.approved{background:#EAF0E2;color:#3F5230}
+@media (max-width:600px){.cert-row{grid-template-columns:1fr}.cert-row .edit{grid-template-columns:1fr}}
 @media (max-width:600px){
 .wrap{padding:36px 18px 72px}
 .card{padding:20px 16px}
@@ -69,6 +87,7 @@ input[type=file]{font:500 14px/1.4 'Hanken Grotesk',sans-serif;color:#5B5044}
 <a href="/" style="padding:9px 15px;background:transparent;border:1px solid rgba(33,26,18,.2);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;text-decoration:none">← Home</a>
 <a href="/gallery" style="padding:9px 15px;background:transparent;border:1px solid rgba(33,26,18,.2);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;text-decoration:none">Gallery</a>
 <a href="/missions" style="padding:9px 15px;background:transparent;border:1px solid rgba(33,26,18,.2);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;text-decoration:none">Missions</a>
+<a href="#certs" style="padding:9px 15px;background:transparent;border:1px solid rgba(33,26,18,.2);color:#211A12;border-radius:12px;font:600 13.5px/1 'Hanken Grotesk',sans-serif;text-decoration:none">Certificates</a>
 </div>
 </nav>
 </header>
@@ -131,6 +150,12 @@ Continue with Google</button>
 <div id="pending-msg" class="msg" hidden></div>
 <div class="grid" id="pending"></div>
 
+<h2 id="certs" style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px;scroll-margin-top:80px">Baptism certificates</h2>
+<p class="note">Requests from the <a href="/baptism-certificate">baptism certificate</a> page. Check the name and dates, then approve it. Approving gives the person a printable certificate at their private link. Use Edit to fix a typo first.</p>
+<p class="note" id="certs-note">Loading…</p>
+<div id="certs-msg" class="msg" hidden></div>
+<div id="certs-list"></div>
+
 <h2 style="font-family:'Cormorant Garamond',serif;font-weight:500;font-size:30px;color:#211A12;margin:44px 0 6px">Uploaded photos</h2>
 <p class="note" id="list-note">Loading…</p>
 <div id="list"></div>
@@ -184,8 +209,8 @@ Continue with Google</button>
       })
       .catch(function () {});
   }
-  sb.auth.getSession().then(function (d) { session = d.data.session; renderAuth(); checkAdmin(); refreshPending(); });
-  sb.auth.onAuthStateChange(function (_e, s) { session = s; renderAuth(); checkAdmin(); refreshPending(); });
+  sb.auth.getSession().then(function (d) { session = d.data.session; renderAuth(); checkAdmin(); refreshPending(); refreshCerts(); });
+  sb.auth.onAuthStateChange(function (_e, s) { session = s; renderAuth(); checkAdmin(); refreshPending(); refreshCerts(); });
 
   document.getElementById('google-btn').addEventListener('click', function () {
     sb.auth.signInWithOAuth({
@@ -576,9 +601,124 @@ Continue with Google</button>
       .catch(function (e) { pShow('err', e.message); if (ok) ok.disabled = false; if (no) no.disabled = false; });
   }
 
+  // ---- Baptism certificate requests ----
+  var certsNote = document.getElementById('certs-note');
+  var certsList = document.getElementById('certs-list');
+  var certsMsg = document.getElementById('certs-msg');
+  var CERT_FIELDS = [
+    ['full_name', 'Full name', 'text'], ['baptism_date', 'Baptism date', 'date'],
+    ['birth_date', 'Date of birth', 'date'], ['place', 'Place', 'text'],
+    ['officiant', 'Baptized by', 'text'], ['contact', 'Contact', 'text']
+  ];
+  function cShow(kind, text) { certsMsg.className = 'msg ' + kind; certsMsg.textContent = text; certsMsg.hidden = false; }
+  function el(tag, cls, text) {
+    var e = document.createElement(tag);
+    if (cls) e.className = cls;
+    if (text != null) e.textContent = text;
+    return e;
+  }
+
+  function refreshCerts() {
+    var token = tokenEl.value.trim();
+    var headers = {};
+    if (session) headers.Authorization = 'Bearer ' + session.access_token;
+    var qs = '?kind=certificates' + (token ? '&token=' + encodeURIComponent(token) : '');
+    fetch('/api/pending' + qs, { headers: headers })
+      .then(function (r) {
+        if (r.status === 401) { certsNote.textContent = 'Sign in (or add the admin token) to review certificate requests.'; return null; }
+        if (!r.ok) throw new Error(r.status);
+        return r.json();
+      })
+      .then(function (items) {
+        if (!items) return;
+        certsList.textContent = '';
+        var waiting = items.filter(function (c) { return c.status === 'pending'; }).length;
+        certsNote.textContent = items.length
+          ? (waiting + ' waiting for approval · ' + (items.length - waiting) + ' approved.')
+          : 'No certificate requests yet.';
+        items.forEach(function (c) { certsList.appendChild(certRow(c)); });
+      })
+      .catch(function () { certsNote.textContent = 'Could not load certificate requests.'; });
+  }
+
+  function certRow(c) {
+    var row = el('div', 'cert-row');
+    var img = el('img');
+    img.alt = 'Passport photo of ' + c.full_name;
+    if (c.photo) img.src = c.photo;
+    var body = el('div');
+    var t = el('div', 't', c.full_name);
+    t.appendChild(el('span', 'pill ' + c.status, c.status === 'approved' ? 'Approved' : 'Pending'));
+    var dl = el('dl');
+    [['Baptized', c.baptism_date], ['Born', c.birth_date], ['Place', c.place], ['By', c.officiant],
+     ['Contact', c.contact], ['Certificate', c.cert_no], ['Requested', (c.created_at || '').slice(0, 10)]]
+      .forEach(function (p) { if (p[1]) { dl.appendChild(el('dt', null, p[0])); dl.appendChild(el('dd', null, p[1])); } });
+
+    var acts = el('div', 'acts');
+    if (c.status === 'pending') {
+      var ok = el('button', 'go', 'Approve'); ok.type = 'button';
+      ok.addEventListener('click', function () { moderateCert(c, 'approve', null, ok); });
+      acts.appendChild(ok);
+    }
+    var open = el('a', null, c.status === 'approved' ? 'Open & print' : 'Preview');
+    open.href = c.link; open.target = '_blank'; open.rel = 'noopener';
+    var edit = el('button', null, 'Edit'); edit.type = 'button';
+    var no = el('button', 'no', c.status === 'approved' ? 'Delete' : 'Reject'); no.type = 'button';
+    no.addEventListener('click', function () {
+      if (confirm('Delete the certificate request for "' + c.full_name + '"? Their link will stop working.')) moderateCert(c, 'reject', null, no);
+    });
+    acts.appendChild(open); acts.appendChild(edit); acts.appendChild(no);
+
+    var form = el('form', 'edit'); form.hidden = true;
+    CERT_FIELDS.forEach(function (f) {
+      var wrap = el('div');
+      var lab = el('label', null, f[1]);
+      var inp = el('input'); inp.type = f[2]; inp.name = f[0]; inp.value = c[f[0]] || '';
+      wrap.appendChild(lab); wrap.appendChild(inp); form.appendChild(wrap);
+    });
+    var save = el('button', 'btn', 'Save changes'); save.type = 'submit';
+    save.style.cssText = 'grid-column:1/-1;justify-self:start;margin-top:14px;padding:11px 18px;font-size:13.5px';
+    form.appendChild(save);
+    edit.addEventListener('click', function () { form.hidden = !form.hidden; });
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+      var fields = {};
+      CERT_FIELDS.forEach(function (f) { fields[f[0]] = form.elements[f[0]].value; });
+      moderateCert(c, 'save', fields, save);
+    });
+
+    body.appendChild(t); body.appendChild(dl); body.appendChild(acts); body.appendChild(form);
+    row.appendChild(img); row.appendChild(body);
+    return row;
+  }
+
+  function moderateCert(c, action, fields, btnEl) {
+    if (btnEl) btnEl.disabled = true;
+    certsMsg.hidden = true;
+    fetch('/api/moderate', {
+      method: 'POST', headers: authHeaders(),
+      body: JSON.stringify({ token: tokenEl.value.trim(), kind: 'certificate', id: c.id, action: action, fields: fields })
+    })
+      .then(function (r) {
+        if (r.status === 401) throw new Error(AUTH_ERR);
+        return r.json().then(function (b) {
+          if (!r.ok) throw new Error(b.error || ('Action failed (' + r.status + ').'));
+          return b;
+        });
+      })
+      .then(function (b) {
+        cShow('ok', action === 'approve' ? ('Approved: ' + c.full_name + ' (No. ' + b.cert_no + '). Their link now shows the printable certificate.')
+          : action === 'save' ? ('Saved changes for ' + c.full_name + '.')
+          : ('Deleted the request for ' + c.full_name + '.'));
+        refreshCerts();
+      })
+      .catch(function (e) { cShow('err', e.message); if (btnEl) btnEl.disabled = false; });
+  }
+
   refresh();
   refreshSlots();
   refreshPending();
+  refreshCerts();
 })();
 </script>
 </body>
