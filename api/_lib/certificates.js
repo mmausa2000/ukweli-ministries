@@ -4,6 +4,7 @@
 // api/moderate.js: the Hobby plan caps the deploy at 12 functions, so this
 // feature rides on the existing ones instead of adding its own.
 import { randomBytes } from 'node:crypto';
+import { notifyCertRequest } from './notify.js';
 
 const BUCKET = 'certificates';
 const UUID_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i;
@@ -104,9 +105,9 @@ export async function signPhotoUpload() {
   return { uploadUrl: `${base()}/storage/v1${data.url}`, path };
 }
 
-// PUBLIC: record a request as pending. The returned key is the requester's
-// only way back to it, so the page keeps the link for them.
-export async function createRequest(body) {
+// PUBLIC: record a request as pending and email the admins. The returned key
+// is the requester's only way back to it, so the page keeps the link for them.
+export async function createRequest(body, origin) {
   const { fields, error } = readFields(body);
   if (error) return { status: 400, body: { error } };
   const photo = String((body || {}).photo_path || '');
@@ -120,6 +121,7 @@ export async function createRequest(body) {
   });
   const rows = await r.json();
   if (!r.ok) throw new Error(rows.message || `insert ${r.status}`);
+  await notifyCertRequest(fields, origin);
   return { status: 200, body: { ok: true, id: rows[0].id, key: access_key } };
 }
 

@@ -318,13 +318,14 @@ main,.wrap,.layout,.preview-col{display:block!important;padding:0!important;marg
 <div class="c-foot">
 <div class="c-sign"><b id="c-off">&nbsp;</b><span>Baptized by · Aliyebatiza</span></div>
 <svg class="c-seal" viewBox="0 0 120 120" aria-hidden="true">
-<defs><path id="seal-arc" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"/></defs>
+<defs><path id="seal-arc" d="M60 60m-44 0a44 44 0 1 1 88 0a44 44 0 1 1-88 0"/>
+<filter id="seal-ink" color-interpolation-filters="sRGB"><feColorMatrix type="matrix" values="0 0 0 0 .69  0 0 0 0 .329  0 0 0 0 .184  -.2126 -.7152 -.0722 1 0"/></filter>
+<clipPath id="seal-clip"><circle cx="60" cy="60" r="32.4"/></clipPath></defs>
 <circle cx="60" cy="60" r="57" fill="none" stroke="currentColor" stroke-width="1.6"/>
 <circle cx="60" cy="60" r="52" fill="none" stroke="currentColor" stroke-width=".7"/>
-<circle cx="60" cy="60" r="34" fill="none" stroke="currentColor" stroke-width=".7"/>
-<text font-family="Hanken Grotesk,Arial,sans-serif" font-size="8.4" font-weight="600" letter-spacing="2.6" fill="currentColor"><textPath href="#seal-arc">UKWELI MINISTRIES · CHURCH OF CHRIST · IOWA CITY ·</textPath></text>
-<text x="60" y="56" text-anchor="middle" font-family="Cormorant Garamond,Georgia,serif" font-size="15" font-weight="600" fill="currentColor">Ukweli</text>
-<text x="60" y="70" text-anchor="middle" font-family="Hanken Grotesk,Arial,sans-serif" font-size="5.6" font-weight="600" letter-spacing="1.6" fill="currentColor">TRUTH · JOHN 8:32</text>
+<circle cx="60" cy="60" r="36.5" fill="none" stroke="currentColor" stroke-width=".7"/>
+<image href="assets/um-logo.png" x="25" y="25" width="70" height="70" filter="url(#seal-ink)" clip-path="url(#seal-clip)"/>
+<text font-family="Hanken Grotesk,Arial,sans-serif" font-size="8" font-weight="600" letter-spacing="1.4" fill="currentColor"><textPath href="#seal-arc" textLength="275" lengthAdjust="spacingAndGlyphs">UKWELI MINISTRIES · CHURCH OF CHRIST · IOWA CITY ·</textPath></text>
 </svg>
 <div class="c-sign"><b>&nbsp;</b><span>For Ukweli Ministries · Kwa niaba ya</span></div>
 </div>

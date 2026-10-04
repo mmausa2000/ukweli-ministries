@@ -99,7 +99,8 @@ async function certificate(req, res) {
   if (q.step === 'cert-sign') return res.status(200).json(await signPhotoUpload());
   // Honeypot: real people leave this empty. Bots fill it. Pretend success, drop it.
   if ((req.body || {}).website) return res.status(200).json({ ok: true });
-  const out = await createRequest(req.body);
+  const origin = `${req.headers['x-forwarded-proto'] || 'https'}://${req.headers.host}`;
+  const out = await createRequest(req.body, origin);
   return res.status(out.status).json(out.body);
 }
 

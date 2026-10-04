@@ -38,6 +38,8 @@ python3 -m http.server 8000
 
 Run `supabase/baptism_certificates.sql` once in the Supabase SQL editor. It creates the `baptism_certificates` table (RLS on, no anon access) and the private `certificates` photo bucket. The feature reuses existing functions to stay under the Vercel Hobby 12-function limit: `api/submit.js?step=cert-sign|cert` (public request and private-link view), `api/pending.js?kind=certificates` and `api/moderate.js` with `kind: "certificate"` (admin review).
 
+Each new request emails everyone in `UKWELI_ADMIN_EMAILS` (`api/_lib/notify.js`) through Resend, installed from the Vercel Marketplace (`RESEND_API_KEY`). Set `NOTIFY_FROM` (e.g. `Ukweli Ministries <noreply@ukweliministries.org>`) once the domain is verified in Resend. A failed email never blocks the request.
+
 ## Leadership
 
 - **Meshak Maliyabwana M.** — President & Media
